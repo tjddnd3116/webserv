@@ -57,6 +57,5 @@ compile_commands.json
 .*.swp
 tags
 *.DS_Store
-.gitmessage.txt
 .vimspector.json
 webserv
