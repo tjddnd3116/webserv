@@ -11,6 +11,7 @@ class WsClientSock : public WsASocket
 	private:
 		WsRequest	m_request;
 		WsResponse	m_response;
+
 		std::string	m_readBuffer;
 		bool		m_readFinish;
 		bool		m_writeFinish;

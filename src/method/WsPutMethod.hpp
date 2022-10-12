@@ -9,5 +9,6 @@ class WsPutMethod : public WsIMethod
 		WsPutMethod(const std::string& readLine);
 		~WsPutMethod();
 
+
 };
 #endif //WsPutMethod_hpp

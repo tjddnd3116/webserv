@@ -33,6 +33,7 @@ class WsResponse
 		void	makeResponse(const WsIMethod* method);
 		void	makeDate(void);
 		size_t	getBufSize(void) const;
+		void	clearBuffer(void);
 
 		const std::string& operator()(void);
 };

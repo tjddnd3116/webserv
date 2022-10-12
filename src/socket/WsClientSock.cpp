@@ -1,5 +1,6 @@
 #include "WsClientSock.hpp"
 #include "WsASocket.hpp"
+#include "WsResponse.hpp"
 #include <sys/fcntl.h>
 #include <sys/socket.h>
 
@@ -72,6 +73,7 @@ WsClientSock::readSock(void)
 			if (1)
 				m_request.printRequest();
 			m_readFinish = true;
+			m_readBuffer.clear();
 		}
 	}
 	return (readRet);
@@ -81,32 +83,29 @@ int
 WsClientSock::sendSock(void)
 {
 	int sendRet;
-	char buffer[BUF_SIZE];
-
+	// char buffer[BUF_SIZE];
 
 	// if (m_writeFinish)
 	//     return (1);
-	if (m_request.getMethod() == NULL)
-	{
-		read(m_SocketFd, buffer, BUF_SIZE);
-		std::cout << "strange event" << std::endl;
-		std::cout << "$" << buffer << "$" << std::endl;
-		write(m_SocketFd, "hello?", 7);
-		return (-1);
-	}
-	std::cout << "bb" << std::endl;
-	if (!m_writeFinish)
-		m_response.makeResponse(m_request.getMethod());
-	std::cout << "bb" << std::endl;
-	if (0)
+	// if (m_request.getMethod() == NULL)
+	// {
+	//     read(m_SocketFd, buffer, BUF_SIZE);
+	//     std::cout << "strange event" << std::endl;
+	//     std::cout << "$" << buffer << "$" << std::endl;
+	//     write(m_SocketFd, "hello?", 7);
+	//     return (-1);
+	// }
+	// if (!m_writeFinish)
+	//
+	m_response.clearBuffer();
+	m_response.makeResponse(m_request.getMethod());
+	if (1)
 	{
 		std::cout << BLUE << "-----------response----------------" << std::endl;
 		std::cout << m_response().c_str() << std::endl;
 		std::cout << "-------------------------------" << RESET << std::endl;
 	}
-	std::cout << "write stop ?";
 	sendRet = write(m_SocketFd, m_response().c_str(), m_response.getBufSize());
-	std::cout << " no!" << std::endl;
 	m_writeFinish = true;
 	return (sendRet);
 }

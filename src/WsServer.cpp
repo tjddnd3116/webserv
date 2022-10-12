@@ -168,7 +168,6 @@ WsServer::readEvent(struct kevent* curEvent)
 void
 WsServer::writeEvent(struct kevent* curEvent)
 {
-	std::cout << "aaa" << std::endl;
 	if (isClientSocket(curEvent->ident))
 	{
 		int sendRet;

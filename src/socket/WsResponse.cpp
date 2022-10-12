@@ -10,7 +10,9 @@ WsResponse::WsResponse(const WsConfigInfo& conf)
 }
 
 WsResponse::~WsResponse()
-{}
+{
+	delete m_method;
+}
 
 WsResponse::WsResponse(const WsResponse& copy)
 {
@@ -245,4 +247,9 @@ const std::string WsResponse::getDate(void)
 	curTimeInfo = localtime(&curTime);
 	strftime(timeBuf, 1024, "%a, %d %b %Y %X %Z", curTimeInfo);
 	return (timeBuf);
+}
+
+void WsResponse::clearBuffer(void)
+{
+	m_responseBuf.clear();
 }
