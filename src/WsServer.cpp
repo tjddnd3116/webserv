@@ -155,6 +155,7 @@ WsServer::readEvent(struct kevent* curEvent)
 			if (readRet < 0)
 				std::cout << "client read error" << std::endl;
 			disconnectClient(curEvent->ident);
+			return (1);
 		}
 		if ((*clientIt).second.getReadStatus())
 			addEvents((*clientIt).first, EVFILT_WRITE,

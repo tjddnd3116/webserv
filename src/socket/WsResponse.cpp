@@ -1,5 +1,6 @@
 #include "WsResponse.hpp"
 #include <ctime>
+#include <iostream>
 
 WsResponse::WsResponse(const WsConfigInfo& conf)
 {
@@ -57,6 +58,7 @@ WsResponse::makeStatusLine(void)
 		m_statusCode = 200;
 	}
 	m_responseBuf = "HTTP/1.1 " + statusCodeStr;
+	std::cout << "makeStatusLine Done" <<  std::endl;
 }
 
 void WsResponse::makeBody(void)
@@ -68,6 +70,7 @@ void WsResponse::makeBody(void)
 	while (!m_file.eof())
 	{
 		std::getline(m_file, readLine);
+		std::cout << readLine <<  std::endl;
 		if (readLine == "")
 			continue;
 		allReadLine += readLine + "\n";
@@ -77,6 +80,7 @@ void WsResponse::makeBody(void)
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
 	m_responseBuf += allReadLine;
+	std::cout << "makeBody Done" <<  std::endl;
 }
 
 void WsResponse::makeResponse(const WsIMethod* method)
@@ -87,6 +91,7 @@ void WsResponse::makeResponse(const WsIMethod* method)
 	makeGeneralHeader();
 	makeEntityHeader();
 	makeBody();
+	m_file.close();
 }
 
 const std::string&
@@ -146,6 +151,7 @@ void WsResponse::makeResponseHeader(void)
 	// Request와 Allow에서 Method 단수 복수 주의
 	//
 	m_responseBuf += "Server: " + m_conf.getServerName()[0] + "\n";
+	std::cout << "makeResponseHeader Done" <<  std::endl;
 }
 
 	// 요청 및 응답 메시지 모두에서 사용가능한 Entity(콘텐츠, 본문, 리소스등)에 대한 설명 헤더 항목
@@ -213,9 +219,10 @@ void WsResponse::makeEntityHeader(void)
 	// chuncked (응답헤더)
 	// 동적으로 생성되어 Body의 길이를 모르는 경우에 조금씩 전송이 가능하다.
 	// 각 chunk 마다 그 시작에 16진수 길이를 삽입하여 chunk 길이를 알려준다.
-	m_responseBuf += "Content-Type: text/html; charset=UTF-8\n";
+	m_responseBuf += "Content-Type: text/css, text/html; charset=UTF-8\n";
 	// m_responseBuf += "Content-Disposition: attachment; filename=soum.html";
 	m_responseBuf += "Content-Disposition: inline\n";
+	std::cout << "makeEntityHeader Done" <<  std::endl;
 }
 
 void WsResponse::makeGeneralHeader(void)
@@ -235,6 +242,7 @@ void WsResponse::makeGeneralHeader(void)
 	// Pragma
 	//
 	// Trailer
+	std::cout << "makeGeneralHeader Done" <<  std::endl;
 }
 
 const std::string WsResponse::getDate(void)
