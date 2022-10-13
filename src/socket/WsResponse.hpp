@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <ctime>
+#include <map>
 
 #include "../method/WsIMethod.hpp"
 #include "../parser/WsConfigInfo.hpp"
@@ -22,6 +23,7 @@ class WsResponse
 		void				makeEntityHeader(void);
 		void				makeGeneralHeader(void);
 		const std::string	getDate(void);
+		const std::string	getStatusCodeStr(void);
 
 	public:
 		WsResponse(const WsConfigInfo& conf);
@@ -29,12 +31,14 @@ class WsResponse
 		WsResponse(const WsResponse& copy);
 		WsResponse& operator=(const WsResponse& copy);
 
-		void	makeBody(void);
-		void	makeResponse(const WsIMethod* method);
-		void	makeDate(void);
-		size_t	getBufSize(void) const;
-		void	clearBuffer(void);
+		static std::map<int, std::string>	s_statusCode;
 
+		static void	setStatusCode(void);
+		void		makeBody(void);
+		void		makeResponse(const WsIMethod* method);
+		void		makeDate(void);
+		size_t		getBufSize(void) const;
 		const std::string& operator()(void);
+
 };
 #endif //WsResponse_hpp

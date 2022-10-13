@@ -13,8 +13,9 @@
 #include "./parser/WsConfigInfo.hpp"
 #include "./socket/WsClientSock.hpp"
 #include "./socket/WsServerSock.hpp"
+#include "./socket/WsResponse.hpp"
 
-#define EVENT_SIZE 1
+#define EVENT_SIZE 8
 
 class WsServer
 {
@@ -32,9 +33,8 @@ class WsServer
 				uint32_t fflags, intptr_t data, void* udata);
 		bool	isServerSocket(int fd);
 		bool	isClientSocket(int fd);
-
-		int		kevent(void);
-		void	keventSock(int newEvents);
+		int		waitEvent(void);
+		void	communicateSock(int newEvents);
 		int		readEvent(struct kevent* curEvent);
 		void	writeEvent(struct kevent* curEvent);
 		void	disconnectClient(int fd);

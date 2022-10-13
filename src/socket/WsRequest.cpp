@@ -8,14 +8,13 @@ WsRequest::WsRequest()
 WsRequest::~WsRequest()
 {}
 
-void
+WsIMethod*
 WsRequest::readRequest(const std::string& request)
 {
 	size_t		prePos;
 	size_t		curPos;
 
 	prePos = 0;
-	m_method = NULL;
 	curPos = request.find("\n", prePos);
 	while (curPos != std::string::npos)
 	{
@@ -29,6 +28,7 @@ WsRequest::readRequest(const std::string& request)
 			m_method->loadRequest(readLine);
 		curPos = request.find("\n", prePos);
 	}
+	return (m_method);
 }
 
 WsIMethod*
@@ -46,13 +46,3 @@ WsRequest::methodGenerator(const std::string& readLine)
 	return (NULL);
 }
 
-const WsIMethod*
-WsRequest::getMethod(void) const
-{
-	return (m_method);
-}
-
-void	 WsRequest::printRequest(void) const
-{
-	m_method->printInfo();
-}

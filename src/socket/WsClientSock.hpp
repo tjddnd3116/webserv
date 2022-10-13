@@ -9,12 +9,9 @@
 class WsClientSock : public WsASocket
 {
 	private:
-		WsRequest	m_request;
-		WsResponse	m_response;
-
+		WsIMethod*	m_method;
 		std::string	m_readBuffer;
 		bool		m_readFinish;
-		bool		m_writeFinish;
 
 	public:
 		WsClientSock(const WsConfigInfo& conf);
@@ -27,6 +24,5 @@ class WsClientSock : public WsASocket
 		int		readSock(void);
 		int		sendSock(void);
 		bool	getReadStatus(void) const;
-		bool	getwriteStatus(void) const;
 };
 #endif //WsClientSock_hpp

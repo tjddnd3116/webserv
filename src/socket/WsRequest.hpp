@@ -18,10 +18,7 @@ class WsRequest
 			WsRequest();
 			~WsRequest();
 
-			void				readRequest(const std::string& request);
+			WsIMethod*			readRequest(const std::string& request);
 			WsIMethod*			methodGenerator(const std::string& readLine);
-			const WsIMethod*	getMethod(void) const;
-
-			void				printRequest(void) const;
 };
 #endif //WsRequest_hpp

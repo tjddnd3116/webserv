@@ -41,7 +41,7 @@ void WsServerSock::listenSock(void)
 {
 	int listenRet;
 
-	listenRet = listen(m_SocketFd, 5);
+	listenRet = listen(m_SocketFd, 1);
 	if (listenRet == -1)
 		throw WsException("listen socket fail");
 }

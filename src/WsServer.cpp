@@ -1,6 +1,4 @@
 #include "WsServer.hpp"
-#include "socket/WsClientSock.hpp"
-#include <sys/event.h>
 
 WsServer::WsServer(const std::vector<WsConfigInfo> &conf)
 	:m_conf(conf)
@@ -48,10 +46,12 @@ void
 WsServer::run(void)
 {
 	int newEvents;
+	WsResponse::setStatusCode();
+
 	while (1)
 	{
-		newEvents = kevent();
-		keventSock(newEvents);
+		newEvents = waitEvent();
+		communicateSock(newEvents);
 	}
 }
 
@@ -65,7 +65,7 @@ WsServer::addEvents(uintptr_t ident, int16_t filter, uint16_t flags, uint32_t ff
 }
 
 int
-WsServer::kevent()
+WsServer::waitEvent()
 {
 	int newEvents;
 
@@ -80,14 +80,14 @@ WsServer::kevent()
 }
 
 void
-WsServer::keventSock(int newEvents)
+WsServer::communicateSock(int newEvents)
 {
 	for (int i = 0; i < newEvents; i++)
 	{
 		struct kevent* curEvent;
 
 		curEvent = &m_eventList[i];
-		std::cout << "new event fd : "<< curEvent->ident << std::endl;
+		std::cout << "new event fd : " << curEvent->ident << std::endl;
 		if (curEvent->filter == -1)
 			std::cout << "[read] event occured" << std::endl;
 		else if (curEvent->filter == -2)
@@ -128,7 +128,6 @@ WsServer::isClientSocket(int fd)
 int
 WsServer::readEvent(struct kevent* curEvent)
 {
-	// if server socket readable
 	if (isServerSocket(curEvent->ident))
 	{
 		WsClientSock clientSock(m_serverSock.at(curEvent->ident));
@@ -139,10 +138,10 @@ WsServer::readEvent(struct kevent* curEvent)
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
 		// addEvents(clientSock.getSocketFd(), EVFILT_WRITE,
 		//         EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
-		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish" << std::endl;
+		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
+		std::cout << "now client socket size : " << m_clientSock.size() << std::endl;
 		return (1);
 	}
-	// if client socket readable
 	else if(isClientSocket(curEvent->ident))
 	{
 		int readRet;
@@ -160,7 +159,6 @@ WsServer::readEvent(struct kevent* curEvent)
 		if ((*clientIt).second.getReadStatus())
 			addEvents((*clientIt).first, EVFILT_WRITE,
 				EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
-
 		std::cout << "client read finish" << std::endl;
 	}
 	return (0);
@@ -182,10 +180,7 @@ WsServer::writeEvent(struct kevent* curEvent)
 			disconnectClient(curEvent->ident);
 		}
 		else
-		{
 			std::cout << "client send finish" << std::endl;
-			// disconnectClient(curEvent->ident);
-		}
 	}
 }
 
