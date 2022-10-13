@@ -1,6 +1,6 @@
 #include "WsResponse.hpp"
-#include <ctime>
-#include <iostream>
+
+std::map<int, std::string> WsResponse::s_statusCode;
 
 WsResponse::WsResponse(const WsConfigInfo& conf)
 {
@@ -31,13 +31,10 @@ WsResponse::operator=(const WsResponse& copy)
 	return (*this);
 }
 
-
 void
 WsResponse::makeStatusLine(void)
 {
 	std::string path;
-	std::string statusCodeStr;
-	std::string httpVersion;
 
 	path = m_conf.getRootPath()[0];
 	if (m_method->getUri() == "/")
@@ -49,16 +46,12 @@ WsResponse::makeStatusLine(void)
 	{
 		m_file.clear();
 		m_file.open("./html/404.html");
-		statusCodeStr = "404 Not Found\n";
 		m_statusCode = 404;
 	}
 	else
-	{
-		statusCodeStr = "200 OK\n";
 		m_statusCode = 200;
-	}
-	m_responseBuf = "HTTP/1.1 " + statusCodeStr;
-	std::cout << "makeStatusLine Done" <<  std::endl;
+	m_responseBuf = "HTTP/1.1 ";
+	m_responseBuf += getStatusCodeStr();
 }
 
 void WsResponse::makeBody(void)
@@ -70,7 +63,6 @@ void WsResponse::makeBody(void)
 	while (!m_file.eof())
 	{
 		std::getline(m_file, readLine);
-		std::cout << readLine <<  std::endl;
 		if (readLine == "")
 			continue;
 		allReadLine += readLine + "\n";
@@ -80,7 +72,6 @@ void WsResponse::makeBody(void)
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
 	m_responseBuf += allReadLine;
-	std::cout << "makeBody Done" <<  std::endl;
 }
 
 void WsResponse::makeResponse(const WsIMethod* method)
@@ -91,7 +82,6 @@ void WsResponse::makeResponse(const WsIMethod* method)
 	makeGeneralHeader();
 	makeEntityHeader();
 	makeBody();
-	m_file.close();
 }
 
 const std::string&
@@ -151,7 +141,6 @@ void WsResponse::makeResponseHeader(void)
 	// Request와 Allow에서 Method 단수 복수 주의
 	//
 	m_responseBuf += "Server: " + m_conf.getServerName()[0] + "\n";
-	std::cout << "makeResponseHeader Done" <<  std::endl;
 }
 
 	// 요청 및 응답 메시지 모두에서 사용가능한 Entity(콘텐츠, 본문, 리소스등)에 대한 설명 헤더 항목
@@ -219,10 +208,9 @@ void WsResponse::makeEntityHeader(void)
 	// chuncked (응답헤더)
 	// 동적으로 생성되어 Body의 길이를 모르는 경우에 조금씩 전송이 가능하다.
 	// 각 chunk 마다 그 시작에 16진수 길이를 삽입하여 chunk 길이를 알려준다.
-	m_responseBuf += "Content-Type: text/css, text/html; charset=UTF-8\n";
+	m_responseBuf += "Content-Type: text/html, text/css; charset=UTF-8\n";
 	// m_responseBuf += "Content-Disposition: attachment; filename=soum.html";
 	m_responseBuf += "Content-Disposition: inline\n";
-	std::cout << "makeEntityHeader Done" <<  std::endl;
 }
 
 void WsResponse::makeGeneralHeader(void)
@@ -242,10 +230,10 @@ void WsResponse::makeGeneralHeader(void)
 	// Pragma
 	//
 	// Trailer
-	std::cout << "makeGeneralHeader Done" <<  std::endl;
 }
 
-const std::string WsResponse::getDate(void)
+const std::string
+WsResponse::getDate(void)
 {
 	time_t		curTime;
 	struct tm*	curTimeInfo;
@@ -257,7 +245,45 @@ const std::string WsResponse::getDate(void)
 	return (timeBuf);
 }
 
-void WsResponse::clearBuffer(void)
+void
+WsResponse::setStatusCode(void)
 {
-	m_responseBuf.clear();
+	s_statusCode[100] = "Continue";
+	s_statusCode[101] = "Switching protocols";
+	s_statusCode[200] = "OK";
+	s_statusCode[201] = "Created";
+	s_statusCode[202] = "Accepted";
+	s_statusCode[203] = "Non-authoritative information";
+	s_statusCode[204] = "No content";
+	s_statusCode[301] = "Moved permanently";
+	s_statusCode[302] = "Not temporarily";
+	s_statusCode[304] = "Not modified";
+	s_statusCode[400] = "Bad Request";
+	s_statusCode[401] = "Unauthorized";
+	s_statusCode[402] = "Payment required";
+	s_statusCode[403] = "Forbidden";
+	s_statusCode[404] = "Not found";
+	s_statusCode[405] = "Method not allowed";
+	s_statusCode[407] = "Proxy authentication required";
+	s_statusCode[408] = "Request timeout";
+	s_statusCode[410] = "Gone";
+	s_statusCode[412] = "Precondition failed";
+	s_statusCode[414] = "Request-URI too long";
+	s_statusCode[500] = "Internal server error";
+	s_statusCode[501] = "Not implemented";
+	s_statusCode[503] = "Service unnailable";
+	s_statusCode[504] = "Gateway timeout";
+	s_statusCode[505] = "HTTP version not supported";
+}
+
+const std::string
+WsResponse::getStatusCodeStr(void)
+{
+	std::string statusCodeStr;
+
+	std::map<int, std::string>::iterator statusIt;
+	statusIt = s_statusCode.find(m_statusCode);
+	statusCodeStr = std::to_string(statusIt->first) + " ";
+	statusCodeStr += statusIt->second + "\n";
+	return (statusCodeStr);
 }

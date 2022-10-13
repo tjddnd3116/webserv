@@ -29,7 +29,6 @@ WsConfigInfo::operator=(const WsConfigInfo& copy)
 	return (*this);
 }
 
-// TODO: location
 void	WsConfigInfo::setTable()
 {
 	s_table["root"] = &WsConfigInfo::setRootPath;
@@ -41,7 +40,6 @@ void	WsConfigInfo::setTable()
 	s_table["loc_proxy_pass"] = &WsConfigInfo::setLocationProxy;
 }
 
-// TODO: push_back
 void	WsConfigInfo::setRootPath(std::vector<std::string>& set)
 {
 	for (size_t i = 0; i < set.size(); i++)
