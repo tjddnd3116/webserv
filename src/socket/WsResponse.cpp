@@ -208,7 +208,7 @@ void WsResponse::makeEntityHeader(void)
 	// chuncked (응답헤더)
 	// 동적으로 생성되어 Body의 길이를 모르는 경우에 조금씩 전송이 가능하다.
 	// 각 chunk 마다 그 시작에 16진수 길이를 삽입하여 chunk 길이를 알려준다.
-	m_responseBuf += "Content-Type: text/html, text/css; charset=UTF-8\n";
+	m_responseBuf += "Content-Type: text/css, text/html; charset=UTF-8\n";
 	// m_responseBuf += "Content-Disposition: attachment; filename=soum.html";
 	m_responseBuf += "Content-Disposition: inline\n";
 }

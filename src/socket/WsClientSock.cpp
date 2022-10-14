@@ -67,6 +67,7 @@ WsClientSock::readSock(void)
 		m_readBuffer += buffer;
 		if (readRet < BUF_SIZE)
 		{
+			std::cout << "read size : " << readRet << std::endl;
 			WsRequest request;
 			m_method = request.readRequest(m_readBuffer);
 			if (0)
