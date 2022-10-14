@@ -27,8 +27,7 @@ class WsASocket
 			struct sockaddr_in	m_SocketAddr;
 			socklen_t			m_SocketAddrSize;
 			int					m_SocketFd;
-			int					m_epollFd;
-			char				m_buffer[BUF_SIZE];
+			// char				m_buffer[BUF_SIZE];
 			// std::string			m_readBuffer;
 
 		public:

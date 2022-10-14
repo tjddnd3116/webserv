@@ -138,6 +138,7 @@ WsServer::readEvent(struct kevent* curEvent)
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
 		// addEvents(clientSock.getSocketFd(), EVFILT_WRITE,
 		//         EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
+
 		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
 		std::cout << "now client socket size : " << m_clientSock.size() << std::endl;
 		return (1);
