@@ -29,6 +29,7 @@ class WsASocket
 			int					m_SocketFd;
 			// char				m_buffer[BUF_SIZE];
 			// std::string			m_readBuffer;
+			//
 
 		public:
 			// Orthodox Canonical Form

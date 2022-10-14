@@ -43,6 +43,12 @@ WsRequest::methodGenerator(const std::string& readLine)
 		return (new WsPostMethod(readLine));
 	else if (method == "PUT")
 		return (new WsPutMethod(readLine));
+
+	// TODO
+	// else if (method == "DELETE")
+	//     return (new WsPutMethod(readLine));
+	// else
+	//     thow error;
 	return (NULL);
 }
 

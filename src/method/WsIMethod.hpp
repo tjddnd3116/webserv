@@ -16,10 +16,12 @@ class WsIMethod
 		std::string m_method;
 		std::string m_uri;
 		std::string m_httpVersion;
-
 		std::map<std::string, std::vector<std::string> > m_requestSet;
-		std::vector<std::string> splitReadLine(const std::string& readLine,
+		int			m_statusCode;
+
+		std::vector<std::string>	splitReadLine(const std::string& readLine,
 				const std::string& str = " ");
+		int							checkStartLine(std::vector<std::string>& splittedLine);
 
 	public:
 		WsIMethod(const std::string& readLine);

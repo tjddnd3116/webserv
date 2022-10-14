@@ -2,12 +2,21 @@
 
 WsIMethod::WsIMethod(const std::string& readLine)
 {
+
 	std::vector<std::string> splittedLine;
+	m_statusCode = 0;
+	m_method = "";
+	m_uri = "";
+	m_httpVersion = "";
 
 	splittedLine = splitReadLine(readLine);
-	m_method = splittedLine[0];
-	m_uri = splittedLine[1];
-	m_httpVersion = splittedLine[2];
+	m_statusCode = checkStartLine(splittedLine);
+	if (!m_statusCode)
+	{
+		m_method = splittedLine[0];
+		m_uri = splittedLine[1];
+		m_httpVersion = splittedLine[2];
+	}
 }
 
 WsIMethod::~WsIMethod()
@@ -15,7 +24,10 @@ WsIMethod::~WsIMethod()
 
 void WsIMethod::loadRequest(const std::string& readLine)
 {
+	if (readLine[0] == ' ')
+		return ;
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
+	splittedLine[0].pop_back();
 	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
@@ -54,7 +66,7 @@ void WsIMethod::printInfo(void) const
 	mapIt = m_requestSet.begin();
 	for (; mapIt != m_requestSet.end(); mapIt++)
 	{
-		std::cout << mapIt->first << std::endl;
+		std::cout << mapIt->first << " :"<< std::endl;
 		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
 			std::cout << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
@@ -75,6 +87,23 @@ const std::map<std::string, std::vector<std::string> >&
 WsIMethod::getRequestSet(void) const
 {
 	return (m_requestSet);
+}
+
+int
+WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
+{
+	// TODO
+	// uri max length check & request-line length check
+
+	if (splittedLine.size() != 3)
+		return (400);				// Bad Request
+	// if (splittedLine[1].size() > maxUriLen)
+	// 	return (414);				// URI Too Long
+	if (splittedLine[2] != "HTTP/1.1\r")
+		return (400);				// Bad Request
+	// if (splittedLine[0].size() + splittedLine[1].size() + splittedLine[2].size() + 2 > maxReqLen)
+    //	return (501);				// Not Implemented
+	return (0);
 }
 
 
