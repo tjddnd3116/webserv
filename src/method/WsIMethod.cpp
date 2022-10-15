@@ -22,15 +22,20 @@ WsIMethod::WsIMethod(const std::string& readLine)
 WsIMethod::~WsIMethod()
 {}
 
-void WsIMethod::loadRequest(const std::string& readLine)
-{
-	if (readLine[0] == ' ')
-		return ;
-	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
-	splittedLine[0].pop_back();
-	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
-		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
-}
+// void WsIMethod::loadRequest(const std::string& readLine)
+// {
+	// if (readLine[0] == '\r')
+	//     m_isBody = true;
+	// if (readLine[0] == ' ')
+	//     return ;
+    //
+	// if (m_isBody)
+	//     return (loadBody(readLine));
+	// std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
+	// splittedLine[0].pop_back();
+	// for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
+	//     m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
+// }
 
 std::vector<std::string>
 WsIMethod::splitReadLine(const std::string& readLine, const std::string& str)
@@ -105,5 +110,3 @@ WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
     //	return (501);				// Not Implemented
 	return (0);
 }
-
-

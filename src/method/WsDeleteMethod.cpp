@@ -1,14 +1,14 @@
-#include "WsPutMethod.hpp"
+#include "WsDeleteMethod.hpp"
 
-WsPutMethod::WsPutMethod(const std::string& readLine)
+WsDeleteMethod::WsDeleteMethod(const std::string& readLine)
 	:WsIMethod(readLine)
 {}
 
-WsPutMethod::~WsPutMethod()
+WsDeleteMethod::~WsDeleteMethod()
 {
 }
 
-void WsPutMethod::loadRequest(const std::string &readLine)
+void WsDeleteMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine[0] == ' ')
 		return ;
@@ -16,9 +16,10 @@ void WsPutMethod::loadRequest(const std::string &readLine)
 	splittedLine[0].pop_back();
 	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
+
 }
 
-void WsPutMethod::printBody(void) const
+void WsDeleteMethod::printBody(void) const
 {
 	std::cout << "no body" << std::endl;
 }
