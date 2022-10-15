@@ -1,8 +1,9 @@
 #include "WsIMethod.hpp"
+#include <cstdlib>
 
-WsIMethod::WsIMethod(const std::string& readLine)
+WsIMethod::WsIMethod(const std::string& readLine, const WsConfigInfo& conf)
 {
-
+	m_conf = conf;
 	std::vector<std::string> splittedLine;
 	m_statusCode = 0;
 	m_method = "";
@@ -75,17 +76,18 @@ WsIMethod::getRequestSet(void) const
 int
 WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
 {
-	// TODO
-	// uri max length check & request-line length check
+	uint32_t maxUriLen;
+
+	maxUriLen = std::atoi(m_conf.getUriBufferSize()[0].c_str());
+	maxUriLen *= 1024;
+	std::cout << maxUriLen << std::endl;
 
 	if (splittedLine.size() != 3)
 		return (400);				// Bad Request
-	// if (splittedLine[1].size() > maxUriLen)
-	// 	return (414);				// URI Too Long
+	if (splittedLine[1].size() > maxUriLen)
+		return (414);				// URI Too Long
 	if (splittedLine[2] != "HTTP/1.1\r")
 		return (400);				// Bad Request
-	// if (splittedLine[0].size() + splittedLine[1].size() + splittedLine[2].size() + 2 > maxReqLen)
-    //	return (501);				// Not Implemented
 	return (0);
 }
 

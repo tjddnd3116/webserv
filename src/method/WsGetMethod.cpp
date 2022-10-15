@@ -1,7 +1,7 @@
 #include "WsGetMethod.hpp"
 
-WsGetMethod::WsGetMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsGetMethod::WsGetMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsGetMethod::~WsGetMethod()

@@ -6,7 +6,7 @@
 class WsGetMethod : public WsIMethod
 {
 	public:
-		WsGetMethod(const std::string& readLine);
+		WsGetMethod(const std::string& readLine, const WsConfigInfo& conf);
 		~WsGetMethod();
 
 		virtual void 	loadRequest(const std::string &readLine);

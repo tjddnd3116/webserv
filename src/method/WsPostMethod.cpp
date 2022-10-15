@@ -1,7 +1,7 @@
 #include "WsPostMethod.hpp"
 
-WsPostMethod::WsPostMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsPostMethod::WsPostMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {
 	m_isBody = false;
 	m_bodyBuffer.clear();

@@ -6,7 +6,7 @@
 class WsPutMethod : public WsIMethod
 {
 	public:
-		WsPutMethod(const std::string& readLine);
+		WsPutMethod(const std::string& readLine, const WsConfigInfo& conf);
 		virtual ~WsPutMethod();
 
 		virtual void	loadRequest(const std::string &readLine);

@@ -1,7 +1,7 @@
 #include "WsPutMethod.hpp"
 
-WsPutMethod::WsPutMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsPutMethod::WsPutMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsPutMethod::~WsPutMethod()

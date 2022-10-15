@@ -30,7 +30,7 @@ class WsIMethod
 		void						loadBody(const std::string& readLine);
 
 	public:
-		WsIMethod(const std::string& readLine);
+		WsIMethod(const std::string& readLine, const WsConfigInfo& conf);
 		virtual ~WsIMethod();
 
 		virtual void		loadRequest(const std::string& readLine) = 0;

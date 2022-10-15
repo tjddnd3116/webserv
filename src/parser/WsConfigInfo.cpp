@@ -111,6 +111,8 @@ void	 WsConfigInfo::checkConfig(void)
 		throw WsException("listen is emtpy");
 	if (!isPath(m_rootPath))
 		throw WsException("invalid server root path");
+	if (m_uriBufferSize.empty())
+		m_uriBufferSize.push_back("3k");
 }
 
 bool	 WsConfigInfo::isPath(const std::string& str)

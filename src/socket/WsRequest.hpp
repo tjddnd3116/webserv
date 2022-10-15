@@ -9,14 +9,16 @@
 #include "../method/WsPostMethod.hpp"
 #include "../method/WsPutMethod.hpp"
 #include "../method/WsDeleteMethod.hpp"
+#include "../parser/WsConfigInfo.hpp"
 
 class WsRequest
 {
 		private:
-			WsIMethod* m_method;
+			WsIMethod*		m_method;
+			WsConfigInfo	m_conf;
 
 		public:
-			WsRequest();
+			WsRequest(const WsConfigInfo& conf);
 			~WsRequest();
 
 			WsIMethod*			readRequest(const std::string& request);

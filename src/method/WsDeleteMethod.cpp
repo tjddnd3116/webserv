@@ -1,7 +1,7 @@
 #include "WsDeleteMethod.hpp"
 
-WsDeleteMethod::WsDeleteMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsDeleteMethod::WsDeleteMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsDeleteMethod::~WsDeleteMethod()
