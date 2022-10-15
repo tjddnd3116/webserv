@@ -23,21 +23,6 @@ WsIMethod::WsIMethod(const std::string& readLine, const WsConfigInfo& conf)
 WsIMethod::~WsIMethod()
 {}
 
-// void WsIMethod::loadRequest(const std::string& readLine)
-// {
-	// if (readLine[0] == '\r')
-	//     m_isBody = true;
-	// if (readLine[0] == ' ')
-	//     return ;
-    //
-	// if (m_isBody)
-	//     return (loadBody(readLine));
-	// std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
-	// splittedLine[0].pop_back();
-	// for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
-	//     m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
-// }
-
 std::vector<std::string>
 WsIMethod::splitReadLine(const std::string& readLine, const std::string& str)
 {
@@ -80,14 +65,12 @@ WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
 
 	maxUriLen = std::atoi(m_conf.getUriBufferSize()[0].c_str());
 	maxUriLen *= 1024;
-	std::cout << maxUriLen << std::endl;
-
 	if (splittedLine.size() != 3)
-		return (400);				// Bad Request
+		return (400);							// Bad Request
 	if (splittedLine[1].size() > maxUriLen)
-		return (414);				// URI Too Long
+		return (414);							// URI Too Long
 	if (splittedLine[2] != "HTTP/1.1\r")
-		return (400);				// Bad Request
+		return (400);							// Bad Request
 	return (0);
 }
 

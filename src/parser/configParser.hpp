@@ -12,9 +12,9 @@
 class configParser
 {
 	private:
-		fileReader m_fileReader;
-		tokenizer m_tokenizer;
-		std::vector<std::string> m_allConfigBuffer;
+		fileReader					m_fileReader;
+		tokenizer					m_tokenizer;
+		std::vector<std::string>	m_allConfigBuffer;
 
 	public:
 		configParser(const char* path);

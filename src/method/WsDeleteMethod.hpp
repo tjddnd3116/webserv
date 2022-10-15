@@ -7,7 +7,7 @@ class WsDeleteMethod : public WsIMethod
 {
 	public:
 		WsDeleteMethod(const std::string& readLine, const WsConfigInfo& conf);
-		virtual ~WsDeleteMethod();
+		~WsDeleteMethod();
 
 		virtual void	loadRequest(const std::string &readLine);
 		virtual void	printBody(void) const;

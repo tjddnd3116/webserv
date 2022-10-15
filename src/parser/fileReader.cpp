@@ -31,6 +31,10 @@ fileReader::operator=(const fileReader& copy)
 void
 fileReader::initFileReader(const char *path)
 {
+	std::string extension(path);
+	extension = extension.substr(extension.find_last_of("."));
+	if (extension != ".conf")
+		throw WsException("invalid config file extension");
 	m_configFile.open(path);
 	if (m_configFile.fail())
 		throw WsException("config file open failed");

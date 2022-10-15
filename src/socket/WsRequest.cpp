@@ -45,8 +45,8 @@ WsRequest::methodGenerator(const std::string& readLine)
 		return (new WsPostMethod(readLine, m_conf));
 	else if (method == "PUT")
 		return (new WsPutMethod(readLine, m_conf));
-	// else if (method == "DELETE")
-	//     return (new WsDeleteMethod(readLine));
+	else if (method == "DELETE")
+		return (new WsDeleteMethod(readLine, m_conf));
 	// else
 	//     thow error;
 	return (NULL);

@@ -22,7 +22,6 @@ class WsInitializer
 		WsInitializer(const WsInitializer& copy);
 		WsInitializer	operator=(const WsInitializer& copy);
 
-
 		void						parseConfig(const char* path);
 		void						pushBack(WsConfigInfo &info);
 		std::vector<WsConfigInfo>	getConfigInfo(void);
