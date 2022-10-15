@@ -8,6 +8,7 @@
 #include "../method/WsGetMethod.hpp"
 #include "../method/WsPostMethod.hpp"
 #include "../method/WsPutMethod.hpp"
+#include "../method/WsDeleteMethod.hpp"
 
 class WsRequest
 {

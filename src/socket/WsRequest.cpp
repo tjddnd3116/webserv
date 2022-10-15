@@ -13,13 +13,12 @@ WsRequest::readRequest(const std::string& request)
 {
 	size_t		prePos;
 	size_t		curPos;
+	std::string readLine;
 
 	prePos = 0;
 	curPos = request.find("\n", prePos);
 	while (curPos != std::string::npos)
 	{
-		std::string readLine;
-
 		readLine = request.substr(prePos, curPos - prePos);
 		prePos = curPos + 1;
 		if (m_method == NULL)
@@ -28,6 +27,8 @@ WsRequest::readRequest(const std::string& request)
 			m_method->loadRequest(readLine);
 		curPos = request.find("\n", prePos);
 	}
+	readLine = request.substr(prePos, request.size() - prePos);
+	m_method->loadRequest(readLine);
 	return (m_method);
 }
 
@@ -43,10 +44,8 @@ WsRequest::methodGenerator(const std::string& readLine)
 		return (new WsPostMethod(readLine));
 	else if (method == "PUT")
 		return (new WsPutMethod(readLine));
-
-	// TODO
 	// else if (method == "DELETE")
-	//     return (new WsPutMethod(readLine));
+	//     return (new WsDeleteMethod(readLine));
 	// else
 	//     thow error;
 	return (NULL);

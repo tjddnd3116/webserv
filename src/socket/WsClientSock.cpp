@@ -71,7 +71,10 @@ WsClientSock::readSock(void)
 			WsRequest request;
 			m_method = request.readRequest(m_readBuffer);
 			if (1)
+			{
 				m_method->printInfo();
+				m_method->printBody();
+			}
 			m_readFinish = true;
 			m_readBuffer.clear();
 		}

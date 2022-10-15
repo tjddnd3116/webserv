@@ -1,8 +1,10 @@
 [3. Message Format]
-HTTP-message	=	start-line
-					*(header-field CRLF)
-					CRLF
-					[ message-body ]
+
+<grammar>
+	HTTP-message	=	start-line
+						*(header-field CRLF)
+						CRLF
+						[ message-body ]
 
 HTTP 메시지를 분석하는 일반적인 절차는 start-line을 읽고
 각 헤더 필드를 빈 행까지 필드 이름으로 해시테이블로 읽은다음
@@ -35,7 +37,8 @@ start-liner과 첫번째 헤더 필드 사이의 공백을 수신하면 메시�
 
 request-line은 method 토큰을 시작으로 공백(SP), request-target, 공백(SP), 프로토콜 버전, CRLF를 끝으로 한다.
 
-request-line	= method SP request-target SP HTTP-version CRLF
+<grammar>
+	request-line	=	method SP request-target SP HTTP-version CRLF
 
 method 토큰은 대상 리소스를 실행하기 위한 요청 메서드를 표시한다.
 요청 메서드는 대 소문자를 구분한다.
@@ -55,4 +58,57 @@ request-target을 구문분석하려는 URI보다 긴 414(URI TOO Long)상태 �
 모든 HTTP 발신자와 수신자는 최소 8000 octet 길이의 request-line을 지원 하는것을 권장한다.(RECOMMENDED)
 
 [3.1.2 Status Line]
+
+응답 메시지의 첫번째 줄은 status-line이며
+프로토콜 버전, 공백(SP), status-code, 공백(SP), status-code를 설명하는 빈 텍스트구문, 끝으로 CRLF이다.
+
+<grammar>
+	status-line		=	HTTP-version SP status-code SP reason-phrase CRLF
+
+status-code 요소는 서버가 클라이언트의 해당 요청을 이해하고 충족하려고 시도한 결과를 설명하는 세자리의 정수 코드이다.
+reason-phrae 요소는 숫자 상태 코드와 관련된 텍스트 설명을 제공하는 유일한 목적으로 존재한다.
+클라이언트는 reason-phase 내용을 무시해야 한다.
+
+<grammar>
+	reason-phrase	=	*(HTAB / SP / VCHAR / obs-text)
+
+[3.2 Headr Fields]
+
+각 헤더 필드는 대소문자를 구분하지 않는 필드 이름 뒤에 콜론(":"), 선택적 앞의 공백(OWS), 필드 값, 선택적 뒤의 공백(OWS)로 구성된다.
+
+<grammar>
+	header-field	=	field-name ":" OWS field-value OWS
+
+	field-name		=	token
+	field-value		=	*(field-content / obs-fold )
+	field-content	=	field-vchar [ 1 *(SP / HTAB) field-vchar ]
+	field-vchar		=	VCHAR / obs-text
+	obs-fold		=	CRLF 1 * (SP / HTAB )
+
+field-name 토큰은 해당 field-value를 헤더 필드에서 정의한 의미론을 갖는 것으로 레이블을 지정한다.
+
+[3.2.1 Field Extensibility]
+
+헤더 필드는 완전히 확장 가능하다
+새 필드 이름의 도입, 각각 새로운 의미론을 정의하는데 제한이 없고
+또한 지정된 메시지에 사용되는 헤더 필드의 개수에도 제한이 없다.
+
+field-name이 Connection 헤더 필드에 나열되어 있지 않거나
+프락시가 이러한 필드를 차단하거나 변환하도록 특별히 구성되어 있지 않은 경우
+프락시는 인식하지 못하는 헤더 필드를 전달해야 한다.(MUST)
+다른 수신자는 인식할 수 없는 헤더 필드를 무시해야 한다.(SHOULD)
+
+[3.2.2 Field Order]
+
+다른 필드 이름과 헤더 필드가 수신하는 순서는 중요하지 않다.
+그러나 제어 데이터가 포함된 헤더 필드를 먼저 보내 구현시 메시지를 처리하지 않을 시기를 결정하는 것이 좋다.
+서버는 전체 요청 헤더 부분을 받을때까지 대상 리소스에 요청을 적용하면 안된다.(MUST NOT)
+발신자는 한 메시지에 동일한 필드 이름을 가진 헤더 필드를 여러개 생성해서는 안된다.(MUST NOT)
+
+수신자는 각 후속 필드 값을 쉼표로 구분하여 결합된 필드 값에 순서대로 추가하여 메시지의 의미론을 변경하지 않고 동일한 필드 이름을 가진 여러 헤더 필드를 하나의 "field-name: field-value" 쌍으로 결합할 수 있다.(MAY)
+메시지를 전달할 때 프락시는 이러한 필드 값의 순서를 변경해서는 안된다.(MUST NOT)
+
+[3.2.3 Whitespace]
+
+이 명세는 OWS(optional whitespace 선택적 공백), RWS(required whitespace 필수 공백), BWS(bad whitespace)
 
