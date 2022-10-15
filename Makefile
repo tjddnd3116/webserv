@@ -6,7 +6,7 @@
 #    By: soum <soum@student.42seoul.kr>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/13 18:07:49 by soum             ###   ########.fr        #
+#    Updated: 2022/10/15 20:49:23 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ SRCS = ./src/main.cpp \
 	   ./src/method/WsPutMethod.cpp \
 	   ./src/method/WsPostMethod.cpp \
 	   ./src/method/WsGetMethod.cpp \
+	   ./src/method/WsDeleteMethod.cpp \
 	   ./src/socket/WsASocket.cpp \
 	   ./src/socket/WsServerSock.cpp \
 	   ./src/socket/WsClientSock.cpp \

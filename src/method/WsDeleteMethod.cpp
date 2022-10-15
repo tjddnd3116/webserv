@@ -8,7 +8,8 @@ WsDeleteMethod::~WsDeleteMethod()
 {
 }
 
-void WsDeleteMethod::loadRequest(const std::string &readLine)
+void
+WsDeleteMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine[0] == ' ')
 		return ;
@@ -19,7 +20,8 @@ void WsDeleteMethod::loadRequest(const std::string &readLine)
 
 }
 
-void WsDeleteMethod::printBody(void) const
+void
+WsDeleteMethod::printBody(void) const
 {
 	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
