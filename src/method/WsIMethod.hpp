@@ -16,19 +16,25 @@ class WsIMethod
 		std::string m_method;
 		std::string m_uri;
 		std::string m_httpVersion;
+		std::map<std::string, std::vector<std::string> >
+					m_requestSet;
+		int			m_statusCode;
 
-		std::map<std::string, std::vector<std::string> > m_requestSet;
-		std::vector<std::string> splitReadLine(const std::string& readLine,
+		std::vector<std::string>	splitReadLine(const std::string& readLine,
 				const std::string& str = " ");
+		int							checkStartLine(std::vector<std::string>& splittedLine);
+		void						loadBody(const std::string& readLine);
 
 	public:
 		WsIMethod(const std::string& readLine);
 		virtual ~WsIMethod();
 
-		void				loadRequest(const std::string& readLine);
+		virtual void		loadRequest(const std::string& readLine) = 0;
+		virtual void		printBody(void) const = 0;
+
 		void				printInfo(void) const;
 		const std::string&	getUri(void) const;
-		const std::string&getHttpVersion(void) const;
+		const std::string&	getHttpVersion(void) const;
 		const std::map<std::string, std::vector<std::string> >&
 							getRequestSet(void) const;
 

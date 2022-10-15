@@ -70,7 +70,7 @@ WsClientSock::readSock(void)
 			std::cout << "read size : " << readRet << std::endl;
 			WsRequest request;
 			m_method = request.readRequest(m_readBuffer);
-			if (0)
+			if (1)
 				m_method->printInfo();
 			m_readFinish = true;
 			m_readBuffer.clear();

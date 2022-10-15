@@ -5,8 +5,17 @@
 
 class WsPostMethod : public WsIMethod
 {
+	private:
+		bool		m_isBody;
+		std::string	m_bodyBuffer;
+
+		void	loadBody(const std::string& readLine);
+
 	public:
 		WsPostMethod(const std::string& method);
 		~WsPostMethod();
+
+		virtual void	loadRequest(const std::string& readLine);
+		void			printBody(void) const;
 };
 #endif //WsPostMethod_hpp

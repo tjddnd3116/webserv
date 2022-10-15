@@ -9,5 +9,8 @@ class WsGetMethod : public WsIMethod
 		WsGetMethod(const std::string& readLine);
 		~WsGetMethod();
 
+		virtual void 	loadRequest(const std::string &readLine);
+		virtual void	printBody(void) const;
+
 };
 #endif //WsGetMethod_hpp
