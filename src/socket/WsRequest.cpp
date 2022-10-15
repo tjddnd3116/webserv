@@ -1,7 +1,8 @@
 #include "WsRequest.hpp"
 
-WsRequest::WsRequest()
+WsRequest::WsRequest(const WsConfigInfo& conf)
 {
+	m_conf = conf;
 	m_method = NULL;
 }
 
@@ -39,11 +40,11 @@ WsRequest::methodGenerator(const std::string& readLine)
 
 	method.assign(readLine, 0, readLine.find(" ", 0));
 	if (method == "GET")
-		return (new WsGetMethod(readLine));
+		return (new WsGetMethod(readLine, m_conf));
 	else if (method == "POST")
-		return (new WsPostMethod(readLine));
+		return (new WsPostMethod(readLine, m_conf));
 	else if (method == "PUT")
-		return (new WsPutMethod(readLine));
+		return (new WsPutMethod(readLine, m_conf));
 	// else if (method == "DELETE")
 	//     return (new WsDeleteMethod(readLine));
 	// else

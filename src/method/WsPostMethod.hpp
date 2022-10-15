@@ -12,7 +12,7 @@ class WsPostMethod : public WsIMethod
 		void	loadBody(const std::string& readLine);
 
 	public:
-		WsPostMethod(const std::string& method);
+		WsPostMethod(const std::string& method, const WsConfigInfo& conf);
 		~WsPostMethod();
 
 		virtual void	loadRequest(const std::string& readLine);

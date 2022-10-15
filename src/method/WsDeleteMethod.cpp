@@ -1,7 +1,7 @@
 #include "WsDeleteMethod.hpp"
 
-WsDeleteMethod::WsDeleteMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsDeleteMethod::WsDeleteMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsDeleteMethod::~WsDeleteMethod()
@@ -21,5 +21,7 @@ void WsDeleteMethod::loadRequest(const std::string &readLine)
 
 void WsDeleteMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }

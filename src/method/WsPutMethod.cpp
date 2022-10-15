@@ -1,7 +1,7 @@
 #include "WsPutMethod.hpp"
 
-WsPutMethod::WsPutMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsPutMethod::WsPutMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsPutMethod::~WsPutMethod()
@@ -20,5 +20,7 @@ void WsPutMethod::loadRequest(const std::string &readLine)
 
 void WsPutMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }

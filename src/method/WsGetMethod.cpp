@@ -1,7 +1,7 @@
 #include "WsGetMethod.hpp"
 
-WsGetMethod::WsGetMethod(const std::string& readLine)
-	:WsIMethod(readLine)
+WsGetMethod::WsGetMethod(const std::string& readLine, const WsConfigInfo& conf)
+	:WsIMethod(readLine, conf)
 {}
 
 WsGetMethod::~WsGetMethod()
@@ -22,5 +22,7 @@ WsGetMethod::loadRequest(const std::string &readLine)
 
 void WsGetMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }

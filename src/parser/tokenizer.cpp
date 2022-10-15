@@ -54,7 +54,6 @@ tokenizer::parseToken(WsInitializer &initializer)
 		WsConfigInfo info;
 
 		serverParse(info);
-		info.printConf();
 		initializer.pushBack(info);
 	}
 	if (m_tokIdx != m_tokVec.size())

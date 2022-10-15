@@ -26,6 +26,7 @@ WsConfigInfo::operator=(const WsConfigInfo& copy)
 	m_serverName = copy.getServerName();
 	m_listenPort = copy.getListenPort();
 	m_location = copy.getLocation();
+	m_uriBufferSize = copy.getUriBufferSize();
 	return (*this);
 }
 
@@ -38,6 +39,7 @@ void	WsConfigInfo::setTable()
 	s_table["loc_expires"] = &WsConfigInfo::setLocationExpires;
 	s_table["loc_root"] = &WsConfigInfo::setLocationRoot;
 	s_table["loc_proxy_pass"] = &WsConfigInfo::setLocationProxy;
+	s_table["client_header_buffer_size"] = &WsConfigInfo::setUriBufferSize;
 }
 
 void	WsConfigInfo::setRootPath(std::vector<std::string>& set)
@@ -83,6 +85,11 @@ void	 WsConfigInfo::setLocationProxy(std::vector<std::string>& set)
 	m_location.back().locProxyPass = set;
 }
 
+void			 WsConfigInfo::setUriBufferSize(std::vector<std::string>& set)
+{
+	m_uriBufferSize = set;
+}
+
 int		WsConfigInfo::createLocation(std::string& path)
 {
 	if (!isPath(path))
@@ -90,44 +97,6 @@ int		WsConfigInfo::createLocation(std::string& path)
 	Location location(path);
 	m_location.push_back(location);
 	return (0);
-}
-
-void WsConfigInfo::printConf(void) const
-{
-	if (!print_flag)
-		return ;
-	std::cout << "------configInfo-----" << std::endl;
-	std::cout << "root : " << std::endl;
-	for (size_t i = 0; i < m_rootPath.size(); i++)
-		std::cout << "\t" << m_rootPath[i] << std::endl;
-	std::cout << "index : " << std::endl;
-	for (size_t i = 0; i < m_indexFile.size(); i++)
-		std::cout << "\t" << m_indexFile[i] << std::endl;
-	std::cout << "server_name : " << std::endl;
-	for (size_t i = 0; i < m_serverName.size(); i++)
-		std::cout << "\t" << m_serverName[i] << std::endl;
-	std::cout << "listen : " << std::endl;
-	for (size_t i = 0; i < m_listenPort.size(); i++)
-		std::cout << "\t" << m_listenPort[i] << std::endl;
-	for (size_t i = 0; i < m_location.size(); i++)
-	{
-		std::cout << "location { " << std::endl;
-		std::cout << "\tpath : " << m_location[i].locPath << std::endl;
-		std::cout << "\troot :" << std::endl;
-		for (size_t j = 0; j < m_location[i].locRoot.size(); j++)
-			std::cout << "\t\t" << m_location[i].locRoot[j] << std::endl;
-
-		std::cout << "\texpries :" << std::endl;
-		for (size_t j = 0; j < m_location[i].locExpires.size(); j++)
-			std::cout << "\t\t" << m_location[i].locExpires[j] << std::endl;
-
-		std::cout << "\tpass :" << std::endl;
-		for (size_t j = 0; j < m_location[i].locProxyPass.size(); j++)
-			std::cout << "\t\t" << m_location[i].locProxyPass[j] << std::endl;
-		if (i == m_location.size() - 1)
-			std::cout << "\t}" << std::endl;
-	}
-	std::cout << "---------------------" << std::endl;
 }
 
 void	 WsConfigInfo::checkConfig(void)
@@ -142,6 +111,8 @@ void	 WsConfigInfo::checkConfig(void)
 		throw WsException("listen is emtpy");
 	if (!isPath(m_rootPath))
 		throw WsException("invalid server root path");
+	if (m_uriBufferSize.empty())
+		m_uriBufferSize.push_back("3k");
 }
 
 bool	 WsConfigInfo::isPath(const std::string& str)
@@ -210,5 +181,53 @@ std::vector<WsConfigInfo::Location>
 WsConfigInfo::getLocation(void) const
 {
 	return (m_location);
+}
+
+std::vector<std::string>
+WsConfigInfo::getUriBufferSize(void) const
+{
+	return (m_uriBufferSize);
+}
+
+std::ostream&
+operator<<(std::ostream &os, const WsConfigInfo& conf)
+{
+	os << "------configInfo-----" << std::endl;
+	os << "root : " << std::endl;
+	for (size_t i = 0; i < conf.m_rootPath.size(); i++)
+		os << "\t" << conf.m_rootPath[i] << std::endl;
+	os << "index : " << std::endl;
+	for (size_t i = 0; i < conf.m_indexFile.size(); i++)
+		os << "\t" << conf.m_indexFile[i] << std::endl;
+	os << "server_name : " << std::endl;
+	for (size_t i = 0; i < conf.m_serverName.size(); i++)
+		os << "\t" << conf.m_serverName[i] << std::endl;
+	os << "listen : " << std::endl;
+	for (size_t i = 0; i < conf.m_listenPort.size(); i++)
+		os << "\t" << conf.m_listenPort[i] << std::endl;
+	os << "uri buffer size : " << std::endl;
+		for (size_t i = 0; i < conf.m_uriBufferSize.size(); i++)
+			os << "\t" << conf.m_uriBufferSize[i] << std::endl;
+
+	for (size_t i = 0; i < conf.m_location.size(); i++)
+	{
+		os << "location { " << std::endl;
+		os << "\tpath : " << conf.m_location[i].locPath << std::endl;
+		os << "\troot :" << std::endl;
+		for (size_t j = 0; j < conf.m_location[i].locRoot.size(); j++)
+			os << "\t\t" << conf.m_location[i].locRoot[j] << std::endl;
+
+		os << "\texpries :" << std::endl;
+		for (size_t j = 0; j < conf.m_location[i].locExpires.size(); j++)
+			os << "\t\t" << conf.m_location[i].locExpires[j] << std::endl;
+
+		os << "\tpass :" << std::endl;
+		for (size_t j = 0; j < conf.m_location[i].locProxyPass.size(); j++)
+			os << "\t\t" << conf.m_location[i].locProxyPass[j] << std::endl;
+		if (i == conf.m_location.size() - 1)
+			os << "\t}" << std::endl;
+	}
+	os << "---------------------" << std::endl;
+	return (os);
 }
 

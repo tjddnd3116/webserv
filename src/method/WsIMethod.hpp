@@ -6,6 +6,8 @@
 #include <vector>
 #include <map>
 
+#include "../parser/WsConfigInfo.hpp"
+
 #define RESET	"\033[0m"
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
@@ -13,12 +15,14 @@
 class WsIMethod
 {
 	protected:
-		std::string m_method;
-		std::string m_uri;
-		std::string m_httpVersion;
+
+		std::string		m_method;
+		std::string		m_uri;
+		std::string		m_httpVersion;
 		std::map<std::string, std::vector<std::string> >
-					m_requestSet;
-		int			m_statusCode;
+						m_requestSet;
+		int				m_statusCode;
+		WsConfigInfo	m_conf;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 				const std::string& str = " ");
@@ -26,7 +30,7 @@ class WsIMethod
 		void						loadBody(const std::string& readLine);
 
 	public:
-		WsIMethod(const std::string& readLine);
+		WsIMethod(const std::string& readLine, const WsConfigInfo& conf);
 		virtual ~WsIMethod();
 
 		virtual void		loadRequest(const std::string& readLine) = 0;
@@ -37,6 +41,8 @@ class WsIMethod
 		const std::string&	getHttpVersion(void) const;
 		const std::map<std::string, std::vector<std::string> >&
 							getRequestSet(void) const;
+
+		friend std::ostream& operator<<(std::ostream& os, const WsIMethod& method);
 
 };
 #endif //WsIMethod_hpp
