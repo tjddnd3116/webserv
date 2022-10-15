@@ -28,10 +28,7 @@ class WsConfigInfo
 		std::vector<std::string>	m_serverName;
 		std::vector<int>			m_listenPort;
 		std::vector<Location>		m_location;
-
-		// just printing info tur / false
-		// after use delete it
-		const static bool						print_flag = false;
+		std::vector<std::string>	m_uriBufferSize;
 
 		static bool		isPath(const std::string& str);
 		static bool		isPath(const std::vector<std::string>& str);
@@ -57,17 +54,19 @@ class WsConfigInfo
 		void				setLocationExpires(std::vector<std::string>& set);
 		void				setLocationRoot(std::vector<std::string>& set);
 		void				setLocationProxy(std::vector<std::string>& set);
+		void				setUriBufferSize(std::vector<std::string>& set);
 
 		int					createLocation(std::string& path);
-		void				printConf(void) const;
 		void				checkConfig(void);
 
 		std::vector<int>			getListenPort(void) const;
 		std::vector<std::string>	getRootPath(void) const;
 		std::vector<std::string>	getIndexFile(void) const;
 		std::vector<std::string>	getServerName(void) const;
+		std::vector<std::string>	getUriBufferSize(void) const;
 		std::vector<Location>		getLocation(void) const;
 
+		friend std::ostream& operator<<(std::ostream &os, const WsConfigInfo& conf);
 };
 
 #endif //WsConfigInfo_hpp

@@ -13,11 +13,13 @@ WsPostMethod::~WsPostMethod()
 void
 WsPostMethod::loadRequest(const std::string &readLine)
 {
-	std::cout << "post load request function" << std::endl;
-	if (readLine[0] == '\r')
-		m_isBody = true;
 	if (readLine[0] == ' ')
 		return ;
+	if (readLine[0] == '\r')
+	{
+		m_isBody = true;
+		return;
+	}
 	if (m_isBody)
 		return (loadBody(readLine));
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
@@ -35,5 +37,7 @@ WsPostMethod::loadBody(const std::string& readLine)
 void
 WsPostMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << m_bodyBuffer << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }

@@ -21,5 +21,7 @@ void WsDeleteMethod::loadRequest(const std::string &readLine)
 
 void WsDeleteMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }

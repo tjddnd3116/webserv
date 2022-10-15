@@ -56,28 +56,6 @@ WsIMethod::splitReadLine(const std::string& readLine, const std::string& str)
 	return (splittedLine);
 }
 
-void WsIMethod::printInfo(void) const
-{
-	std::cout << RED;
-	std::cout << "---- request message -----" << std::endl;
-	std::cout << "method :" << std::endl;
-	std::cout << "\t" << m_method << std::endl;
-	std::cout << "uri :" << std::endl;
-	std::cout << "\t" << m_uri << std::endl;
-	std::cout << "http version : " << std::endl;
-	std::cout << "\t" << m_httpVersion << std::endl;
-
-	std::map<std::string, std::vector<std::string> >::const_iterator mapIt;
-	mapIt = m_requestSet.begin();
-	for (; mapIt != m_requestSet.end(); mapIt++)
-	{
-		std::cout << mapIt->first << " :"<< std::endl;
-		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
-			std::cout << "\t" << mapIt->second.at(setIdx) << std::endl;
-	}
-	std::cout << "-------------------------" << RESET << std::endl;
-}
-
 const std::string& WsIMethod::getUri(void) const
 {
 	return (m_uri);
@@ -109,4 +87,28 @@ WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
 	// if (splittedLine[0].size() + splittedLine[1].size() + splittedLine[2].size() + 2 > maxReqLen)
     //	return (501);				// Not Implemented
 	return (0);
+}
+
+std::ostream&
+operator<<(std::ostream& os, const WsIMethod& method)
+{
+	os << RED;
+	os << "---- request message -----" << std::endl;
+	os << "method :" << std::endl;
+	os << "\t" << method.m_method << std::endl;
+	os << "uri :" << std::endl;
+	os << "\t" << method.m_uri << std::endl;
+	os << "http version : " << std::endl;
+	os << "\t" << method.m_httpVersion << std::endl;
+
+	std::map<std::string, std::vector<std::string> >::const_iterator mapIt;
+	mapIt = method.m_requestSet.begin();
+	for (; mapIt != method.m_requestSet.end(); mapIt++)
+	{
+		os << mapIt->first << " :"<< std::endl;
+		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
+			os << "\t" << mapIt->second.at(setIdx) << std::endl;
+	}
+	os << "-------------------------" << RESET << std::endl;
+	return (os);
 }

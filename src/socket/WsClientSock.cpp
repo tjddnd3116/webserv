@@ -72,7 +72,7 @@ WsClientSock::readSock(void)
 			m_method = request.readRequest(m_readBuffer);
 			if (1)
 			{
-				m_method->printInfo();
+				std::cout << *m_method << std::endl;
 				m_method->printBody();
 			}
 			m_readFinish = true;

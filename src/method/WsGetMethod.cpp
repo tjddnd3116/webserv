@@ -22,5 +22,7 @@ WsGetMethod::loadRequest(const std::string &readLine)
 
 void WsGetMethod::printBody(void) const
 {
+	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
+	std::cout << "-------------------" << RESET << std::endl;
 }
