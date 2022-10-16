@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: soum <soum@student.42seoul.kr>             +#+  +:+       +#+         #
+#    By: gson <gson@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/16 15:42:15 by soum             ###   ########.fr        #
+#    Updated: 2022/10/16 17:07:04 by gson             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRCS = ./src/main.cpp \
 	   ./src/socket/clientSocket.cpp \
 	   ./src/socket/request.cpp \
 	   ./src/socket/response.cpp \
+	   ./src/cgi/cgi.cpp \
 
 .cpp.o :
 	$(CXX) $(CXXFLAGS) -c $< -o $(<:.cpp=.o)

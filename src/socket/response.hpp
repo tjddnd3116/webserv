@@ -8,6 +8,7 @@
 
 #include "../method/AMethod.hpp"
 #include "../parser/configInfo.hpp"
+#include "../cgi/cgi.hpp"
 
 class response
 {

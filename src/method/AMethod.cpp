@@ -41,6 +41,11 @@ AMethod::splitReadLine(const std::string& readLine, const std::string& str)
 	return (splittedLine);
 }
 
+const std::string& AMethod::getMethod(void) const
+{
+	return (m_method);
+}
+
 const std::string& AMethod::getUri(void) const
 {
 	return (m_uri);

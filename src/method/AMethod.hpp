@@ -37,6 +37,7 @@ class AMethod
 		virtual void		printBody(void) const = 0;
 
 		void				printInfo(void) const;
+		const std::string&	getMethod(void) const;
 		const std::string&	getUri(void) const;
 		const std::string&	getHttpVersion(void) const;
 		const std::map<std::string, std::vector<std::string> >&
