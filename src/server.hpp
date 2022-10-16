@@ -10,9 +10,9 @@
 #include <iostream>
 
 #include "./parser/configInfo.hpp"
-#include "./socket/WsClientSock.hpp"
-#include "./socket/WsServerSock.hpp"
-#include "./socket/WsResponse.hpp"
+#include "./socket/clientSocket.hpp"
+#include "./socket/serverSocket.hpp"
+#include "./socket/response.hpp"
 
 #define EVENT_SIZE 8
 
@@ -21,8 +21,8 @@ class server
 	private:
 		// member variable
 		std::vector<configInfo>		m_conf;
-		std::map<int, WsServerSock>	m_serverSock;
-		std::map<int, clientSock>	m_clientSock;
+		std::map<int, serverSocket>	m_serverSock;
+		std::map<int, clientSocket>	m_clientSock;
 		std::vector<struct kevent>	m_changeList;
 		struct kevent				m_eventList[EVENT_SIZE];
 		int							m_kq;
@@ -38,12 +38,12 @@ class server
 		void	writeEvent(struct kevent* curEvent);
 		void	disconnectClient(int fd);
 
+		server(const server& copy);
+		server& operator=(const server& copy);
 	public:
 		// Orthodox Canonical Form
 		server(const std::vector<configInfo>& conf);
 		~server();
-		server(const server& copy);
-		server& operator=(const server& copy);
 
 		void		createServerSock(void);
 		void 		run(void);

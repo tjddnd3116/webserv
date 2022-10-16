@@ -1,8 +1,9 @@
 #ifndef tokenizer_hpp
 #define tokenizer_hpp
 
-#include <string>
 #include <sys/resource.h>
+
+#include <string>
 #include <vector>
 #include <iostream>
 #include <exception>
@@ -34,11 +35,12 @@ class tokenizer
 		size_t					m_tokIdx;
 
 		e_tokenType	selectTokenType(const std::string& str) const;
+
 		void	 	serverParse(configInfo &wsConfigInfo);
 		void		serverContextParse(configInfo &info);
 		void		locationContextParse(configInfo &info);
 		void		locationParse(configInfo &info);
-		bool		verifyInfo(configInfo& info);
+
 		bool		isSafeIdx(void);
 		bool		isComment(const t_token& token) const;
 		bool		isOpenBrace(void);
@@ -49,6 +51,7 @@ class tokenizer
 
 		tokenizer(const tokenizer& copy);
 		tokenizer& operator=(const tokenizer& copy);
+
 	public:
 		tokenizer();
 		~tokenizer();

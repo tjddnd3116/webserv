@@ -9,19 +9,6 @@ tokenizer::tokenizer()
 tokenizer::~tokenizer()
 {}
 
-// tokenizer::tokenizer(const tokenizer& copy)
-// {
-//     *this = copy;
-// }
-//
-// tokenizer&
-// tokenizer::operator=(const tokenizer& copy)
-// {
-//     m_tokVec = copy.m_tokVec;
-//     m_tokIdx = copy.m_tokIdx;
-//     return (*this);
-// }
-
 void
 tokenizer::pushBackToken(t_token& token)
 {
@@ -108,13 +95,6 @@ tokenizer::serverContextParse(configInfo &info)
 			throw WsException(m_tokVec[m_tokIdx - 1].lineNum, "invaild port or path");
 		}
 	}
-}
-
-bool
-tokenizer::verifyInfo(configInfo& info)
-{
-	info.checkConfig();
-	return (true);
 }
 
 void

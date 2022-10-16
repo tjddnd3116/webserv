@@ -30,7 +30,8 @@ configInfo::operator=(const configInfo& copy)
 	return (*this);
 }
 
-void	configInfo::setTable()
+void
+configInfo::setTable()
 {
 	s_table["root"] = &configInfo::setRootPath;
 	s_table["index"] = &configInfo::setIndexFile;
@@ -42,7 +43,8 @@ void	configInfo::setTable()
 	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
 }
 
-void	configInfo::setRootPath(std::vector<std::string>& set)
+void
+configInfo::setRootPath(std::vector<std::string>& set)
 {
 	for (size_t i = 0; i < set.size(); i++)
 		if (!isPath(set))
@@ -50,17 +52,20 @@ void	configInfo::setRootPath(std::vector<std::string>& set)
 	m_rootPath = set;
 }
 
-void	configInfo::setIndexFile(std::vector<std::string>& set)
+void
+configInfo::setIndexFile(std::vector<std::string>& set)
 {
 	m_indexFile = set;
 }
 
-void	configInfo::setServerName(std::vector<std::string>& set)
+void
+configInfo::setServerName(std::vector<std::string>& set)
 {
 	m_serverName = set;
 }
 
-void	configInfo::setListenPort(std::vector<std::string>& set)
+void
+configInfo::setListenPort(std::vector<std::string>& set)
 {
 	for (size_t i = 0; i < set.size(); i++)
 	{
@@ -70,27 +75,32 @@ void	configInfo::setListenPort(std::vector<std::string>& set)
 	}
 }
 
-void	 configInfo::setLocationExpires(std::vector<std::string>& set)
+void
+configInfo::setLocationExpires(std::vector<std::string>& set)
 {
 	m_location.back().locExpires = set;
 }
 
-void	 configInfo::setLocationRoot(std::vector<std::string>& set)
+void
+configInfo::setLocationRoot(std::vector<std::string>& set)
 {
 	m_location.back().locRoot = set;
 }
 
-void	 configInfo::setLocationProxy(std::vector<std::string>& set)
+void
+configInfo::setLocationProxy(std::vector<std::string>& set)
 {
 	m_location.back().locProxyPass = set;
 }
 
-void			 configInfo::setUriBufferSize(std::vector<std::string>& set)
+void
+configInfo::setUriBufferSize(std::vector<std::string>& set)
 {
 	m_uriBufferSize = set;
 }
 
-int		configInfo::createLocation(std::string& path)
+int
+configInfo::createLocation(std::string& path)
 {
 	if (!isPath(path))
 		return (1);
@@ -99,7 +109,8 @@ int		configInfo::createLocation(std::string& path)
 	return (0);
 }
 
-void	 configInfo::checkConfig(void)
+void
+configInfo::checkConfig(void)
 {
 	if (m_indexFile.empty())
 		throw WsException("index is emtpy");
@@ -115,14 +126,16 @@ void	 configInfo::checkConfig(void)
 		m_uriBufferSize.push_back("3k");
 }
 
-bool	 configInfo::isPath(const std::string& str)
+bool
+configInfo::isPath(const std::string& str)
 {
 	if (str.front() != '/')
 		return (false);
 	return (true);
 }
 
-bool	 configInfo::isPath(const std::vector<std::string>& str)
+bool
+configInfo::isPath(const std::vector<std::string>& str)
 {
 	for (size_t i = 0; i < str.size(); i++)
 	{
@@ -132,7 +145,8 @@ bool	 configInfo::isPath(const std::vector<std::string>& str)
 	return (true);
 }
 
-bool	 configInfo::isNum(const std::string& str)
+bool
+configInfo::isNum(const std::string& str)
 {
 	for (size_t i = 0; i < str.size(); i++)
 	{
@@ -142,7 +156,8 @@ bool	 configInfo::isNum(const std::string& str)
 	return (true);
 }
 
-bool	 configInfo::isNum(const std::vector<std::string>& str)
+bool
+configInfo::isNum(const std::vector<std::string>& str)
 {
 	for (size_t i = 0; i < str.size(); i++)
 	{

@@ -24,17 +24,15 @@ class fileReader
 
 		fileReader(const fileReader& copy);
 		fileReader& operator=(const fileReader& copy);
+
 	public:
 		fileReader();
 		~fileReader();
-		// fileReader(const fileReader& copy);
-		// fileReader& operator=(const fileReader& copy);
 
-		void		initFileReader(const char* path);
-		t_token		readFile(void);
-		bool		isEof(void) const;
-		const std::vector<std::string>&
-					getAllBuffer(void);
+		void							initFileReader(const char* path);
+		t_token							readFile(void);
+		bool							isEof(void) const;
+		const std::vector<std::string>& getAllBuffer(void);
 
 
 };

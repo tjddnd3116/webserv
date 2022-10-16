@@ -12,26 +12,12 @@ server::server(const std::vector<configInfo> &conf)
 server::~server()
 {}
 
-server::server(const server& copy)
-{
-	*this = copy;
-}
-
-server&
-server::operator=(const server &copy)
-{
-	m_conf = copy.m_conf;
-	m_serverSock = copy.m_serverSock;
-	m_serverSize = copy.m_serverSize;
-	return (*this);
-}
-
 void
 server::createServerSock(void)
 {
 	for (size_t serverSockIdx = 0; serverSockIdx < m_serverSize; serverSockIdx++)
 	{
-		WsServerSock serverSock(m_conf[serverSockIdx]);
+		serverSocket serverSock(m_conf[serverSockIdx]);
 		serverSock.createSock();
 		serverSock.initAddr();
 		serverSock.bindSock();
@@ -46,7 +32,7 @@ void
 server::run(void)
 {
 	int newEvents;
-	WsResponse::setStatusCode();
+	response::setStatusCode();
 
 	while (1)
 	{
@@ -130,15 +116,12 @@ server::readEvent(struct kevent* curEvent)
 {
 	if (isServerSocket(curEvent->ident))
 	{
-		clientSock clientSock(m_serverSock.at(curEvent->ident));
+		clientSocket clientSock(m_serverSock.at(curEvent->ident));
 
 		clientSock.createSock();
 		m_clientSock.insert(std::make_pair(clientSock.getSocketFd(), clientSock));
 		addEvents(clientSock.getSocketFd(), EVFILT_READ,
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
-		// addEvents(clientSock.getSocketFd(), EVFILT_WRITE,
-		//         EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
-
 		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
 		std::cout << "now client socket size : " << m_clientSock.size() << std::endl;
 		return (1);
@@ -147,7 +130,7 @@ server::readEvent(struct kevent* curEvent)
 	{
 		int readRet;
 
-		std::map<int, clientSock>::iterator clientIt =
+		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
 		readRet = (*clientIt).second.readSock();
 		if (readRet <= 0)
@@ -172,7 +155,7 @@ server::writeEvent(struct kevent* curEvent)
 	{
 		int sendRet;
 
-		std::map<int, clientSock>::iterator clientIt =
+		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
 		sendRet = (*clientIt).second.sendSock();
 		if (sendRet < 0)

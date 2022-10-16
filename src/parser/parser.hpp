@@ -32,4 +32,4 @@ class parser
 		const std::vector<configInfo>&	getConfigInfo(void);
 };
 
-#endif //configParser_hpp
+#endif //parser_hpp

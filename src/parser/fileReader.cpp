@@ -11,33 +11,14 @@ fileReader::fileReader()
 fileReader::~fileReader()
 {}
 
-// fileReader::fileReader(const fileReader& copy)
-// {
-//     *this = copy;
-// }
-//
-// fileReader&
-// fileReader::operator=(const fileReader& copy)
-// {
-//     m_allBuffer = copy.m_allBuffer;
-//     m_configFile.clear();
-//     m_buffer = copy.m_buffer;
-//     m_pos = copy.m_pos;
-//     m_eof = copy.m_eof;
-//     m_line = copy.m_line;
-//     return (*this);
-// }
-
 void
 fileReader::initFileReader(const char *path)
 {
-	// check ".conf" extension
 	std::string extension(path);
 	extension = extension.substr(extension.find_last_of("."));
 	if (extension != ".conf")
 		throw WsException("invalid config file extension");
 
-	// check valid file
 	m_configFile.open(path);
 	if (m_configFile.fail())
 		throw WsException("config file open failed");

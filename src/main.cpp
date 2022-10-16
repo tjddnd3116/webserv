@@ -3,7 +3,7 @@
 
 #include "WsException.hpp"
 #include "./parser/parser.hpp"
-#include "WsServer.hpp"
+#include "server.hpp"
 
 int main(int argc, char **argv)
 {

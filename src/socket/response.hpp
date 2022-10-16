@@ -6,7 +6,7 @@
 #include <ctime>
 #include <map>
 
-#include "../method/WsIMethod.hpp"
+#include "../method/AMethod.hpp"
 #include "../parser/configInfo.hpp"
 
 class response

@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "../method/WsGetMethod.hpp"
-#include "../method/WsPostMethod.hpp"
-#include "../method/WsPutMethod.hpp"
-#include "../method/WsDeleteMethod.hpp"
+#include "../method/getMethod.hpp"
+#include "../method/postMethod.hpp"
+#include "../method/putMethod.hpp"
+#include "../method/deleteMethod.hpp"
 #include "../parser/configInfo.hpp"
 
 class request

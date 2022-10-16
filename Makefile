@@ -6,7 +6,7 @@
 #    By: soum <soum@student.42seoul.kr>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/16 15:20:08 by soum             ###   ########.fr        #
+#    Updated: 2022/10/16 15:42:15 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,8 +27,8 @@ SRCS = ./src/main.cpp \
 	   ./src/method/getMethod.cpp \
 	   ./src/method/deleteMethod.cpp \
 	   ./src/socket/ASocket.cpp \
-	   ./src/socket/serverSock.cpp \
-	   ./src/socket/clientSock.cpp \
+	   ./src/socket/serverSocket.cpp \
+	   ./src/socket/clientSocket.cpp \
 	   ./src/socket/request.cpp \
 	   ./src/socket/response.cpp \
 
