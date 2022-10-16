@@ -1,5 +1,5 @@
-#ifndef WsServer_hpp
-#define WsServer_hpp
+#ifndef server_hpp
+#define server_hpp
 
 #include <sys/event.h>
 #include <sys/socket.h>
@@ -9,21 +9,20 @@
 #include <vector>
 #include <iostream>
 
-#include "WsInitializer.hpp"
-#include "./parser/WsConfigInfo.hpp"
+#include "./parser/configInfo.hpp"
 #include "./socket/WsClientSock.hpp"
 #include "./socket/WsServerSock.hpp"
 #include "./socket/WsResponse.hpp"
 
 #define EVENT_SIZE 8
 
-class WsServer
+class server
 {
 	private:
 		// member variable
-		std::vector<WsConfigInfo>	m_conf;
+		std::vector<configInfo>		m_conf;
 		std::map<int, WsServerSock>	m_serverSock;
-		std::map<int, WsClientSock>	m_clientSock;
+		std::map<int, clientSock>	m_clientSock;
 		std::vector<struct kevent>	m_changeList;
 		struct kevent				m_eventList[EVENT_SIZE];
 		int							m_kq;
@@ -41,12 +40,12 @@ class WsServer
 
 	public:
 		// Orthodox Canonical Form
-		WsServer(const std::vector<WsConfigInfo>& conf);
-		~WsServer();
-		WsServer(const WsServer& copy);
-		WsServer& operator=(const WsServer& copy);
+		server(const std::vector<configInfo>& conf);
+		~server();
+		server(const server& copy);
+		server& operator=(const server& copy);
 
 		void		createServerSock(void);
 		void 		run(void);
 };
-#endif //WsServer_hpp
+#endif //server_hpp

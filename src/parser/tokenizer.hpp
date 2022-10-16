@@ -7,10 +7,8 @@
 #include <iostream>
 #include <exception>
 
-#include "WsConfigInfo.hpp"
+#include "configInfo.hpp"
 #include "../WsException.hpp"
-
-class WsInitializer;
 
 enum e_tokenType
 {
@@ -36,27 +34,27 @@ class tokenizer
 		size_t					m_tokIdx;
 
 		e_tokenType	selectTokenType(const std::string& str) const;
-		void	 	serverParse(WsConfigInfo &wsConfigInfo);
-		void		serverContextParse(WsConfigInfo &info);
-		void		locationContextParse(WsConfigInfo &info);
-		void		locationParse(WsConfigInfo &info);
-		bool		verifyInfo(WsConfigInfo& info);
+		void	 	serverParse(configInfo &wsConfigInfo);
+		void		serverContextParse(configInfo &info);
+		void		locationContextParse(configInfo &info);
+		void		locationParse(configInfo &info);
+		bool		verifyInfo(configInfo& info);
 		bool		isSafeIdx(void);
 		bool		isComment(const t_token& token) const;
 		bool		isOpenBrace(void);
 		bool		isCloseBrace(void);
 		bool		isOptionContext(void);
 		bool		isSemicolon(size_t optionLineNum);
-		bool		isLocationPath(WsConfigInfo& info);
+		bool		isLocationPath(configInfo& info);
 
+		tokenizer(const tokenizer& copy);
+		tokenizer& operator=(const tokenizer& copy);
 	public:
 		tokenizer();
 		~tokenizer();
-		tokenizer(const tokenizer& copy);
-		tokenizer& operator=(const tokenizer& copy);
 
 		void		pushBackToken(t_token& token);
-		void	 	parseToken(WsInitializer &initializer);
+		void	 	parseToken(std::vector<configInfo>& config);
 
 };
 

@@ -6,7 +6,7 @@
 #    By: soum <soum@student.42seoul.kr>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/15 20:49:23 by soum             ###   ########.fr        #
+#    Updated: 2022/10/16 15:20:08 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,23 +15,22 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
 
 SRCS = ./src/main.cpp \
-	   ./src/WsInitializer.cpp \
 	   ./src/WsException.cpp \
-	   ./src/WsServer.cpp \
-	   ./src/parser/configParser.cpp \
+	   ./src/server.cpp \
+	   ./src/parser/parser.cpp \
 	   ./src/parser/fileReader.cpp \
 	   ./src/parser/tokenizer.cpp \
-	   ./src/parser/WsConfigInfo.cpp \
-	   ./src/method/WsIMethod.cpp \
-	   ./src/method/WsPutMethod.cpp \
-	   ./src/method/WsPostMethod.cpp \
-	   ./src/method/WsGetMethod.cpp \
-	   ./src/method/WsDeleteMethod.cpp \
-	   ./src/socket/WsASocket.cpp \
-	   ./src/socket/WsServerSock.cpp \
-	   ./src/socket/WsClientSock.cpp \
-	   ./src/socket/WsRequest.cpp \
-	   ./src/socket/WsResponse.cpp \
+	   ./src/parser/configInfo.cpp \
+	   ./src/method/AMethod.cpp \
+	   ./src/method/putMethod.cpp \
+	   ./src/method/postMethod.cpp \
+	   ./src/method/getMethod.cpp \
+	   ./src/method/deleteMethod.cpp \
+	   ./src/socket/ASocket.cpp \
+	   ./src/socket/serverSock.cpp \
+	   ./src/socket/clientSock.cpp \
+	   ./src/socket/request.cpp \
+	   ./src/socket/response.cpp \
 
 .cpp.o :
 	$(CXX) $(CXXFLAGS) -c $< -o $(<:.cpp=.o)

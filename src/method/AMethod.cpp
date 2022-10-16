@@ -1,7 +1,6 @@
-#include "WsIMethod.hpp"
-#include <cstdlib>
+#include "AMethod.hpp"
 
-WsIMethod::WsIMethod(const std::string& readLine, const WsConfigInfo& conf)
+AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 {
 	m_conf = conf;
 	std::vector<std::string> splittedLine;
@@ -20,11 +19,11 @@ WsIMethod::WsIMethod(const std::string& readLine, const WsConfigInfo& conf)
 	}
 }
 
-WsIMethod::~WsIMethod()
+AMethod::~AMethod()
 {}
 
 std::vector<std::string>
-WsIMethod::splitReadLine(const std::string& readLine, const std::string& str)
+AMethod::splitReadLine(const std::string& readLine, const std::string& str)
 {
 	std::vector<std::string> splittedLine;
 	size_t prePos = 0;
@@ -42,24 +41,24 @@ WsIMethod::splitReadLine(const std::string& readLine, const std::string& str)
 	return (splittedLine);
 }
 
-const std::string& WsIMethod::getUri(void) const
+const std::string& AMethod::getUri(void) const
 {
 	return (m_uri);
 }
 
-const std::string& WsIMethod::getHttpVersion(void) const
+const std::string& AMethod::getHttpVersion(void) const
 {
 	return (m_httpVersion);
 }
 
 const std::map<std::string, std::vector<std::string> >&
-WsIMethod::getRequestSet(void) const
+AMethod::getRequestSet(void) const
 {
 	return (m_requestSet);
 }
 
 int
-WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
+AMethod::checkStartLine(std::vector<std::string>& splittedLine)
 {
 	uint32_t maxUriLen;
 
@@ -75,7 +74,7 @@ WsIMethod::checkStartLine(std::vector<std::string>& splittedLine)
 }
 
 std::ostream&
-operator<<(std::ostream& os, const WsIMethod& method)
+operator<<(std::ostream& os, const AMethod& method)
 {
 	os << RED;
 	os << "---- request message -----" << std::endl;

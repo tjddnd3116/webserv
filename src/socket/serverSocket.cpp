@@ -1,14 +1,13 @@
-#include "WsServerSock.hpp"
-#include "WsASocket.hpp"
+#include "serverSocket.hpp"
 
-WsServerSock::WsServerSock(const WsConfigInfo& conf)
-	:WsASocket(conf)
+serverSocket::serverSocket(const configInfo& conf)
+	:ASocket(conf)
 {}
 
-WsServerSock::~WsServerSock()
+serverSocket::~serverSocket()
 {}
 
-void WsServerSock::createSock(void)
+void serverSocket::createSock(void)
 {
 	int option;
 
@@ -20,7 +19,7 @@ void WsServerSock::createSock(void)
 	setsockopt(m_SocketFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
 }
 
-void WsServerSock::initAddr()
+void serverSocket::initAddr()
 {
 	std::memset(&m_SocketAddr, 0, sizeof(m_SocketAddr));
 	m_SocketAddr.sin_family = AF_INET;
@@ -28,7 +27,7 @@ void WsServerSock::initAddr()
 	m_SocketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 }
 
-void WsServerSock::bindSock(void)
+void serverSocket::bindSock(void)
 {
 	int bindRet;
 
@@ -37,7 +36,7 @@ void WsServerSock::bindSock(void)
 		throw WsException("bind socket fail");
 }
 
-void WsServerSock::listenSock(void)
+void serverSocket::listenSock(void)
 {
 	int listenRet;
 

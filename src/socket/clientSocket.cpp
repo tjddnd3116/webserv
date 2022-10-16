@@ -1,32 +1,28 @@
-#include "WsClientSock.hpp"
-#include "WsASocket.hpp"
-#include "WsResponse.hpp"
-#include <sys/fcntl.h>
-#include <sys/socket.h>
+#include "clientSocket.hpp"
 
-WsClientSock::WsClientSock(const WsConfigInfo& conf)
-	:WsASocket(conf)
+clientSocket::clientSocket(const configInfo& conf)
+	:ASocket(conf)
 {
 	m_readBuffer.clear();
 }
 
-WsClientSock::WsClientSock(const WsASocket& serverSock)
-	:WsASocket(serverSock.getConf())
+clientSocket::clientSocket(const ASocket& serverSock)
+	:ASocket(serverSock.getConf())
 {
 	m_SocketFd = serverSock.getSocketFd();
 }
 
-WsClientSock::~WsClientSock()
+clientSocket::~clientSocket()
 {}
 
-WsClientSock::WsClientSock(const WsClientSock& copy)
-	:WsASocket(copy.m_conf)
+clientSocket::clientSocket(const clientSocket& copy)
+	:ASocket(copy.m_conf)
 {
 	*this = copy;
 }
 
-WsClientSock&
-WsClientSock::operator=(const WsClientSock& copy)
+clientSocket&
+clientSocket::operator=(const clientSocket& copy)
 {
 	m_conf = copy.m_conf;
 	m_SocketAddr = copy.m_SocketAddr;
@@ -36,7 +32,7 @@ WsClientSock::operator=(const WsClientSock& copy)
 }
 
 void
-WsClientSock::createSock(void)
+clientSocket::createSock(void)
 {
 	int opts;
 
@@ -50,7 +46,7 @@ WsClientSock::createSock(void)
 }
 
 int
-WsClientSock::readSock(void)
+clientSocket::readSock(void)
 {
 	int readRet;
 	char buffer[BUF_SIZE];
@@ -68,7 +64,7 @@ WsClientSock::readSock(void)
 		if (readRet < BUF_SIZE)
 		{
 			std::cout << "read size : " << readRet << std::endl;
-			WsRequest request(m_conf);
+			request request(m_conf);
 
 			m_method = request.readRequest(m_readBuffer);
 			if (1)
@@ -84,10 +80,10 @@ WsClientSock::readSock(void)
 }
 
 int
-WsClientSock::sendSock(void)
+clientSocket::sendSock(void)
 {
 	int sendRet;
-	WsResponse response(m_conf);
+	response response(m_conf);
 
 	response.makeResponse(m_method);
 	if (0)
@@ -101,7 +97,7 @@ WsClientSock::sendSock(void)
 }
 
 bool
-WsClientSock::getReadStatus(void) const
+clientSocket::getReadStatus(void) const
 {
 	return (m_readFinish);
 }

@@ -4,37 +4,40 @@ fileReader::fileReader()
 {
 	m_buffer.clear();
 	m_pos = 0;
-	m_eof = false;
+	m_isEof = false;
 	m_line = -1;
 }
 
 fileReader::~fileReader()
 {}
 
-fileReader::fileReader(const fileReader& copy)
-{
-	*this = copy;
-}
-
-fileReader&
-fileReader::operator=(const fileReader& copy)
-{
-	m_allBuffer = copy.m_allBuffer;
-	m_configFile.clear();
-	m_buffer = copy.m_buffer;
-	m_pos = copy.m_pos;
-	m_eof = copy.m_eof;
-	m_line = copy.m_line;
-	return (*this);
-}
+// fileReader::fileReader(const fileReader& copy)
+// {
+//     *this = copy;
+// }
+//
+// fileReader&
+// fileReader::operator=(const fileReader& copy)
+// {
+//     m_allBuffer = copy.m_allBuffer;
+//     m_configFile.clear();
+//     m_buffer = copy.m_buffer;
+//     m_pos = copy.m_pos;
+//     m_eof = copy.m_eof;
+//     m_line = copy.m_line;
+//     return (*this);
+// }
 
 void
 fileReader::initFileReader(const char *path)
 {
+	// check ".conf" extension
 	std::string extension(path);
 	extension = extension.substr(extension.find_last_of("."));
 	if (extension != ".conf")
 		throw WsException("invalid config file extension");
+
+	// check valid file
 	m_configFile.open(path);
 	if (m_configFile.fail())
 		throw WsException("config file open failed");
@@ -61,11 +64,12 @@ fileReader::readFile(void)
 	return (token);
 }
 
-int		 fileReader::checkBufPos(void)
+int
+fileReader::checkBufPos(void)
 {
 	if (m_configFile.eof() && m_pos == std::string::npos)
 	{
-		m_eof = true;
+		m_isEof = true;
 		m_configFile.close();
 		return (1);
 	}
@@ -76,7 +80,8 @@ int		 fileReader::checkBufPos(void)
 	return (0);
 }
 
-void	 fileReader::readToBuf(void)
+void
+fileReader::readToBuf(void)
 {
 	m_pos = 0;
 	std::getline(m_configFile, m_buffer);
@@ -84,12 +89,14 @@ void	 fileReader::readToBuf(void)
 	m_line++;
 }
 
-bool	 fileReader::isEof(void) const
+bool
+fileReader::isEof(void) const
 {
-	return (m_eof);
+	return (m_isEof);
 }
 
-const std::vector<std::string>& fileReader::getAllBuffer(void)
+const std::vector<std::string>&
+fileReader::getAllBuffer(void)
 {
 	return (m_allBuffer);
 }

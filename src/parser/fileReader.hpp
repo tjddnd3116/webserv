@@ -16,16 +16,19 @@ class fileReader
 		std::ifstream				m_configFile;
 		std::string					m_buffer;
 		size_t						m_pos;
-		bool						m_eof;
+		bool						m_isEof;
 		size_t						m_line;
 
 		int			checkBufPos(void);
 		void		readToBuf(void);
+
+		fileReader(const fileReader& copy);
+		fileReader& operator=(const fileReader& copy);
 	public:
 		fileReader();
 		~fileReader();
-		fileReader(const fileReader& copy);
-		fileReader& operator=(const fileReader& copy);
+		// fileReader(const fileReader& copy);
+		// fileReader& operator=(const fileReader& copy);
 
 		void		initFileReader(const char* path);
 		t_token		readFile(void);

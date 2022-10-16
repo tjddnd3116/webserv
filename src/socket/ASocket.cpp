@@ -1,22 +1,22 @@
-#include "WsASocket.hpp"
+#include "ASocket.hpp"
 
-WsASocket::WsASocket(const WsConfigInfo& conf)
+ASocket::ASocket(const configInfo& conf)
 {
 	m_SocketAddrSize = sizeof(m_SocketAddr);
 	m_conf = conf;
 }
 
-WsASocket::~WsASocket()
+ASocket::~ASocket()
 {
 }
 
-WsASocket::WsASocket(const WsASocket& copy)
+ASocket::ASocket(const ASocket& copy)
 {
 	*this = copy;
 }
 
-WsASocket&
-WsASocket::operator=(const WsASocket& copy)
+ASocket&
+ASocket::operator=(const ASocket& copy)
 {
 	m_conf = copy.m_conf;
 	m_SocketAddr = copy.m_SocketAddr;
@@ -26,19 +26,19 @@ WsASocket::operator=(const WsASocket& copy)
 }
 
 void
-WsASocket::closeSock()
+ASocket::closeSock()
 {
 	close(m_SocketFd);
 }
 
 int
-WsASocket::getSocketFd(void) const
+ASocket::getSocketFd(void) const
 {
 	return (m_SocketFd);
 }
 
-const WsConfigInfo&
-WsASocket::getConf(void) const
+const configInfo&
+ASocket::getConf(void) const
 {
 	return (m_conf);
 }

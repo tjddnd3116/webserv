@@ -1,16 +1,17 @@
-#ifndef WsConfigInfo_hpp
-#define WsConfigInfo_hpp
+#ifndef configInfo_hpp
+#define configInfo_hpp
+
+#include <cstdlib>
+#include <cctype>
 
 #include <vector>
 #include <string>
 #include <unordered_map>
 #include <iostream>
-#include <cstdlib>
-#include <cctype>
 
 #include "../WsException.hpp"
 
-class WsConfigInfo
+class configInfo
 {
 	public:
 		struct Location
@@ -36,14 +37,14 @@ class WsConfigInfo
 		static bool		isNum(const std::vector<std::string>& str);
 
 	public:
-		WsConfigInfo();
-		~WsConfigInfo();
-		WsConfigInfo(const WsConfigInfo& copy);
-		WsConfigInfo& operator=(const WsConfigInfo& copy);
+		configInfo();
+		~configInfo();
+		configInfo(const configInfo& copy);
+		configInfo& operator=(const configInfo& copy);
 
 
 		typedef void 		(t_setter)(std::vector<std::string>&);
-		typedef t_setter	WsConfigInfo::*t_setterType;
+		typedef t_setter	configInfo::*t_setterType;
 		static std::unordered_map<std::string, t_setterType>	s_table;
 
 		static void			setTable();
@@ -66,7 +67,7 @@ class WsConfigInfo
 		std::vector<std::string>	getUriBufferSize(void) const;
 		std::vector<Location>		getLocation(void) const;
 
-		friend std::ostream& operator<<(std::ostream &os, const WsConfigInfo& conf);
+		friend std::ostream& operator<<(std::ostream &os, const configInfo& conf);
 };
 
-#endif //WsConfigInfo_hpp
+#endif //configInfo_hpp

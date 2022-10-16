@@ -7,16 +7,16 @@
 #include <map>
 
 #include "../method/WsIMethod.hpp"
-#include "../parser/WsConfigInfo.hpp"
+#include "../parser/configInfo.hpp"
 
-class WsResponse
+class response
 {
 	private:
-		std::fstream			m_file;
-		std::string				m_responseBuf;
-		const WsIMethod*		m_method;
-		WsConfigInfo			m_conf;
-		int						m_statusCode;
+		std::fstream		m_file;
+		std::string			m_responseBuf;
+		const AMethod*	m_method;
+		configInfo			m_conf;
+		int					m_statusCode;
 
 		void				makeStatusLine(void);
 		void				makeResponseHeader(void);
@@ -26,19 +26,19 @@ class WsResponse
 		const std::string	getStatusCodeStr(void);
 
 	public:
-		WsResponse(const WsConfigInfo& conf);
-		~WsResponse();
-		WsResponse(const WsResponse& copy);
-		WsResponse& operator=(const WsResponse& copy);
+		response(const configInfo& conf);
+		~response();
+		response(const response& copy);
+		response& operator=(const response& copy);
 
 		static std::map<int, std::string>	s_statusCode;
 
 		static void	setStatusCode(void);
 		void		makeBody(void);
-		void		makeResponse(const WsIMethod* method);
+		void		makeResponse(const AMethod* method);
 		void		makeDate(void);
 		size_t		getBufSize(void) const;
 		const std::string& operator()(void);
 
 };
-#endif //WsResponse_hpp
+#endif //response_hpp
