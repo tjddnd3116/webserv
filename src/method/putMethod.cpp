@@ -1,16 +1,14 @@
-#include "WsGetMethod.hpp"
+#include "putMethod.hpp"
 
-WsGetMethod::WsGetMethod(const std::string& readLine, const WsConfigInfo& conf)
-	:WsIMethod(readLine, conf)
+putMethod::putMethod(const std::string& readLine, const configInfo& conf)
+	:AMethod(readLine, conf)
 {}
 
-WsGetMethod::~WsGetMethod()
+putMethod::~putMethod()
 {
-
 }
 
-void
-WsGetMethod::loadRequest(const std::string &readLine)
+void putMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine[0] == ' ')
 		return ;
@@ -20,7 +18,7 @@ WsGetMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
-void WsGetMethod::printBody(void) const
+void putMethod::printBody(void) const
 {
 	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;

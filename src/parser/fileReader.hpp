@@ -16,22 +16,23 @@ class fileReader
 		std::ifstream				m_configFile;
 		std::string					m_buffer;
 		size_t						m_pos;
-		bool						m_eof;
+		bool						m_isEof;
 		size_t						m_line;
 
 		int			checkBufPos(void);
 		void		readToBuf(void);
-	public:
-		fileReader();
-		~fileReader();
+
 		fileReader(const fileReader& copy);
 		fileReader& operator=(const fileReader& copy);
 
-		void		initFileReader(const char* path);
-		t_token		readFile(void);
-		bool		isEof(void) const;
-		const std::vector<std::string>&
-					getAllBuffer(void);
+	public:
+		fileReader();
+		~fileReader();
+
+		void							initFileReader(const char* path);
+		t_token							readFile(void);
+		bool							isEof(void) const;
+		const std::vector<std::string>& getAllBuffer(void);
 
 
 };

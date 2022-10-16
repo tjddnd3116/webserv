@@ -1,8 +1,8 @@
-#include "WsResponse.hpp"
+#include "response.hpp"
 
-std::map<int, std::string> WsResponse::s_statusCode;
+std::map<int, std::string> response::s_statusCode;
 
-WsResponse::WsResponse(const WsConfigInfo& conf)
+response::response(const configInfo& conf)
 {
 	m_conf = conf;
 	m_method = NULL;
@@ -10,18 +10,18 @@ WsResponse::WsResponse(const WsConfigInfo& conf)
 	m_statusCode = 0;
 }
 
-WsResponse::~WsResponse()
+response::~response()
 {
 	delete m_method;
 }
 
-WsResponse::WsResponse(const WsResponse& copy)
+response::response(const response& copy)
 {
 	*this = copy;
 }
 
-WsResponse&
-WsResponse::operator=(const WsResponse& copy)
+response&
+response::operator=(const response& copy)
 {
 	m_file.clear();
 	m_responseBuf = copy.m_responseBuf;
@@ -32,7 +32,7 @@ WsResponse::operator=(const WsResponse& copy)
 }
 
 void
-WsResponse::makeStatusLine(void)
+response::makeStatusLine(void)
 {
 	std::string path;
 
@@ -54,7 +54,7 @@ WsResponse::makeStatusLine(void)
 	m_responseBuf += getStatusCodeStr();
 }
 
-void WsResponse::makeBody(void)
+void response::makeBody(void)
 {
 	std::string	readLine;
 	std::string	allReadLine;
@@ -74,7 +74,7 @@ void WsResponse::makeBody(void)
 	m_responseBuf += allReadLine;
 }
 
-void WsResponse::makeResponse(const WsIMethod* method)
+void response::makeResponse(const AMethod* method)
 {
 	m_method = method;
 	makeStatusLine();
@@ -85,18 +85,18 @@ void WsResponse::makeResponse(const WsIMethod* method)
 }
 
 const std::string&
-WsResponse::operator()(void)
+response::operator()(void)
 {
 	return (m_responseBuf);
 }
 
-size_t WsResponse::getBufSize(void) const
+size_t response::getBufSize(void) const
 {
 	return (m_responseBuf.size());
 }
 
 // 특정 유형의 http 요청이나 특정 http 헤더를 수신 했을때, 이에 응답한다.
-void WsResponse::makeResponseHeader(void)
+void response::makeResponseHeader(void)
 {
 	// Server
 	// 서버 소프트웨어 정보
@@ -147,7 +147,7 @@ void WsResponse::makeResponseHeader(void)
 	//
 	//	http 메시지 내 포함된 선택적인 개체에 대한 구체적인 미디어 타입등의 설명
 	//	http 메서지는 이미지, 오디오, 비디오, html 문서, 전자메일 등의 개체를 운반할 수 있다.
-void WsResponse::makeEntityHeader(void)
+void response::makeEntityHeader(void)
 {
 	// Content-Type (공통 헤더)
 	// 해당 개체에 포함되는 미디어 타입 정보
@@ -213,7 +213,7 @@ void WsResponse::makeEntityHeader(void)
 	m_responseBuf += "Content-Disposition: inline\n";
 }
 
-void WsResponse::makeGeneralHeader(void)
+void response::makeGeneralHeader(void)
 {
 	m_responseBuf += "Date: " + getDate() + "\n";
 	// m_responseBuf += "Connection: close\n";
@@ -233,7 +233,7 @@ void WsResponse::makeGeneralHeader(void)
 }
 
 const std::string
-WsResponse::getDate(void)
+response::getDate(void)
 {
 	time_t		curTime;
 	struct tm*	curTimeInfo;
@@ -246,7 +246,7 @@ WsResponse::getDate(void)
 }
 
 void
-WsResponse::setStatusCode(void)
+response::setStatusCode(void)
 {
 	s_statusCode[100] = "Continue";
 	s_statusCode[101] = "Switching protocols";
@@ -277,7 +277,7 @@ WsResponse::setStatusCode(void)
 }
 
 const std::string
-WsResponse::getStatusCodeStr(void)
+response::getStatusCodeStr(void)
 {
 	std::string statusCodeStr;
 

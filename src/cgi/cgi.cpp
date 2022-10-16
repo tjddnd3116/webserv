@@ -1,9 +1,9 @@
 #include "WsCgi.hpp"
 
-WsCgi::WsCgi()
+cgi::cgi()
 {
 }
 
-WsCgi::~WsCgi()
+cgi::~cgi()
 {
 }

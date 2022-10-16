@@ -1,18 +1,18 @@
-#ifndef WsIMethod_hpp
-#define WsIMethod_hpp
+#ifndef AMethod_hpp
+#define AMethod_hpp
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <map>
 
-#include "../parser/WsConfigInfo.hpp"
+#include "../parser/configInfo.hpp"
 
 #define RESET	"\033[0m"
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
-class WsIMethod
+class AMethod
 {
 	protected:
 
@@ -22,7 +22,7 @@ class WsIMethod
 		std::map<std::string, std::vector<std::string> >
 						m_requestSet;
 		int				m_statusCode;
-		WsConfigInfo	m_conf;
+		configInfo		m_conf;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 				const std::string& str = " ");
@@ -30,8 +30,8 @@ class WsIMethod
 		void						loadBody(const std::string& readLine);
 
 	public:
-		WsIMethod(const std::string& readLine, const WsConfigInfo& conf);
-		virtual ~WsIMethod();
+		AMethod(const std::string& readLine, const configInfo& conf);
+		virtual ~AMethod();
 
 		virtual void		loadRequest(const std::string& readLine) = 0;
 		virtual void		printBody(void) const = 0;
@@ -42,7 +42,7 @@ class WsIMethod
 		const std::map<std::string, std::vector<std::string> >&
 							getRequestSet(void) const;
 
-		friend std::ostream& operator<<(std::ostream& os, const WsIMethod& method);
+		friend std::ostream& operator<<(std::ostream& os, const AMethod& method);
 
 };
-#endif //WsIMethod_hpp
+#endif //AMethod_hpp

@@ -1,6 +1,6 @@
-#include "WsServer.hpp"
+#include "server.hpp"
 
-WsServer::WsServer(const std::vector<WsConfigInfo> &conf)
+server::server(const std::vector<configInfo> &conf)
 	:m_conf(conf)
 {
 	m_serverSize = m_conf.size();
@@ -9,29 +9,15 @@ WsServer::WsServer(const std::vector<WsConfigInfo> &conf)
 		throw (WsException("kqueue fail"));
 }
 
-WsServer::~WsServer()
+server::~server()
 {}
 
-WsServer::WsServer(const WsServer& copy)
-{
-	*this = copy;
-}
-
-WsServer&
-WsServer::operator=(const WsServer &copy)
-{
-	m_conf = copy.m_conf;
-	m_serverSock = copy.m_serverSock;
-	m_serverSize = copy.m_serverSize;
-	return (*this);
-}
-
 void
-WsServer::createServerSock(void)
+server::createServerSock(void)
 {
 	for (size_t serverSockIdx = 0; serverSockIdx < m_serverSize; serverSockIdx++)
 	{
-		WsServerSock serverSock(m_conf[serverSockIdx]);
+		serverSocket serverSock(m_conf[serverSockIdx]);
 		serverSock.createSock();
 		serverSock.initAddr();
 		serverSock.bindSock();
@@ -43,10 +29,10 @@ WsServer::createServerSock(void)
 }
 
 void
-WsServer::run(void)
+server::run(void)
 {
 	int newEvents;
-	WsResponse::setStatusCode();
+	response::setStatusCode();
 
 	while (1)
 	{
@@ -56,7 +42,7 @@ WsServer::run(void)
 }
 
 void
-WsServer::addEvents(uintptr_t ident, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void* udata)
+server::addEvents(uintptr_t ident, int16_t filter, uint16_t flags, uint32_t fflags, intptr_t data, void* udata)
 {
 	struct kevent tempEvent;
 
@@ -65,7 +51,7 @@ WsServer::addEvents(uintptr_t ident, int16_t filter, uint16_t flags, uint32_t ff
 }
 
 int
-WsServer::waitEvent()
+server::waitEvent()
 {
 	int newEvents;
 
@@ -80,7 +66,7 @@ WsServer::waitEvent()
 }
 
 void
-WsServer::communicateSock(int newEvents)
+server::communicateSock(int newEvents)
 {
 	for (int i = 0; i < newEvents; i++)
 	{
@@ -110,7 +96,7 @@ WsServer::communicateSock(int newEvents)
 }
 
 bool
-WsServer::isServerSocket(int fd)
+server::isServerSocket(int fd)
 {
 	if (m_serverSock.find(fd) != m_serverSock.end())
 		return (true);
@@ -118,7 +104,7 @@ WsServer::isServerSocket(int fd)
 }
 
 bool
-WsServer::isClientSocket(int fd)
+server::isClientSocket(int fd)
 {
 	if (m_clientSock.find(fd) != m_clientSock.end())
 		return (true);
@@ -126,19 +112,16 @@ WsServer::isClientSocket(int fd)
 }
 
 int
-WsServer::readEvent(struct kevent* curEvent)
+server::readEvent(struct kevent* curEvent)
 {
 	if (isServerSocket(curEvent->ident))
 	{
-		WsClientSock clientSock(m_serverSock.at(curEvent->ident));
+		clientSocket clientSock(m_serverSock.at(curEvent->ident));
 
 		clientSock.createSock();
 		m_clientSock.insert(std::make_pair(clientSock.getSocketFd(), clientSock));
 		addEvents(clientSock.getSocketFd(), EVFILT_READ,
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
-		// addEvents(clientSock.getSocketFd(), EVFILT_WRITE,
-		//         EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
-
 		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
 		std::cout << "now client socket size : " << m_clientSock.size() << std::endl;
 		return (1);
@@ -147,7 +130,7 @@ WsServer::readEvent(struct kevent* curEvent)
 	{
 		int readRet;
 
-		std::map<int, WsClientSock>::iterator clientIt =
+		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
 		readRet = (*clientIt).second.readSock();
 		if (readRet <= 0)
@@ -166,13 +149,13 @@ WsServer::readEvent(struct kevent* curEvent)
 }
 
 void
-WsServer::writeEvent(struct kevent* curEvent)
+server::writeEvent(struct kevent* curEvent)
 {
 	if (isClientSocket(curEvent->ident))
 	{
 		int sendRet;
 
-		std::map<int, WsClientSock>::iterator clientIt =
+		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
 		sendRet = (*clientIt).second.sendSock();
 		if (sendRet < 0)
@@ -185,7 +168,7 @@ WsServer::writeEvent(struct kevent* curEvent)
 	}
 }
 
-void WsServer::disconnectClient(int fd)
+void server::disconnectClient(int fd)
 {
 	std::cout << "client disconnected : " << fd << std::endl;
 	m_clientSock.at(fd).closeSock();

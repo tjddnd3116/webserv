@@ -1,16 +1,16 @@
-#include "WsRequest.hpp"
+#include "request.hpp"
 
-WsRequest::WsRequest(const WsConfigInfo& conf)
+request::request(const configInfo& conf)
 {
 	m_conf = conf;
 	m_method = NULL;
 }
 
-WsRequest::~WsRequest()
+request::~request()
 {}
 
-WsIMethod*
-WsRequest::readRequest(const std::string& request)
+AMethod*
+request::readRequest(const std::string& request)
 {
 	size_t		prePos;
 	size_t		curPos;
@@ -33,20 +33,20 @@ WsRequest::readRequest(const std::string& request)
 	return (m_method);
 }
 
-WsIMethod*
-WsRequest::methodGenerator(const std::string& readLine)
+AMethod*
+request::methodGenerator(const std::string& readLine)
 {
 	std::string method;
 
 	method.assign(readLine, 0, readLine.find(" ", 0));
 	if (method == "GET")
-		return (new WsGetMethod(readLine, m_conf));
+		return (new getMethod(readLine, m_conf));
 	else if (method == "POST")
-		return (new WsPostMethod(readLine, m_conf));
+		return (new postMethod(readLine, m_conf));
 	else if (method == "PUT")
-		return (new WsPutMethod(readLine, m_conf));
+		return (new putMethod(readLine, m_conf));
 	else if (method == "DELETE")
-		return (new WsDeleteMethod(readLine, m_conf));
+		return (new deleteMethod(readLine, m_conf));
 	// else
 	//     thow error;
 	return (NULL);

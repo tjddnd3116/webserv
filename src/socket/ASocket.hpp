@@ -1,5 +1,5 @@
-#ifndef WsASocket_hpp
-#define WsASocket_hpp
+#ifndef ASocket_hpp
+#define ASocket_hpp
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -12,7 +12,7 @@
 #include <fcntl.h>
 
 #include "../WsException.hpp"
-#include "../parser/WsConfigInfo.hpp"
+#include "../parser/configInfo.hpp"
 
 #define BUF_SIZE 65535
 
@@ -20,28 +20,25 @@
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
-class WsASocket
+class ASocket
 {
 		protected:
-			WsConfigInfo		m_conf;
+			configInfo			m_conf;
 			struct sockaddr_in	m_SocketAddr;
 			socklen_t			m_SocketAddrSize;
 			int					m_SocketFd;
-			// char				m_buffer[BUF_SIZE];
-			// std::string			m_readBuffer;
-			//
 
 		public:
 			// Orthodox Canonical Form
-			WsASocket(const WsConfigInfo& conf);
-			virtual ~WsASocket();
-			WsASocket(const WsASocket& copy);
-			WsASocket& operator=(const WsASocket &copy);
+			ASocket(const configInfo& conf);
+			virtual ~ASocket();
+			ASocket(const ASocket& copy);
+			ASocket& operator=(const ASocket &copy);
 
 			virtual void		createSock(void) = 0;
 			void				closeSock();
 			int					getSocketFd(void) const;
-			const WsConfigInfo&	getConf(void) const;
+			const configInfo&	getConf(void) const;
 };
 
-#endif //WsSocket_hpp
+#endif //ASocket_hpp

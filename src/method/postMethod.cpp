@@ -1,17 +1,17 @@
-#include "WsPostMethod.hpp"
+#include "postMethod.hpp"
 
-WsPostMethod::WsPostMethod(const std::string& readLine, const WsConfigInfo& conf)
-	:WsIMethod(readLine, conf)
+postMethod::postMethod(const std::string& readLine, const configInfo& conf)
+	:AMethod(readLine, conf)
 {
 	m_isBody = false;
 	m_bodyBuffer.clear();
 }
 
-WsPostMethod::~WsPostMethod()
+postMethod::~postMethod()
 {}
 
 void
-WsPostMethod::loadRequest(const std::string &readLine)
+postMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine[0] == ' ')
 		return ;
@@ -29,13 +29,13 @@ WsPostMethod::loadRequest(const std::string &readLine)
 }
 
 void
-WsPostMethod::loadBody(const std::string& readLine)
+postMethod::loadBody(const std::string& readLine)
 {
 	m_bodyBuffer += readLine;
 }
 
 void
-WsPostMethod::printBody(void) const
+postMethod::printBody(void) const
 {
 	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << m_bodyBuffer << std::endl;
