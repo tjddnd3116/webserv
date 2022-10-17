@@ -2,13 +2,22 @@
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
+configInfo::limitExpect::limitExpect(std::vector<std::string>& method)
+{
+	limitMethod = method;
+}
+
 configInfo::Location::Location(std::string &path)
 {
 	locPath = path;
 }
 
 configInfo::configInfo()
-{}
+{
+	m_serverName.push_back("");
+	m_clientMaxBodySize = 1000000;
+	m_root.push_back("html");
+}
 
 configInfo::~configInfo()
 {}
@@ -21,10 +30,10 @@ configInfo::configInfo(const configInfo& copy)
 configInfo&
 configInfo::operator=(const configInfo& copy)
 {
-	m_rootPath = copy.getRootPath();
-	m_indexFile = copy.getIndexFile();
+	m_root = copy.getRootPath();
+	m_index = copy.getIndexFile();
 	m_serverName = copy.getServerName();
-	m_listenPort = copy.getListenPort();
+	m_listen = copy.getListenPort();
 	m_location = copy.getLocation();
 	m_uriBufferSize = copy.getUriBufferSize();
 	return (*this);
@@ -40,6 +49,11 @@ configInfo::setTable()
 	s_table["loc_expires"] = &configInfo::setLocationExpires;
 	s_table["loc_root"] = &configInfo::setLocationRoot;
 	s_table["loc_proxy_pass"] = &configInfo::setLocationProxy;
+	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
+	s_table["error_page"] = &configInfo::setErrorPage;
+	s_table["limit_except"] = &configInfo::setLimitExcept;
+	s_table["limit_allow"] = &configInfo::setLimitAllow;
+	s_table["limit_deny"] = &configInfo::setLimitDeny;
 	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
 }
 
@@ -49,13 +63,13 @@ configInfo::setRootPath(std::vector<std::string>& set)
 	for (size_t i = 0; i < set.size(); i++)
 		if (!isPath(set))
 			throw WsException();
-	m_rootPath = set;
+	m_root = set;
 }
 
 void
 configInfo::setIndexFile(std::vector<std::string>& set)
 {
-	m_indexFile = set;
+	m_index = set;
 }
 
 void
@@ -71,7 +85,7 @@ configInfo::setListenPort(std::vector<std::string>& set)
 	{
 		if (!isNum(set))
 			throw WsException();
-		m_listenPort.push_back(atoi(set[i].c_str()));
+		m_listen.push_back(atoi(set[i].c_str()));
 	}
 }
 
@@ -99,6 +113,39 @@ configInfo::setUriBufferSize(std::vector<std::string>& set)
 	m_uriBufferSize = set;
 }
 
+void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
+{
+	if (set.size() > 1)
+	{
+		m_clientMaxBodySize = -1;
+		return ;
+	}
+	m_clientMaxBodySize = std::atoi(set[0].c_str()) * 1000000;
+}
+
+void	 configInfo::setErrorPage(std::vector<std::string>& set)
+{
+	m_errorPage = set;
+}
+
+void	 configInfo::setLimitExcept(std::vector<std::string>& set)
+{
+	limitExpect tmpLimit(set);
+
+	m_location.back().m_limitExpect.push_back(tmpLimit);
+}
+
+void	 configInfo::setLimitAllow(std::vector<std::string>& set)
+{
+	m_location.back().m_limitExpect.back().limitAllow = set[0];
+}
+
+void	 configInfo::setLimitDeny(std::vector<std::string>& set)
+{
+	m_location.back().m_limitExpect.back().limitDeny = set[0];
+}
+
+
 int
 configInfo::createLocation(std::string& path)
 {
@@ -109,18 +156,28 @@ configInfo::createLocation(std::string& path)
 	return (0);
 }
 
+int
+configInfo::createLimitExcept(std::vector<std::string>& method)
+{
+	if (!isMethod(method))
+		return (1);
+	limitExpect tmpLimitExcept(method);
+	m_location.back().m_limitExpect.push_back(tmpLimitExcept);
+	return (0);
+}
+
 void
 configInfo::checkConfig(void)
 {
-	if (m_indexFile.empty())
+	if (m_index.empty())
 		throw WsException("index is emtpy");
-	if (m_rootPath.empty())
+	if (m_root.empty())
 		throw WsException("root is emtpy");
 	if (m_serverName.empty())
 		throw WsException("server_name is emtpy");
-	if (m_listenPort.empty())
+	if (m_listen.empty())
 		throw WsException("listen is emtpy");
-	if (!isPath(m_rootPath))
+	if (!isPath(m_root))
 		throw WsException("invalid server root path");
 	if (m_uriBufferSize.empty())
 		m_uriBufferSize.push_back("3k");
@@ -168,22 +225,33 @@ configInfo::isNum(const std::vector<std::string>& str)
 	return (true);
 }
 
+bool
+configInfo::isMethod(const std::vector<std::string>& method)
+{
+	for (size_t i = 0; i < method.size(); i++)
+	{
+		if (method[i] != "GET" || method[i] != "DELETE" || method[i] != "POST")
+			return (false);
+	}
+	return (true);
+}
+
 std::vector<int>
 configInfo::getListenPort(void) const
 {
-	return (m_listenPort);
+	return (m_listen);
 }
 
 std::vector<std::string>
 configInfo::getRootPath(void) const
 {
-	return (m_rootPath);
+	return (m_root);
 }
 
 std::vector<std::string>
 configInfo::getIndexFile(void) const
 {
-	return (m_indexFile);
+	return (m_index);
 }
 
 std::vector<std::string>
@@ -204,25 +272,45 @@ configInfo::getUriBufferSize(void) const
 	return (m_uriBufferSize);
 }
 
+size_t
+configInfo::getClinetMaxBodySize(void) const
+{
+	return (m_clientMaxBodySize);
+}
+
+std::vector<std::string>
+configInfo::getErrorPage(void) const
+{
+	return (m_errorPage);
+}
+
 std::ostream&
 operator<<(std::ostream &os, const configInfo& conf)
 {
 	os << "------configInfo-----" << std::endl;
 	os << "root : " << std::endl;
-	for (size_t i = 0; i < conf.m_rootPath.size(); i++)
-		os << "\t" << conf.m_rootPath[i] << std::endl;
+	for (size_t i = 0; i < conf.m_root.size(); i++)
+		os << "\t" << conf.m_root[i] << std::endl;
 	os << "index : " << std::endl;
-	for (size_t i = 0; i < conf.m_indexFile.size(); i++)
-		os << "\t" << conf.m_indexFile[i] << std::endl;
+	for (size_t i = 0; i < conf.m_index.size(); i++)
+		os << "\t" << conf.m_index[i] << std::endl;
 	os << "server_name : " << std::endl;
 	for (size_t i = 0; i < conf.m_serverName.size(); i++)
 		os << "\t" << conf.m_serverName[i] << std::endl;
 	os << "listen : " << std::endl;
-	for (size_t i = 0; i < conf.m_listenPort.size(); i++)
-		os << "\t" << conf.m_listenPort[i] << std::endl;
+	for (size_t i = 0; i < conf.m_listen.size(); i++)
+		os << "\t" << conf.m_listen[i] << std::endl;
 	os << "uri buffer size : " << std::endl;
 		for (size_t i = 0; i < conf.m_uriBufferSize.size(); i++)
 			os << "\t" << conf.m_uriBufferSize[i] << std::endl;
+	os << "client_max_body_size : " << std::endl;
+		os << "\t" << conf.m_clientMaxBodySize << std::endl;
+
+	os << "error_page : " << std::endl;
+		for (size_t i = 0; i < conf.m_errorPage.size(); i++)
+			os << "\t" << conf.m_errorPage[i] << std::endl;
+
+
 
 	for (size_t i = 0; i < conf.m_location.size(); i++)
 	{
@@ -239,10 +327,19 @@ operator<<(std::ostream &os, const configInfo& conf)
 		os << "\tpass :" << std::endl;
 		for (size_t j = 0; j < conf.m_location[i].locProxyPass.size(); j++)
 			os << "\t\t" << conf.m_location[i].locProxyPass[j] << std::endl;
+
+		os << "\tlimit_except : ";
+		for (size_t j = 0; j < conf.m_location[i].m_limitExpect[0].limitMethod.size(); j++)
+			os << conf.m_location[i].m_limitExpect[0].limitMethod[j] << " ";
+		os << "{" << std::endl;
+
+
+
 		if (i == conf.m_location.size() - 1)
 			os << "\t}" << std::endl;
 	}
 	os << "---------------------" << std::endl;
 	return (os);
 }
+
 

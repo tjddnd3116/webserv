@@ -106,6 +106,12 @@ tokenizer::locationContextParse(configInfo &info)
 	m_tokIdx++;
 	while (isOptionContext())
 	{
+		if (m_tokVec[m_tokIdx].str == "limit_except")
+		{
+			m_tokIdx++;
+			limitExceptParse(info);
+			continue;
+		}
 		optionLineNum = m_tokVec[m_tokIdx].lineNum;
 		std::string &tokenStr = m_tokVec[m_tokIdx++].str;
 		if (configInfo::s_table["loc_" + tokenStr] == 0)
@@ -131,6 +137,43 @@ tokenizer::locationParse(configInfo& info)
 		m_tokIdx++;
 	if (isOpenBrace())
 		locationContextParse(info);
+	if (isCloseBrace())
+		m_tokIdx++;
+}
+
+void
+tokenizer::limitExceptContextParse(configInfo& info)
+{
+	std::vector<std::string>	tokenSet;
+	size_t						optionLineNum;
+
+	m_tokIdx++;
+	while (isOptionContext())
+	{
+		optionLineNum = m_tokVec[m_tokIdx].lineNum;
+		std::string &tokenStr = m_tokVec[m_tokIdx++].str;
+		if (configInfo::s_table["limit_" + tokenStr] == 0)
+			throw WsException(m_tokVec[m_tokIdx - 1].lineNum, "invaild limit except option");
+		tokenSet.clear();
+		while (!isSemicolon(optionLineNum))
+			tokenSet.push_back(m_tokVec[m_tokIdx++].str);
+		if (m_tokVec[m_tokIdx].type == SEMICOLON)
+			m_tokIdx++;
+		else if (m_tokVec[m_tokIdx].str.back() == ';')
+		{
+			m_tokVec[m_tokIdx].str.pop_back();
+			tokenSet.push_back(m_tokVec[m_tokIdx++].str);
+		}
+		(info.*(configInfo::s_table["limit_" + tokenStr]))(tokenSet);
+	}
+}
+
+void
+tokenizer::limitExceptParse(configInfo& info)
+{
+	isLimitExcept(info);
+	if (isOpenBrace())
+		limitExceptContextParse(info);
 	if (isCloseBrace())
 		m_tokIdx++;
 }
@@ -197,7 +240,8 @@ tokenizer::isSemicolon(size_t optionLineNum)
 	return (false);
 }
 
-bool	 tokenizer::isLocationPath(configInfo& info)
+bool
+tokenizer::isLocationPath(configInfo& info)
 {
 	if (!isSafeIdx())
 		throw WsException(m_tokVec[m_tokIdx].lineNum, "invalid location path");
@@ -205,4 +249,18 @@ bool	 tokenizer::isLocationPath(configInfo& info)
 		throw WsException(m_tokVec[m_tokIdx - 1].lineNum, "invalid location path");
 	return (true);
 }
+
+bool
+tokenizer::isLimitExcept(configInfo& info)
+{
+	if (!isSafeIdx())
+		throw WsException(m_tokVec[m_tokIdx].lineNum, "invalid limit except");
+	std::vector<std::string> tokSet;
+	while (m_tokVec[m_tokIdx].type != OPEN_BRACE)
+		tokSet.push_back(m_tokVec[m_tokIdx++].str);
+	if (info.createLimitExcept(tokSet))
+		throw WsException(m_tokVec[m_tokIdx - 1].lineNum, "invalid limit except method");
+	return (true);
+}
+
 

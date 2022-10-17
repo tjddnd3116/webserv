@@ -85,6 +85,7 @@ clientSocket::sendSock(void)
 	int sendRet;
 	response response(m_conf);
 
+	std::cout << *m_method << std::endl;
 	response.makeResponse(m_method);
 	if (0)
 	{

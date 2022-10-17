@@ -14,7 +14,7 @@ class response
 	private:
 		std::fstream		m_file;
 		std::string			m_responseBuf;
-		const AMethod*	m_method;
+		const AMethod*		m_method;
 		configInfo			m_conf;
 		int					m_statusCode;
 
