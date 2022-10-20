@@ -9,20 +9,20 @@
 </head>
 <body>
 <main class="container">
-  <div>
+  <div class="cc">
     <?php
       $target_dir = "/";
-      $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-      if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-       echo "
-        <div id=\"note\">
-          You can delete the file with:<br>
-          curl -vX DELETE localhost:18000/uploaded_files/". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])) ."
-        </div>";
+      $target_file = $target_dir.basename($_FILES['fileToUpload']['name']);
+      if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file))
+      {
+        echo '<div id="note">
+            You can delete the file with:<br>
+            curl -vX DELETE localhost:1000/uploaded_files/'. htmlspecialchars(basename($_FILES["fileToUpload"]["name"])) .'
+            </div>';
 
-      echo "<h2>The file ". htmlspecialchars( basename( $_FILES["fileToUpload"]["name"])). " has been uploaded.</h2>";
+        echo '<h2>The file '. htmlspecialchars(basename($_FILES["fileToUpload"]["name"])). ' has been uploaded.</h2>';
       } else {
-      echo "<h2>Sorry, there was an error uploading your file.</h2>";
+        echo '<h2>Sorry, there was an error uploading your file.</h2>';
       }
     ?>
     <a class="button-line" href="/uploaded_files">See autoindex of Uploads</a>

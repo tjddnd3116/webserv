@@ -21,6 +21,8 @@ request::readRequest(const std::string& request)
 	while (curPos != std::string::npos)
 	{
 		readLine = request.substr(prePos, curPos - prePos);
+		if (readLine.size() > 0 && readLine.back() == '\r')
+			readLine.pop_back();
 		prePos = curPos + 1;
 		if (m_method == NULL)
 			m_method = methodGenerator(readLine);
@@ -29,7 +31,9 @@ request::readRequest(const std::string& request)
 		curPos = request.find("\n", prePos);
 	}
 	readLine = request.substr(prePos, request.size() - prePos);
-	m_method->loadRequest(readLine);
+	postMethod*	post;
+	if ((post = dynamic_cast<postMethod*>(m_method)))
+		post->loadBody(readLine);
 	return (m_method);
 }
 

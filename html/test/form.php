@@ -10,13 +10,15 @@
 <main class="container">
   <div>
     <h2>
-    Welcome <?php echo $_GET["name"]; ?><br>
-    Your email address is: <?php echo $_GET["email"]; ?><br>
+    <?php echo json_decode(file_get_contents("php://input"), true); ?>
+    Welcome <?php echo $_POST["name"]; ?><br>
+    Your email address is: <?php echo $_POST["email"]; ?><br>
     The sum of your numbers is <?php
-      $sum = (int)$_GET["one"] + (int)$_GET["two"];
+      $sum = (int)$_POST["one"] + (int)$_POST["two"];
       echo $sum;
     ?><br>
     <?php echo $_SERVER['SCRIPT_FILENAME'] ?> 
+    name=test&email=test&one=1&two=2
   </h2>
     <a class="button-line" href="/">Go back Home</a>
   </div>

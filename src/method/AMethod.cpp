@@ -11,6 +11,7 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
+	std::cout << m_statusCode << std::endl;
 	if (!m_statusCode)
 	{
 		m_method = splittedLine[0];
@@ -51,9 +52,19 @@ const std::string& AMethod::getUri(void) const
 	return (m_uri);
 }
 
+const configInfo&	AMethod::getConfig(void) const
+{
+	return (m_conf);
+}
+
 const std::string& AMethod::getHttpVersion(void) const
 {
 	return (m_httpVersion);
+}
+
+const std::string& AMethod::getBody(void) const
+{
+	return s;
 }
 
 const std::map<std::string, std::vector<std::string> >&
@@ -73,7 +84,7 @@ AMethod::checkStartLine(std::vector<std::string>& splittedLine)
 		return (400);							// Bad Request
 	if (splittedLine[1].size() > maxUriLen)
 		return (414);							// URI Too Long
-	if (splittedLine[2] != "HTTP/1.1\r")
+	if (splittedLine[2] != "HTTP/1.1")
 		return (400);							// Bad Request
 	return (0);
 }

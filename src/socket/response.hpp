@@ -15,14 +15,21 @@ class response
 	private:
 		std::fstream		m_file;
 		std::string			m_responseBuf;
-		const AMethod*	m_method;
+		std::string			new_body;
+		std::string			m_type;
+		const AMethod*		m_method;
 		configInfo			m_conf;
 		int					m_statusCode;
+		std::string 		file_ext;
+		int					is_cgi;
 
+		int 				check_isCgi();
 		void				makeStatusLine(void);
 		void				makeResponseHeader(void);
 		void				makeEntityHeader(void);
 		void				makeGeneralHeader(void);
+		void				extractExt();
+		void				parseBody();
 		const std::string	getDate(void);
 		const std::string	getStatusCodeStr(void);
 

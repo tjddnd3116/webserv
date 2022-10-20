@@ -23,6 +23,7 @@ class AMethod
 						m_requestSet;
 		int				m_statusCode;
 		configInfo		m_conf;
+		std::string		s;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 				const std::string& str = " ");
@@ -39,9 +40,11 @@ class AMethod
 		void				printInfo(void) const;
 		const std::string&	getMethod(void) const;
 		const std::string&	getUri(void) const;
+		const configInfo&	getConfig(void) const;
 		const std::string&	getHttpVersion(void) const;
 		const std::map<std::string, std::vector<std::string> >&
 							getRequestSet(void) const;
+		virtual const std::string& getBody(void) const;
 
 		friend std::ostream& operator<<(std::ostream& os, const AMethod& method);
 
