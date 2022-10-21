@@ -80,10 +80,14 @@ void response::makeResponse(const AMethod* method)
 
 	m_method = method;
 	extractExt();
+
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
+	makeEntityHeader();
 
+	defaultCgi.initCgi(m_method);
+	defaultCgi.execCgi(m_method);
 	is_cgi = check_isCgi();
 	if (is_cgi == 1)
 	{
@@ -91,6 +95,8 @@ void response::makeResponse(const AMethod* method)
 		new_body = defaultCgi.execCgi(m_method);
 	}
 	parseBody();
+
+	makeEntityHeader();
 	makeBody();
 }
 
