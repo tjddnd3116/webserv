@@ -28,6 +28,12 @@ postMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
+const std::string&
+postMethod::getBody(void) const 
+{
+	return (m_bodyBuffer);
+}
+
 void
 postMethod::loadBody(const std::string& readLine)
 {

@@ -9,13 +9,13 @@ class postMethod : public AMethod
 		bool		m_isBody;
 		std::string	m_bodyBuffer;
 
-		void	loadBody(const std::string& readLine);
-
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
 		~postMethod();
 
 		virtual void	loadRequest(const std::string& readLine);
+		virtual const std::string& getBody(void) const;
 		void			printBody(void) const;
+		void	loadBody(const std::string& readLine);
 };
 #endif //postMethod_hpp

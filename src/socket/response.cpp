@@ -60,18 +60,61 @@ void response::makeBody(void)
 	std::string	allReadLine;
 	size_t		allReadLineSize;
 
-	while (!m_file.eof())
+	if (is_cgi == 0)
 	{
-		std::getline(m_file, readLine);
-		if (readLine == "")
-			continue;
-		allReadLine += readLine + "\n";
+		while (!m_file.eof())
+		{
+			std::getline(m_file, readLine);
+			if (readLine == "")
+				continue;
+			allReadLine += readLine + "\n";
+		}
+		allReadLine.pop_back();
 	}
-	allReadLine.pop_back();
+	else
+	{
+		allReadLine = new_body;
+	}
 	allReadLineSize = allReadLine.size();
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
 	m_responseBuf += allReadLine;
+}
+
+void response::extractExt()
+{
+	std::string filepath = m_method->getUri(); 
+	while (filepath.find("/") != std::string::npos)
+	{
+		filepath.erase(0, filepath.find("/") + 1);
+	}
+	file_ext = filepath.substr(filepath.find("."));
+}
+
+void response::parseBody()
+{
+	if (new_body.find("Content-type:") != std::string::npos)
+	{
+		new_body = new_body.substr(new_body.find("Content-type:"));
+		m_type = new_body.substr(0, new_body.find("\n"));
+		new_body = new_body.substr(new_body.find("\n"));
+	}
+	if (file_ext == ".png")
+	{
+		m_type = "Content-type: image/png";
+	}
+	else
+	{
+		m_type = "Content-type: text/html; charset=UTF-8";
+	}
+}
+
+int response::check_isCgi()
+{
+	if (file_ext == ".htm" || file_ext == ".html" || file_ext == ".php")
+		return (1);
+	else
+	 	return (0);
 }
 
 void response::makeResponse(const AMethod* method)
@@ -84,6 +127,15 @@ void response::makeResponse(const AMethod* method)
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
+	
+	is_cgi = check_isCgi();
+	if (is_cgi == 1)
+	{
+		defaultCgi.initCgi(m_method);
+		new_body = defaultCgi.execCgi(m_method);
+	}
+	parseBody();
+
 	makeEntityHeader();
 
 	defaultCgi.initCgi(m_method);
@@ -224,9 +276,10 @@ void response::makeEntityHeader(void)
 	// chuncked (응답헤더)
 	// 동적으로 생성되어 Body의 길이를 모르는 경우에 조금씩 전송이 가능하다.
 	// 각 chunk 마다 그 시작에 16진수 길이를 삽입하여 chunk 길이를 알려준다.
-	m_responseBuf += "Content-Type: text/css, text/html; charset=UTF-8\n";
+	// m_responseBuf += "Content-Type: ";
+	m_responseBuf += m_type + "\n";
 	// m_responseBuf += "Content-Disposition: attachment; filename=soum.html";
-	m_responseBuf += "Content-Disposition: inline\n";
+	// m_responseBuf += "Content-Disposition: inline\n";
 }
 
 void response::makeGeneralHeader(void)

@@ -8,6 +8,7 @@
 
 #include "../method/AMethod.hpp"
 #include "../parser/configInfo.hpp"
+#include "../cgi/cgi.hpp"
 
 class response
 {
@@ -19,11 +20,16 @@ class response
 		const AMethod*		m_method;
 		configInfo			m_conf;
 		int					m_statusCode;
+		std::string 		file_ext;
+		int					is_cgi;
 
+		int 				check_isCgi();
 		void				makeStatusLine(void);
 		void				makeResponseHeader(void);
 		void				makeEntityHeader(void);
 		void				makeGeneralHeader(void);
+		void				extractExt();
+		void				parseBody();
 		const std::string	getDate(void);
 		const std::string	getStatusCodeStr(void);
 
