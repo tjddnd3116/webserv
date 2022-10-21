@@ -36,6 +36,8 @@ configInfo::operator=(const configInfo& copy)
 	m_listen = copy.getListenPort();
 	m_location = copy.getLocation();
 	m_uriBufferSize = copy.getUriBufferSize();
+	m_clientMaxBodySize = copy.getClinetMaxBodySize();
+	m_errorPage = copy.getErrorPage();
 	return (*this);
 }
 
@@ -125,6 +127,7 @@ void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 
 void	 configInfo::setErrorPage(std::vector<std::string>& set)
 {
+	std::cout << set[0] << std::endl;
 	m_errorPage = set;
 }
 
@@ -230,7 +233,7 @@ configInfo::isMethod(const std::vector<std::string>& method)
 {
 	for (size_t i = 0; i < method.size(); i++)
 	{
-		if (method[i] != "GET" || method[i] != "DELETE" || method[i] != "POST")
+		if (method[i] != "GET" && method[i] != "DELETE" && method[i] != "POST")
 			return (false);
 	}
 	return (true);
@@ -303,6 +306,7 @@ operator<<(std::ostream &os, const configInfo& conf)
 	os << "uri buffer size : " << std::endl;
 		for (size_t i = 0; i < conf.m_uriBufferSize.size(); i++)
 			os << "\t" << conf.m_uriBufferSize[i] << std::endl;
+
 	os << "client_max_body_size : " << std::endl;
 		os << "\t" << conf.m_clientMaxBodySize << std::endl;
 
@@ -310,12 +314,11 @@ operator<<(std::ostream &os, const configInfo& conf)
 		for (size_t i = 0; i < conf.m_errorPage.size(); i++)
 			os << "\t" << conf.m_errorPage[i] << std::endl;
 
-
-
 	for (size_t i = 0; i < conf.m_location.size(); i++)
 	{
 		os << "location { " << std::endl;
-		os << "\tpath : " << conf.m_location[i].locPath << std::endl;
+		os << "\tpath : " << std::endl;
+		os << "\t\t" << conf.m_location[i].locPath << std::endl;
 		os << "\troot :" << std::endl;
 		for (size_t j = 0; j < conf.m_location[i].locRoot.size(); j++)
 			os << "\t\t" << conf.m_location[i].locRoot[j] << std::endl;
@@ -328,12 +331,18 @@ operator<<(std::ostream &os, const configInfo& conf)
 		for (size_t j = 0; j < conf.m_location[i].locProxyPass.size(); j++)
 			os << "\t\t" << conf.m_location[i].locProxyPass[j] << std::endl;
 
-		os << "\tlimit_except : ";
-		for (size_t j = 0; j < conf.m_location[i].m_limitExpect[0].limitMethod.size(); j++)
-			os << conf.m_location[i].m_limitExpect[0].limitMethod[j] << " ";
-		os << "{" << std::endl;
-
-
+		if (!conf.m_location[i].m_limitExpect.empty())
+		{
+			os << "\tlimit_except : ";
+			for (size_t j = 0; j < conf.m_location[i].m_limitExpect[0].limitMethod.size(); j++)
+				os << conf.m_location[i].m_limitExpect[0].limitMethod[j] << " ";
+			os << "{" << std::endl;
+			os << "\tallow : " << std::endl;;
+			os << "\t\t" << conf.m_location[i].m_limitExpect[0].limitAllow << std::endl;
+			os << "\tdeny : " << std::endl;;
+			os << "\t\t" << conf.m_location[i].m_limitExpect[0].limitDeny << std::endl;
+			os << "\t\t}" << std::endl;
+		}
 
 		if (i == conf.m_location.size() - 1)
 			os << "\t}" << std::endl;

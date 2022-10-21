@@ -37,7 +37,7 @@ class configInfo
 		std::vector<std::string>	m_serverName;
 		std::vector<int>			m_listen;
 		std::vector<Location>		m_location;
-		size_t						m_clientMaxBodySize;
+		int32_t						m_clientMaxBodySize;
 		std::vector<std::string>	m_errorPage;
 		std::vector<std::string>	m_uriBufferSize;
 

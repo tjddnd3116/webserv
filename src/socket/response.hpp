@@ -12,10 +12,10 @@
 class response
 {
 	private:
-		std::fstream		m_file;
-		std::string			m_responseBuf;
 		const AMethod*		m_method;
 		configInfo			m_conf;
+		std::fstream		m_file;
+		std::string			m_responseBuf;
 		int					m_statusCode;
 
 		void				makeStatusLine(void);

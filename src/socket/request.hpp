@@ -11,10 +11,11 @@
 #include "../method/deleteMethod.hpp"
 #include "../parser/configInfo.hpp"
 
+// method maker
 class request
 {
 		private:
-			AMethod*		m_method;
+			AMethod*	m_method;
 			configInfo	m_conf;
 
 		public:

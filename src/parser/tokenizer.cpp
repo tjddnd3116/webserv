@@ -255,8 +255,12 @@ tokenizer::isLimitExcept(configInfo& info)
 {
 	if (!isSafeIdx())
 		throw WsException(m_tokVec[m_tokIdx].lineNum, "invalid limit except");
+
+	size_t curLineNum;
 	std::vector<std::string> tokSet;
-	while (m_tokVec[m_tokIdx].type != OPEN_BRACE)
+	curLineNum = m_tokVec[m_tokIdx].lineNum;
+
+	while (curLineNum == m_tokVec[m_tokIdx].lineNum && m_tokVec[m_tokIdx].type != OPEN_BRACE)
 		tokSet.push_back(m_tokVec[m_tokIdx++].str);
 	if (info.createLimitExcept(tokSet))
 		throw WsException(m_tokVec[m_tokIdx - 1].lineNum, "invalid limit except method");
