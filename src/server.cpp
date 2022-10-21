@@ -74,7 +74,7 @@ server::communicateSock(int newEvents)
 
 		curEvent = &m_eventList[i];
 		std::cout << "new event fd : " << curEvent->ident << std::endl;
-		if (curEvent->filter == -1)
+		if (curEvent->filter == EVFILT_READ)
 			std::cout << "[read] event occured" << std::endl;
 		else if (curEvent->filter == -2)
 			std::cout << "[write] event occured" << std::endl;

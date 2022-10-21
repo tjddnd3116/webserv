@@ -15,7 +15,6 @@
 class AMethod
 {
 	protected:
-
 		std::string		m_method;
 		std::string		m_uri;
 		std::string		m_httpVersion;
@@ -35,7 +34,6 @@ class AMethod
 
 		virtual void		loadRequest(const std::string& readLine) = 0;
 		virtual void		printBody(void) const = 0;
-
 		void				printInfo(void) const;
 		const std::string&	getUri(void) const;
 		const std::string&	getHttpVersion(void) const;

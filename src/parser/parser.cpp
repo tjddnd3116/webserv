@@ -45,7 +45,10 @@ parser::configParse(void)
 	makeToken();
 	parse();
 	for (size_t i = 0; i < m_config.size(); i++)
+	{
 		m_config[i].checkConfig();
+		std::cout << m_config[i] << std::endl;
+	}
 }
 
 const std::vector<configInfo>&

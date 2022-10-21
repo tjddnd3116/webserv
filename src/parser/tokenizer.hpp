@@ -36,10 +36,12 @@ class tokenizer
 
 		e_tokenType	selectTokenType(const std::string& str) const;
 
-		void	 	serverParse(configInfo &wsConfigInfo);
+		void	 	serverParse(configInfo &Info);
 		void		serverContextParse(configInfo &info);
-		void		locationContextParse(configInfo &info);
 		void		locationParse(configInfo &info);
+		void		locationContextParse(configInfo &info);
+		void		limitExceptParse(configInfo& info);
+		void		limitExceptContextParse(configInfo& info);
 
 		bool		isSafeIdx(void);
 		bool		isComment(const t_token& token) const;
@@ -48,6 +50,7 @@ class tokenizer
 		bool		isOptionContext(void);
 		bool		isSemicolon(size_t optionLineNum);
 		bool		isLocationPath(configInfo& info);
+		bool		isLimitExcept(configInfo& info);
 
 		tokenizer(const tokenizer& copy);
 		tokenizer& operator=(const tokenizer& copy);

@@ -14,6 +14,14 @@
 class configInfo
 {
 	private:
+		struct limitExpect
+		{
+			limitExpect(std::vector<std::string>& method);
+			std::vector<std::string>	limitMethod;
+			std::string					limitAllow;
+			std::string					limitDeny;
+		};
+
 		struct Location
 		{
 			Location(std::string &path);
@@ -21,19 +29,23 @@ class configInfo
 			std::vector<std::string>	locRoot;
 			std::vector<std::string>	locExpires;
 			std::vector<std::string>	locProxyPass;
+			std::vector<limitExpect>	m_limitExpect;
 		};
 
-		std::vector<std::string>	m_rootPath;
-		std::vector<std::string>	m_indexFile;
+		std::vector<std::string>	m_root;
+		std::vector<std::string>	m_index;
 		std::vector<std::string>	m_serverName;
-		std::vector<int>			m_listenPort;
+		std::vector<int>			m_listen;
 		std::vector<Location>		m_location;
+		int32_t						m_clientMaxBodySize;
+		std::vector<std::string>	m_errorPage;
 		std::vector<std::string>	m_uriBufferSize;
 
 		bool	isPath(const std::string& str);
 		bool	isPath(const std::vector<std::string>& str);
 		bool	isNum(const std::string& str);
 		bool	isNum(const std::vector<std::string>& str);
+		bool	isMethod(const std::vector<std::string>& method);
 
 	public:
 		configInfo();
@@ -57,7 +69,14 @@ class configInfo
 		void		setLocationProxy(std::vector<std::string>& set);
 		void		setUriBufferSize(std::vector<std::string>& set);
 
+		void		setClientMaxBodySize(std::vector<std::string>& set);
+		void		setErrorPage(std::vector<std::string>& set);
+		void		setLimitExcept(std::vector<std::string>& set);
+		void		setLimitAllow(std::vector<std::string>& set);
+		void		setLimitDeny(std::vector<std::string>& set);
+
 		int			createLocation(std::string& path);
+		int			createLimitExcept(std::vector<std::string>& method);
 		void		checkConfig(void);
 
 		// getter
@@ -67,6 +86,8 @@ class configInfo
 		std::vector<std::string>	getServerName(void) const;
 		std::vector<std::string>	getUriBufferSize(void) const;
 		std::vector<Location>		getLocation(void) const;
+		size_t						getClinetMaxBodySize(void) const;
+		std::vector<std::string>	getErrorPage(void) const;
 
 		friend std::ostream&		operator<<(std::ostream &os, const configInfo& conf);
 };
