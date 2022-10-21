@@ -76,17 +76,21 @@ void response::makeBody(void)
 
 void response::makeResponse(const AMethod* method)
 {
+	cgi defaultCgi;
+
 	m_method = method;
-
-
+	extractExt();
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
 
-
-
-
-	makeEntityHeader();
+	is_cgi = check_isCgi();
+	if (is_cgi == 1)
+	{
+		defaultCgi.initCgi(m_method);
+		new_body = defaultCgi.execCgi(m_method);
+	}
+	parseBody();
 	makeBody();
 }
 
