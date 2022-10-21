@@ -78,9 +78,14 @@ void response::makeResponse(const AMethod* method)
 {
 	m_method = method;
 
+
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
+
+
+
+
 	makeEntityHeader();
 	makeBody();
 }
