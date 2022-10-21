@@ -127,7 +127,6 @@ void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 
 void	 configInfo::setErrorPage(std::vector<std::string>& set)
 {
-	std::cout << set[0] << std::endl;
 	m_errorPage = set;
 }
 

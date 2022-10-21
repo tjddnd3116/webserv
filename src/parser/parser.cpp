@@ -47,7 +47,7 @@ parser::configParse(void)
 	for (size_t i = 0; i < m_config.size(); i++)
 	{
 		m_config[i].checkConfig();
-		std::cout << m_config[i] << std::endl;
+		// std::cout << m_config[i] << std::endl;
 	}
 }
 
