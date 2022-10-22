@@ -13,9 +13,7 @@ postMethod::~postMethod()
 void
 postMethod::loadRequest(const std::string &readLine)
 {
-	if (readLine[0] == ' ')
-		return ;
-	if (readLine[0] == '\r')
+	if (!m_isBody && readLine.empty())
 	{
 		m_isBody = true;
 		return;
@@ -29,7 +27,7 @@ postMethod::loadRequest(const std::string &readLine)
 }
 
 const std::string&
-postMethod::getBody(void) const 
+postMethod::getBody(void) const
 {
 	return (m_bodyBuffer);
 }
@@ -37,7 +35,7 @@ postMethod::getBody(void) const
 void
 postMethod::loadBody(const std::string& readLine)
 {
-	m_bodyBuffer += readLine;
+	m_bodyBuffer += readLine + "\n";
 }
 
 void

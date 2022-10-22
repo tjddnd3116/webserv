@@ -22,6 +22,7 @@ class response
 		int					m_statusCode;
 		std::string 		file_ext;
 		int					is_cgi;
+		std::string			m_filePath;
 
 		int 				check_isCgi();
 		void				makeStatusLine(void);

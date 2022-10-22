@@ -1,21 +1,18 @@
 #include "cgi.hpp"
+
 #include <cstddef>
-#include <ostream>
-#include <string>
 #include <sys/wait.h>
-#include <unistd.h>
-#include <vector>
 #include <sstream>
-#include <fcntl.h> 
+#include <fcntl.h>
 
 cgi::cgi()
 {
-    env.clear();
-    cenv.clear();
-    cgi_path = "";
-    path = "";
-    script = "";
-    query = "";
+    m_env.clear();
+    m_envChar.clear();
+    m_cgiPath = "";
+    m_path = "";
+    m_script = "";
+    m_query = "";
 }
 
 cgi::~cgi()
@@ -25,24 +22,28 @@ cgi::~cgi()
 void cgi::initCgi(const AMethod *method)
 {
     // cgi_path = "/Users/gson/Archive/webserv/html/php/cgi_tester";
-    cgi_path = "/Users/gson/Archive/webserv/html/php/php-cgi";
+    // cgi_path = "/Users/gson/Archive/webserv/html/php/php-cgi";
+    m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
-    std::vector<std::string> root_path_v;
-    std::string root_path;
-    root_path_v = method->getConfig().getRootPath();
-    root_path = root_path_v[0];
+
+    std::vector<std::string> rootPathVector;
+    std::string rootPath;
+    rootPathVector = method->getConfig().getRootPath();
+    rootPath = rootPathVector[0];
     std::string uri = method->getUri();
+
     if (uri.find("?") != std::string::npos)
     {
-        path = uri.substr(0, uri.find("?"));
+        m_path = uri.substr(0, uri.find("?"));
     }
     else
     {
-        path = uri;
+        m_path = uri;
     }
+
     std::string body_buffer = "";
     std::string CONTENT_LENGTH = "CONTENT_LENGTH=";
-    std::string CONTENT_TYPE="CONTENT_TYPE=";
+    std::string CONTENT_TYPE = "CONTENT_TYPE=";
     std::map<std::string, std::vector<std::string> >::const_iterator contentIt;
     contentIt = method->getRequestSet().find("Content-Type");
     if (contentIt != method->getRequestSet().end())
@@ -62,15 +63,15 @@ void cgi::initCgi(const AMethod *method)
     std::string SERVER_PROTOCOL = "SERVER_PROTOCOL=HTTP/1.1"; // different GET POST
     std::string GATEWAY_INTERFACE = "GATEWAY_INTERFACE=CGI/1.1";
     std::string REQUEST_METHOD = "REQUEST_METHOD=" + method->getMethod();
-    std::string REQUEST_URI = "REQUEST_URI=" + path;
-    std::string PATH_INFO = "PATH_INFO=" + path;
-    std::string PATH_TRANSLATED = "PATH_TRANSLATED=" + root_path + path;
-    std::string SCRIPT_NAME = "SCRIPT_NAME=" + path;
-    std::string SCRIPT_FILENAME = "SCRIPT_FILENAME=" + root_path + path;
+    std::string REQUEST_URI = "REQUEST_URI=" + m_path;
+    std::string PATH_INFO = "PATH_INFO=" + m_path;
+    std::string PATH_TRANSLATED = "PATH_TRANSLATED=" + rootPath + m_path;
+    std::string SCRIPT_NAME = "SCRIPT_NAME=" + m_path;
+    std::string SCRIPT_FILENAME = "SCRIPT_FILENAME=" + rootPath + m_path;
     std::string QUERY_STRING = "QUERY_STRING=";
     if (method->getMethod() == "GET")
     {
-        QUERY_STRING += query;
+        QUERY_STRING += m_query;
     }
 
     std::string SERVER_NAME = "SERVER_NAME=";
@@ -90,31 +91,31 @@ void cgi::initCgi(const AMethod *method)
     std::string REMOTE_IDENT = "REMOTE_IDENT=";
     std::string SERVER_SOFTWARE = "SERVER_SOFTWARE=webserv/1.0";
 
-    env.push_back(REDIRECT_STATUS);
-    env.push_back(CONTENT_LENGTH);
-    env.push_back(CONTENT_TYPE);
-    env.push_back(SERVER_PROTOCOL);
-    env.push_back(GATEWAY_INTERFACE);
-    env.push_back(REQUEST_METHOD);
-    env.push_back(REQUEST_URI);
-    env.push_back(PATH_INFO);
-    env.push_back(PATH_TRANSLATED);
-    env.push_back(SCRIPT_NAME);
-    env.push_back(SCRIPT_FILENAME);
-    env.push_back(QUERY_STRING);
-    env.push_back(SERVER_NAME);
-    env.push_back(SERVER_PORT);
-    env.push_back(HTTP_HOST);
-    env.push_back(REMOTE_ADDR);
-    env.push_back(REMOTE_HOST);
-    env.push_back(REMOTE_IDENT);
-    env.push_back(SERVER_SOFTWARE);
-    
-    for (size_t i = 0; i < env.size(); i++)
+    m_env.push_back(REDIRECT_STATUS);
+    m_env.push_back(CONTENT_LENGTH);
+    m_env.push_back(CONTENT_TYPE);
+    m_env.push_back(SERVER_PROTOCOL);
+    m_env.push_back(GATEWAY_INTERFACE);
+    m_env.push_back(REQUEST_METHOD);
+    m_env.push_back(REQUEST_URI);
+    m_env.push_back(PATH_INFO);
+    m_env.push_back(PATH_TRANSLATED);
+    m_env.push_back(SCRIPT_NAME);
+    m_env.push_back(SCRIPT_FILENAME);
+    m_env.push_back(QUERY_STRING);
+    m_env.push_back(SERVER_NAME);
+    m_env.push_back(SERVER_PORT);
+    m_env.push_back(HTTP_HOST);
+    m_env.push_back(REMOTE_ADDR);
+    m_env.push_back(REMOTE_HOST);
+    m_env.push_back(REMOTE_IDENT);
+    m_env.push_back(SERVER_SOFTWARE);
+
+    for (size_t i = 0; i < m_env.size(); i++)
 	{
-		cenv.push_back(const_cast<char*>(env[i].c_str()));
+		m_envChar.push_back(const_cast<char*>(m_env[i].c_str()));
 	}
-    cenv.push_back(0);
+    m_envChar.push_back(0);
 }
 
 std::string cgi::execCgi(const AMethod *method)
@@ -143,9 +144,9 @@ std::string cgi::execCgi(const AMethod *method)
         dup2(fd_A[WRITE], STDOUT_FILENO);
         close(fd_A[WRITE]);
 
-        std::cerr << "succcess?\n" << std::endl;
-        execve(cgi_path.c_str(), NULL, &cenv[0]);
-        std::cerr << "fail\n" << std::endl;
+        // std::cerr << "succcess?\n" << std::endl;
+        execve(m_cgiPath.c_str(), NULL, &m_envChar[0]);
+        // std::cerr << "fail\n" << std::endl;
     }
     else
     {

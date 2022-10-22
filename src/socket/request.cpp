@@ -31,9 +31,6 @@ request::readRequest(const std::string& request)
 		curPos = request.find("\n", prePos);
 	}
 	readLine = request.substr(prePos, request.size() - prePos);
-	postMethod*	post;
-	if ((post = dynamic_cast<postMethod*>(m_method)))
-		post->loadBody(readLine);
 	return (m_method);
 }
 

@@ -8,6 +8,7 @@ response::response(const configInfo& conf)
 	m_method = NULL;
 	m_responseBuf.clear();
 	m_statusCode = 0;
+	m_filePath.clear();
 }
 
 response::~response()
@@ -34,18 +35,17 @@ response::operator=(const response& copy)
 void
 response::makeStatusLine(void)
 {
-	std::string path;
-
-	path = m_conf.getRootPath()[0];
+	m_filePath = m_conf.getRootPath()[0];
 	if (m_method->getUri() == "/")
-		path += m_method->getUri() + m_conf.getIndexFile()[0];
+		m_filePath += m_method->getUri() + m_conf.getIndexFile()[0];
 	else
-		path += m_method->getUri();
-	m_file.open(path);
+		m_filePath += m_method->getUri();
+	m_file.open(m_filePath);
 	if (m_file.fail())
 	{
 		m_file.clear();
 		m_file.open("./html/404.html");
+		m_filePath = m_conf.getRootPath()[0] + "404.html";
 		m_statusCode = 404;
 	}
 	else
@@ -83,7 +83,8 @@ void response::makeBody(void)
 
 void response::extractExt()
 {
-	std::string filepath = m_method->getUri(); 
+	std::string filepath = m_filePath;
+
 	while (filepath.find("/") != std::string::npos)
 	{
 		filepath.erase(0, filepath.find("/") + 1);
@@ -111,7 +112,8 @@ void response::parseBody()
 
 int response::check_isCgi()
 {
-	if (file_ext == ".htm" || file_ext == ".html" || file_ext == ".php")
+	// if (file_ext == ".htm" || file_ext == ".html" || file_ext == ".php")
+	if (file_ext == ".php")
 		return (1);
 	else
 	 	return (0);
@@ -122,12 +124,11 @@ void response::makeResponse(const AMethod* method)
 	cgi defaultCgi;
 
 	m_method = method;
-	extractExt();
-
 	makeStatusLine();
+	extractExt();
 	makeResponseHeader();
 	makeGeneralHeader();
-	
+
 	is_cgi = check_isCgi();
 	if (is_cgi == 1)
 	{
