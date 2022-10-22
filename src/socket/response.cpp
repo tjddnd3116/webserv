@@ -35,21 +35,42 @@ response::operator=(const response& copy)
 void
 response::makeStatusLine(void)
 {
-	m_filePath = m_conf.getRootPath()[0];
-	if (m_method->getUri() == "/")
-		m_filePath += m_method->getUri() + m_conf.getIndexFile()[0];
+	// 1. uri 파싱
+	// 2. uri 경로중에 location path 와 일치하는 path 찾기
+	// 2.1 찾으면 해당 location root를 root path로 지정
+	// 2.2 못찾으면 server block의 root path로 지정
+
+	std::string					locationPath;
+	std::string 				uri = m_method->getUri();
+	size_t						lastSlashPos;
+	size_t 						indexIdx;
+	std::string					filePath;
+
+	lastSlashPos = uri.find_last_of("/");
+	if (!lastSlashPos)
+		locationPath.assign(uri, 0, uri.size());
 	else
-		m_filePath += m_method->getUri();
+		locationPath.assign(uri, 0, lastSlashPos + 1);
+
+	m_conf.findLocation(locationPath, m_rootPath, m_indexFile);
+	filePath.assign(uri, lastSlashPos, uri.size());
+	m_filePath = m_rootPath + filePath;
 	m_file.open(m_filePath);
-	if (m_file.fail())
+	m_statusCode = 200;
+	indexIdx = 0;
+	while (m_file.fail())
 	{
 		m_file.clear();
-		m_file.open("./html/404.html");
-		m_filePath = m_conf.getRootPath()[0] + "404.html";
-		m_statusCode = 404;
+		if (indexIdx == m_indexFile.size())
+		{
+			m_filePath = m_conf.getRootPath() + m_conf.getErrorPath();
+			m_statusCode = 404;
+		}
+		else
+			m_filePath = m_rootPath + "/" + m_indexFile[indexIdx];
+		m_file.open(m_filePath);
+		indexIdx++;
 	}
-	else
-		m_statusCode = 200;
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr();
 }
@@ -60,7 +81,7 @@ void response::makeBody(void)
 	std::string	allReadLine;
 	size_t		allReadLineSize;
 
-	if (is_cgi == 0)
+	if (m_isCgi == 0)
 	{
 		while (!m_file.eof())
 		{
@@ -73,7 +94,7 @@ void response::makeBody(void)
 	}
 	else
 	{
-		allReadLine = new_body;
+		allReadLine = m_newBody;
 	}
 	allReadLineSize = allReadLine.size();
 	m_responseBuf += "Content-Length: ";
@@ -89,18 +110,18 @@ void response::extractExt()
 	{
 		filepath.erase(0, filepath.find("/") + 1);
 	}
-	file_ext = filepath.substr(filepath.find("."));
+	m_fileExt = filepath.substr(filepath.find("."));
 }
 
 void response::parseBody()
 {
-	if (new_body.find("Content-type:") != std::string::npos)
+	if (m_newBody.find("Content-type:") != std::string::npos)
 	{
-		new_body = new_body.substr(new_body.find("Content-type:"));
-		m_type = new_body.substr(0, new_body.find("\n"));
-		new_body = new_body.substr(new_body.find("\n"));
+		m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
+		m_type = m_newBody.substr(0, m_newBody.find("\n"));
+		m_newBody = m_newBody.substr(m_newBody.find("\n"));
 	}
-	if (file_ext == ".png")
+	if (m_fileExt == ".png")
 	{
 		m_type = "Content-type: image/png";
 	}
@@ -113,7 +134,7 @@ void response::parseBody()
 int response::check_isCgi()
 {
 	// if (file_ext == ".htm" || file_ext == ".html" || file_ext == ".php")
-	if (file_ext == ".php")
+	if (m_fileExt == ".php")
 		return (1);
 	else
 	 	return (0);
@@ -128,27 +149,14 @@ void response::makeResponse(const AMethod* method)
 	extractExt();
 	makeResponseHeader();
 	makeGeneralHeader();
-
-	is_cgi = check_isCgi();
-	if (is_cgi == 1)
+	m_isCgi = check_isCgi();
+	if (m_isCgi == 1)
 	{
 		defaultCgi.initCgi(m_method);
-		new_body = defaultCgi.execCgi(m_method);
+		m_newBody = defaultCgi.execCgi(m_method);
+		std::cout << m_newBody << std::endl;
 	}
 	parseBody();
-
-	makeEntityHeader();
-
-	defaultCgi.initCgi(m_method);
-	defaultCgi.execCgi(m_method);
-	is_cgi = check_isCgi();
-	if (is_cgi == 1)
-	{
-		defaultCgi.initCgi(m_method);
-		new_body = defaultCgi.execCgi(m_method);
-	}
-	parseBody();
-
 	makeEntityHeader();
 	makeBody();
 }

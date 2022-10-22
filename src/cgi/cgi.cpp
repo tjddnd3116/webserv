@@ -16,20 +16,18 @@ cgi::cgi()
 }
 
 cgi::~cgi()
-{
-}
+{}
 
-void cgi::initCgi(const AMethod *method)
+void
+cgi::initCgi(const AMethod *method)
 {
     // cgi_path = "/Users/gson/Archive/webserv/html/php/cgi_tester";
     // cgi_path = "/Users/gson/Archive/webserv/html/php/php-cgi";
     m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
 
-    std::vector<std::string> rootPathVector;
     std::string rootPath;
-    rootPathVector = method->getConfig().getRootPath();
-    rootPath = rootPathVector[0];
+    rootPath = method->getConfig().getRootPath();
     std::string uri = method->getUri();
 
     if (uri.find("?") != std::string::npos)
@@ -118,7 +116,8 @@ void cgi::initCgi(const AMethod *method)
     m_envChar.push_back(0);
 }
 
-std::string cgi::execCgi(const AMethod *method)
+std::string
+cgi::execCgi(const AMethod *method)
 {
     int fd_A[2];
     int fd_B[2];
