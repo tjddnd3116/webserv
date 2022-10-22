@@ -14,32 +14,28 @@
 class configInfo
 {
 	private:
-		struct limitExpect
-		{
-			limitExpect(std::vector<std::string>& method);
-			std::vector<std::string>	limitMethod;
-			std::string					limitAllow;
-			std::string					limitDeny;
-		};
-
 		struct Location
 		{
 			Location(std::string &path);
-			std::string					locPath;
-			std::vector<std::string>	locRoot;
+			std::vector<std::string>	locIndex;
 			std::vector<std::string>	locExpires;
 			std::vector<std::string>	locProxyPass;
-			std::vector<limitExpect>	m_limitExpect;
+			std::vector<std::string>	locLimitExpect;
+			std::string					locPath;
+			std::string					locRoot;
+			std::string					locCgiPass;
 		};
 
-		std::vector<std::string>	m_root;
 		std::vector<std::string>	m_index;
 		std::vector<std::string>	m_serverName;
-		std::vector<int>			m_listen;
-		std::vector<Location>		m_location;
+		std::vector<std::string>	m_errorCode;
+		std::string					m_root;
+		std::string					m_errorPath;
+		int32_t						m_listen;
 		int32_t						m_clientMaxBodySize;
-		std::vector<std::string>	m_errorPage;
-		std::vector<std::string>	m_uriBufferSize;
+		int32_t						m_uriBufferSize;
+
+		std::vector<Location>		m_location;
 
 		bool	isPath(const std::string& str);
 		bool	isPath(const std::vector<std::string>& str);
@@ -64,30 +60,36 @@ class configInfo
 		void		setIndexFile(std::vector<std::string>& set);
 		void		setServerName(std::vector<std::string>& set);
 		void		setListenPort(std::vector<std::string>& set);
+		void		setUriBufferSize(std::vector<std::string>& set);
+		void		setClientMaxBodySize(std::vector<std::string>& set);
+		void		setErrorPage(std::vector<std::string>& set);
+
 		void		setLocationExpires(std::vector<std::string>& set);
 		void		setLocationRoot(std::vector<std::string>& set);
 		void		setLocationProxy(std::vector<std::string>& set);
-		void		setUriBufferSize(std::vector<std::string>& set);
+		void		setLocationCgiPass(std::vector<std::string>& set);
+		void		setLocationLimitExcept(std::vector<std::string>& set);
+		void		setLocationIndex(std::vector<std::string>& set);
 
-		void		setClientMaxBodySize(std::vector<std::string>& set);
-		void		setErrorPage(std::vector<std::string>& set);
-		void		setLimitExcept(std::vector<std::string>& set);
-		void		setLimitAllow(std::vector<std::string>& set);
-		void		setLimitDeny(std::vector<std::string>& set);
 
 		int			createLocation(std::string& path);
-		int			createLimitExcept(std::vector<std::string>& method);
+
 		void		checkConfig(void);
 
 		// getter
-		std::vector<int>			getListenPort(void) const;
-		std::vector<std::string>	getRootPath(void) const;
+		int32_t						getListenPort(void) const;
+		std::string					getRootPath(void) const;
 		std::vector<std::string>	getIndexFile(void) const;
 		std::vector<std::string>	getServerName(void) const;
-		std::vector<std::string>	getUriBufferSize(void) const;
+		int32_t						getUriBufferSize(void) const;
+		int32_t						getClinetMaxBodySize(void) const;
 		std::vector<Location>		getLocation(void) const;
-		size_t						getClinetMaxBodySize(void) const;
-		std::vector<std::string>	getErrorPage(void) const;
+		std::vector<std::string>	getErrorCode(void) const;
+		std::string					getErrorPath(void) const;
+
+		void						printServerBlock(std::ostream& os) const;
+		void						printLocationBlock(std::ostream& os, size_t i) const;
+		void						findLocation(const std::string& locationPath, std::string& rootPath, std::vector<std::string>& indexFile);
 
 		friend std::ostream&		operator<<(std::ostream &os, const configInfo& conf);
 };

@@ -78,8 +78,7 @@ AMethod::checkStartLine(std::vector<std::string>& splittedLine)
 {
 	uint32_t maxUriLen;
 
-	maxUriLen = std::atoi(m_conf.getUriBufferSize()[0].c_str());
-	maxUriLen *= 1024;
+	maxUriLen = m_conf.getUriBufferSize();
 	if (splittedLine.size() != 3)
 		return (400);							// Bad Request
 	if (splittedLine[1].size() > maxUriLen)

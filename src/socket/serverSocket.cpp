@@ -23,7 +23,7 @@ void serverSocket::initAddr()
 {
 	std::memset(&m_SocketAddr, 0, sizeof(m_SocketAddr));
 	m_SocketAddr.sin_family = AF_INET;
-	m_SocketAddr.sin_port = htons(m_conf.getListenPort()[0]);
+	m_SocketAddr.sin_port = htons(m_conf.getListenPort());
 	m_SocketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 }
 

@@ -23,5 +23,6 @@ class WsException : public std::exception
 
 			const char *what() const throw();
 			void		printConfigErr(const std::vector<std::string>& configFile);
+			const std::string& getErrorMsg(void) const;
 };
 #endif //WsException_hpp

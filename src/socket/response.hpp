@@ -15,14 +15,20 @@ class response
 	private:
 		std::fstream		m_file;
 		std::string			m_responseBuf;
-		std::string			new_body;
+		std::string			m_newBody;
 		std::string			m_type;
 		const AMethod*		m_method;
 		configInfo			m_conf;
 		int					m_statusCode;
-		std::string 		file_ext;
-		int					is_cgi;
+		std::string 		m_fileExt;
+		int					m_isCgi;
 		std::string			m_filePath;
+
+
+		// std::string			m_directory;
+		std::string					m_rootPath;
+		std::vector<std::string>	m_indexFile;
+
 
 		int 				check_isCgi();
 		void				makeStatusLine(void);

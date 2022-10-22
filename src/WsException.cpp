@@ -36,3 +36,9 @@ WsException::printConfigErr(const std::vector<std::string>& configFile)
 			std::cout << configFile[i] << std::endl;
 	}
 }
+
+const std::string&
+WsException::getErrorMsg(void) const
+{
+	return (m_errMsg);
+}
