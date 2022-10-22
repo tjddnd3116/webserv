@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <unistd.h>
+
 #include "../method/AMethod.hpp"
 #include "../method/postMethod.hpp"
 
@@ -13,17 +14,18 @@
 
 class cgi
 {
-		private:
-			std::vector<std::string>	env;
-			std::vector<char*>	cenv;
-			std::string	cgi_path;
-			std::string path;
-    		std::string script;
-    		std::string query;
-		public:
-			cgi();
-			~cgi();
-			void initCgi(const AMethod *method);
-			std::string execCgi(const AMethod *method);
+	private:
+		std::vector<std::string>	m_env;
+		std::vector<char*>			m_envChar;
+		std::string					m_cgiPath;
+		std::string 				m_path;
+		std::string					m_script;
+		std::string					m_query;
+
+	public:
+		cgi();
+		~cgi();
+		void initCgi(const AMethod *method);
+		std::string execCgi(const AMethod *method);
 };
 #endif //cgi_hpp

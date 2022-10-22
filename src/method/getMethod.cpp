@@ -5,9 +5,7 @@ getMethod::getMethod(const std::string& readLine, const configInfo& conf)
 {}
 
 getMethod::~getMethod()
-{
-
-}
+{}
 
 void
 getMethod::loadRequest(const std::string &readLine)

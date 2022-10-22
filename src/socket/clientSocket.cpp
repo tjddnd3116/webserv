@@ -67,7 +67,7 @@ clientSocket::readSock(void)
 			request request(m_conf);
 
 			m_method = request.readRequest(m_readBuffer);
-			if (0)
+			if (1)
 			{
 				std::cout << *m_method << std::endl;
 				m_method->printBody();
@@ -86,7 +86,7 @@ clientSocket::sendSock(void)
 	response response(m_conf);
 
 	response.makeResponse(m_method);
-	if (0)
+	if (1)
 	{
 		std::cout << BLUE << "-----------response----------------" << std::endl;
 		std::cout << response().c_str() << std::endl;
