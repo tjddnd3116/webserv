@@ -39,7 +39,6 @@ response::makeStatusLine(void)
 	// 2. uri 경로중에 location path 와 일치하는 path 찾기
 	// 2.1 찾으면 해당 location root를 root path로 지정
 	// 2.2 못찾으면 server block의 root path로 지정
-
 	std::string					locationPath;
 	std::string 				uri = m_method->getUri();
 	size_t						lastSlashPos;
@@ -61,7 +60,7 @@ response::makeStatusLine(void)
 	while (m_file.fail())
 	{
 		m_file.clear();
-		if (indexIdx == m_indexFile.size())
+		if (indexIdx == m_indexFile.size() || filePath != "/")
 		{
 			m_filePath = m_conf.getRootPath() + m_conf.getErrorPath();
 			m_statusCode = 404;
