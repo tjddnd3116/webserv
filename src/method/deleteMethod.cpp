@@ -27,3 +27,15 @@ deleteMethod::printBody(void) const
 	std::cout << "no body" << std::endl;
 	std::cout << "-------------------" << RESET << std::endl;
 }
+
+bool
+deleteMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
+{
+	for (size_t i = 0; i < limitExcept.size(); i++)
+	{
+		if (limitExcept[i] == "DELETE")
+			return (true);
+	}
+	return (false);
+}
+

@@ -8,7 +8,8 @@ putMethod::~putMethod()
 {
 }
 
-void putMethod::loadRequest(const std::string &readLine)
+void
+putMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine[0] == ' ')
 		return ;
@@ -18,9 +19,21 @@ void putMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
-void putMethod::printBody(void) const
+void
+putMethod::printBody(void) const
 {
 	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
 	std::cout << "-------------------" << RESET << std::endl;
+}
+
+bool
+putMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
+{
+	for (size_t i = 0; i < limitExcept.size(); i++)
+	{
+		if (limitExcept[i] == "PUT")
+			return (true);
+	}
+	return (false);
 }

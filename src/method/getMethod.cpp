@@ -18,9 +18,21 @@ getMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
-void getMethod::printBody(void) const
+void
+getMethod::printBody(void) const
 {
 	std::cout << RED << "-------body--------" << std::endl;
 	std::cout << "no body" << std::endl;
 	std::cout << "-------------------" << RESET << std::endl;
+}
+
+bool
+getMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
+{
+	for (size_t i = 0; i < limitExcept.size(); i++)
+	{
+		if (limitExcept[i] == "GET")
+			return (true);
+	}
+	return (false);
 }

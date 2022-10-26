@@ -89,7 +89,10 @@ class configInfo
 
 		void						printServerBlock(std::ostream& os) const;
 		void						printLocationBlock(std::ostream& os, size_t i) const;
-		void						findLocation(const std::string& locationPath, std::string& rootPath, std::vector<std::string>& indexFile);
+		void						findLocation(const std::string& locationPath,
+												 std::string& rootPath,
+												 std::vector<std::string>& indexFile,
+												 std::vector<std::string>& limitExcept);
 
 		friend std::ostream&		operator<<(std::ostream &os, const configInfo& conf);
 };

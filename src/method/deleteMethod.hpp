@@ -11,6 +11,7 @@ class deleteMethod : public AMethod
 
 		virtual void	loadRequest(const std::string &readLine);
 		virtual void	printBody(void) const;
+		virtual bool	checkMethodLimit(const std::vector<std::string>& limitExcept) const;
 
 };
 #endif //deleteMethod_hpp

@@ -18,6 +18,9 @@ class request
 			AMethod*	m_method;
 			configInfo	m_conf;
 
+			request(const request& copy);
+			request& operator=(const request& copy);
+
 		public:
 			request(const configInfo& conf);
 			~request();
