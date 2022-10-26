@@ -14,8 +14,11 @@ class postMethod : public AMethod
 		~postMethod();
 
 		virtual void	loadRequest(const std::string& readLine);
-		virtual const std::string& getBody(void) const;
+		virtual const std::string&
+						getBody(void) const;
+		virtual bool	checkMethodLimit(const std::vector<std::string>& limitExcept) const;
+
 		void			printBody(void) const;
-		void	loadBody(const std::string& readLine);
+		void			loadBody(const std::string& readLine);
 };
 #endif //postMethod_hpp

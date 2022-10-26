@@ -45,3 +45,14 @@ postMethod::printBody(void) const
 	std::cout << m_bodyBuffer << std::endl;
 	std::cout << "-------------------" << RESET << std::endl;
 }
+
+bool
+postMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
+{
+	for (size_t i = 0; i < limitExcept.size(); i++)
+	{
+		if (limitExcept[i] == "POST")
+			return (true);
+	}
+	return (false);
+}

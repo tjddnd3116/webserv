@@ -1,4 +1,5 @@
 #include "response.hpp"
+#include <strings.h>
 
 std::map<int, std::string> response::s_statusCode;
 
@@ -16,60 +17,29 @@ response::~response()
 	delete m_method;
 }
 
-response::response(const response& copy)
-{
-	*this = copy;
-}
-
-response&
-response::operator=(const response& copy)
-{
-	m_file.clear();
-	m_responseBuf = copy.m_responseBuf;
-	m_method = copy.m_method;
-	m_conf = copy.m_conf;
-	m_statusCode = copy.m_statusCode;
-	return (*this);
-}
+// response::response(const response& copy)
+// {
+//     *this = copy;
+// }
+//
+// response&
+// response::operator=(const response& copy)
+// {
+//     m_file.clear();
+//     m_responseBuf = copy.m_responseBuf;
+//     m_method = copy.m_method;
+//     m_conf = copy.m_conf;
+//     m_statusCode = copy.m_statusCode;
+//     return (*this);
+// }
 
 void
 response::makeStatusLine(void)
 {
-	// 1. uri 파싱
-	// 2. uri 경로중에 location path 와 일치하는 path 찾기
-	// 2.1 찾으면 해당 location root를 root path로 지정
-	// 2.2 못찾으면 server block의 root path로 지정
-	std::string					locationPath;
-	std::string 				uri = m_method->getUri();
-	size_t						lastSlashPos;
-	size_t 						indexIdx;
-	std::string					filePath;
+	m_filePath = m_method->getFilePath();
+	m_statusCode = m_method->getStatusCode();
 
-	lastSlashPos = uri.find_last_of("/");
-	if (!lastSlashPos)
-		locationPath.assign(uri, 0, uri.size());
-	else
-		locationPath.assign(uri, 0, lastSlashPos + 1);
-
-	m_conf.findLocation(locationPath, m_rootPath, m_indexFile);
-	filePath.assign(uri, lastSlashPos, uri.size());
-	m_filePath = m_rootPath + filePath;
 	m_file.open(m_filePath);
-	m_statusCode = 200;
-	indexIdx = 0;
-	while (m_file.fail())
-	{
-		m_file.clear();
-		if (indexIdx == m_indexFile.size() || filePath != "/")
-		{
-			m_filePath = m_conf.getRootPath() + m_conf.getErrorPath();
-			m_statusCode = 404;
-		}
-		else
-			m_filePath = m_rootPath + "/" + m_indexFile[indexIdx];
-		m_file.open(m_filePath);
-		indexIdx++;
-	}
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr();
 }
@@ -132,7 +102,7 @@ void response::parseBody()
 
 int response::check_isCgi()
 {
-	// if (file_ext == ".htm" || file_ext == ".html" || file_ext == ".php")
+	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
 	if (m_fileExt == ".php")
 		return (1);
 	else
@@ -144,6 +114,7 @@ void response::makeResponse(const AMethod* method)
 	cgi defaultCgi;
 
 	m_method = method;
+
 	makeStatusLine();
 	extractExt();
 	makeResponseHeader();

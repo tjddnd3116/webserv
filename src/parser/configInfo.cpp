@@ -6,6 +6,7 @@ configInfo::Location::Location(std::string &path)
 {
 	locPath = path;
 	locRoot = "html";
+	locIndex.push_back("index.html");
 }
 
 configInfo::configInfo()
@@ -15,6 +16,7 @@ configInfo::configInfo()
 	m_uriBufferSize = 3 * 1024;
 	m_root = "html";
 	m_listen = 80;
+	m_index.push_back("index.html");
 }
 
 configInfo::~configInfo()
@@ -366,7 +368,8 @@ configInfo::printLocationBlock(std::ostream& os, size_t i) const
 void
 configInfo::findLocation(const std::string& locationPath,
 						 std::string& rootPath,
-						 std::vector<std::string>& indexFile)
+						 std::vector<std::string>& indexFile,
+						 std::vector<std::string>& limitExcept)
 {
 	for (size_t i = 0; i < m_location.size(); i++)
 	{
@@ -374,6 +377,7 @@ configInfo::findLocation(const std::string& locationPath,
 		{
 			rootPath = m_location[i].locRoot;
 			indexFile = m_location[i].locIndex;
+			limitExcept = m_location[i].locLimitExpect;
 			return;
 		}
 	}

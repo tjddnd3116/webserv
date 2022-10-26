@@ -67,7 +67,7 @@ clientSocket::readSock(void)
 			request request(m_conf);
 
 			m_method = request.readRequest(m_readBuffer);
-			if (1)
+			if (0)
 			{
 				std::cout << *m_method << std::endl;
 				m_method->printBody();

@@ -1,4 +1,6 @@
 #include "AMethod.hpp"
+#include <sys/stat.h>
+#include <unistd.h>
 
 AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 {
@@ -42,27 +44,32 @@ AMethod::splitReadLine(const std::string& readLine, const std::string& str)
 	return (splittedLine);
 }
 
-const std::string& AMethod::getMethod(void) const
+const std::string&
+AMethod::getMethod(void) const
 {
 	return (m_method);
 }
 
-const std::string& AMethod::getUri(void) const
+const std::string&
+AMethod::getUri(void) const
 {
 	return (m_uri);
 }
 
-const configInfo&	AMethod::getConfig(void) const
+const configInfo&
+AMethod::getConfig(void) const
 {
 	return (m_conf);
 }
 
-const std::string& AMethod::getHttpVersion(void) const
+const std::string&
+AMethod::getHttpVersion(void) const
 {
 	return (m_httpVersion);
 }
 
-const std::string& AMethod::getBody(void) const
+const std::string&
+AMethod::getBody(void) const
 {
 	return s;
 }
@@ -110,4 +117,81 @@ operator<<(std::ostream& os, const AMethod& method)
 	}
 	os << "-------------------------" << RESET << std::endl;
 	return (os);
+}
+
+const std::string&
+AMethod::getFilePath(void) const
+{
+	return (m_filePath);
+}
+
+void
+AMethod::uriParse(void)
+{
+	std::vector<std::string>	limitExcept;
+	std::vector<std::string>	indexFile;
+	std::string					root;
+	std::string					uri;
+	std::string					fileName;
+	std::string					locationPath;
+	size_t						lastSlashPos;
+	size_t						queryStringPos;
+
+
+	uri = m_uri;
+	queryStringPos = uri.find("?");
+	if (queryStringPos != std::string::npos)
+	{
+		m_queryString.assign(uri, queryStringPos, uri.size());
+		uri.substr(0, queryStringPos);
+	}
+
+	lastSlashPos = uri.find_last_of("/");
+	if (lastSlashPos == 0)
+		locationPath.assign(uri, 0, uri.size());
+	else
+		locationPath.assign(uri, 0, lastSlashPos + 1);
+
+	fileName.assign(uri, lastSlashPos, uri.size());
+
+	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
+
+	if (!this->checkMethodLimit(limitExcept))
+		m_statusCode = 405;
+
+	m_filePath = root + fileName;
+
+	if (fileName == "/")
+		m_filePath += indexFile[0];
+	if (!checkFileExists(m_filePath))
+	{
+		std::cout << "not exist" << std::endl;
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 404;
+	}
+	m_statusCode = 202;
+}
+
+const std::string&
+AMethod::getQueryString(void) const
+{
+	return (m_queryString);
+}
+
+bool
+AMethod::checkFileExists(const std::string& filePath)
+{
+	struct stat buffer;
+	int			exist;
+
+	exist = stat(filePath.c_str(), &buffer);
+	if (exist == 0 && ((buffer.st_mode & S_IFMT ) == S_IFREG))
+		return (true);
+	return (false);
+}
+
+int
+AMethod::getStatusCode(void) const
+{
+	return (m_statusCode);
 }
