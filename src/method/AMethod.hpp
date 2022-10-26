@@ -17,7 +17,7 @@
 class AMethod
 {
 	protected:
-		std::string						m_method;
+		std::string						m_methodType;
 		std::string						m_uri;
 		std::string						m_httpVersion;
 		std::map<std::string, std::vector<std::string> >

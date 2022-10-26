@@ -56,7 +56,7 @@ server::waitEvent()
 	int newEvents;
 
 	std::cout << "\n---waiting event---" << std::endl;
-	newEvents = ::kevent(m_kq, &m_changeList[0], m_changeList.size(),
+	newEvents = kevent(m_kq, &m_changeList[0], m_changeList.size(),
 			m_eventList, EVENT_SIZE, NULL);
 	std::cout << "new events count : " << newEvents << std::endl;
 	if (newEvents == -1)
@@ -168,7 +168,8 @@ server::writeEvent(struct kevent* curEvent)
 	}
 }
 
-void server::disconnectClient(int fd)
+void
+server::disconnectClient(int fd)
 {
 	std::cout << "client disconnected : " << fd << std::endl;
 	m_clientSock.at(fd).closeSock();

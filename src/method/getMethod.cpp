@@ -10,7 +10,7 @@ getMethod::~getMethod()
 void
 getMethod::loadRequest(const std::string &readLine)
 {
-	if (readLine[0] == ' ')
+	if (readLine.empty() || readLine[0] == ' ')
 		return ;
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
 	splittedLine[0].pop_back();

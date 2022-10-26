@@ -69,7 +69,7 @@ cgi::initCgi(const AMethod *method)
     std::string QUERY_STRING = "QUERY_STRING=";
     if (method->getMethod() == "GET")
     {
-        QUERY_STRING += m_query;
+        QUERY_STRING += method->getQueryString();
     }
 
     std::string SERVER_NAME = "SERVER_NAME=";

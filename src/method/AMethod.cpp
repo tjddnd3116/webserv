@@ -7,7 +7,7 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	m_conf = conf;
 	std::vector<std::string> splittedLine;
 	m_statusCode = 0;
-	m_method = "";
+	m_methodType = "";
 	m_uri = "";
 	m_httpVersion = "";
 
@@ -16,7 +16,7 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	std::cout << m_statusCode << std::endl;
 	if (!m_statusCode)
 	{
-		m_method = splittedLine[0];
+		m_methodType = splittedLine[0];
 		m_uri = splittedLine[1];
 		m_httpVersion = splittedLine[2];
 	}
@@ -47,7 +47,7 @@ AMethod::splitReadLine(const std::string& readLine, const std::string& str)
 const std::string&
 AMethod::getMethod(void) const
 {
-	return (m_method);
+	return (m_methodType);
 }
 
 const std::string&
@@ -101,7 +101,7 @@ operator<<(std::ostream& os, const AMethod& method)
 	os << RED;
 	os << "---- request message -----" << std::endl;
 	os << "method :" << std::endl;
-	os << "\t" << method.m_method << std::endl;
+	os << "\t" << method.m_methodType << std::endl;
 	os << "uri :" << std::endl;
 	os << "\t" << method.m_uri << std::endl;
 	os << "http version : " << std::endl;
@@ -137,33 +137,35 @@ AMethod::uriParse(void)
 	size_t						lastSlashPos;
 	size_t						queryStringPos;
 
-
 	uri = m_uri;
 	queryStringPos = uri.find("?");
 	if (queryStringPos != std::string::npos)
 	{
-		m_queryString.assign(uri, queryStringPos, uri.size());
-		uri.substr(0, queryStringPos);
+		m_queryString.assign(uri, queryStringPos + 1, std::string::npos);
+		uri = uri.substr(0, queryStringPos);
 	}
 	lastSlashPos = uri.find_last_of("/");
+
 	if (lastSlashPos == 0)
 		locationPath.assign(uri, 0, uri.size());
 	else
 		locationPath.assign(uri, 0, lastSlashPos + 1);
+
 	fileName.assign(uri, lastSlashPos, uri.size());
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-	if (!this->checkMethodLimit(limitExcept))
-		m_statusCode = 405;
+
 	m_filePath = root + fileName;
+
 	if (fileName == "/")
 		m_filePath += indexFile[0];
 	if (!checkFileExists(m_filePath))
 	{
-		std::cout << "not exist" << std::endl;
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 404;
 	}
-	m_statusCode = 202;
+	m_statusCode = 200;
+	if (!this->checkMethodLimit(limitExcept))
+		m_statusCode = 405;
 }
 
 const std::string&

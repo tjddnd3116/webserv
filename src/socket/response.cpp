@@ -30,7 +30,8 @@ response::makeStatusLine(void)
 	m_responseBuf += getStatusCodeStr(statusCode);
 }
 
-void response::makeBody(void)
+void
+response::makeBody(void)
 {
 	std::string	readLine;
 	std::string	allReadLine;
@@ -57,7 +58,8 @@ void response::makeBody(void)
 	m_responseBuf += allReadLine;
 }
 
-void response::extractExt()
+void
+response::extractExt()
 {
 	std::string filepath = m_filePath;
 
@@ -68,7 +70,8 @@ void response::extractExt()
 	m_fileExt = filepath.substr(filepath.find("."));
 }
 
-void response::parseBody()
+void
+response::parseBody()
 {
 	if (m_newBody.find("Content-type:") != std::string::npos)
 	{
@@ -82,11 +85,12 @@ void response::parseBody()
 	}
 	else
 	{
-		m_type = "Content-type: text/html; charset=UTF-8";
+		m_type = "Content-type: text/css, text/html; charset=UTF-8";
 	}
 }
 
-int response::check_isCgi()
+int
+response::checkIsCgi()
 {
 	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
 	if (m_fileExt == ".php")
@@ -95,7 +99,8 @@ int response::check_isCgi()
 	 	return (0);
 }
 
-void response::makeResponse(const AMethod* method)
+void
+response::makeResponse(const AMethod* method)
 {
 	cgi defaultCgi;
 
@@ -105,7 +110,7 @@ void response::makeResponse(const AMethod* method)
 	extractExt();
 	makeResponseHeader();
 	makeGeneralHeader();
-	m_isCgi = check_isCgi();
+	m_isCgi = checkIsCgi();
 	if (m_isCgi == 1)
 	{
 		defaultCgi.initCgi(m_method);
@@ -123,13 +128,15 @@ response::operator()(void)
 	return (m_responseBuf);
 }
 
-size_t response::getBufSize(void) const
+size_t
+response::getBufSize(void) const
 {
 	return (m_responseBuf.size());
 }
 
 // 특정 유형의 http 요청이나 특정 http 헤더를 수신 했을때, 이에 응답한다.
-void response::makeResponseHeader(void)
+void
+response::makeResponseHeader(void)
 {
 	// Server
 	// 서버 소프트웨어 정보
@@ -156,7 +163,7 @@ void response::makeResponseHeader(void)
 	// Proxy-authenticate
 	//
 	// Allow
-	// 해당 엔터티에 대해 서버 측에서 지원 가능한 HTTP 메소드의 리스트를 나타낸다.
+	// 해당 엔티티에 대해 서버 측에서 지원 가능한 HTTP 메소드의 리스트를 나타낸다.
 	// 때론, HTTP 요청 메세지의 HTTP 메소드 OPTIONS에 대한 응답용 항목으로 사용된다.
 	// OPTIONS: 웹서버측 제공 HTTP 메소드에 대한 질의
 	// Ex) Allow: GET,HEAD
