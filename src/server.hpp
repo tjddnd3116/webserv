@@ -27,6 +27,7 @@ class server
 		struct kevent				m_eventList[EVENT_SIZE];
 		int							m_kq;
 		size_t						m_serverSize;
+		AMethod*					m_method;
 
 		void	addEvents(uintptr_t ident, int16_t filter, uint16_t flags,
 				uint32_t fflags, intptr_t data, void* udata);

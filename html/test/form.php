@@ -10,7 +10,6 @@
 <main class="container">
   <div>
     <h2>
-    <?php echo json_decode(file_get_contents("php://input"), true); ?>
     Welcome <?php echo $_POST["name"]; ?><br>
     Your email address is: <?php echo $_POST["email"]; ?><br>
     The sum of your numbers is <?php

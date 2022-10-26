@@ -22,8 +22,8 @@ void
 cgi::initCgi(const AMethod *method)
 {
     // cgi_path = "/Users/gson/Archive/webserv/html/php/cgi_tester";
-    // cgi_path = "/Users/gson/Archive/webserv/html/php/php-cgi";
-    m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
+    m_cgiPath = "/Users/gson/Archive/webserv/html/php/php-cgi";
+    // m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
 
     std::string rootPath;
@@ -69,7 +69,7 @@ cgi::initCgi(const AMethod *method)
     std::string QUERY_STRING = "QUERY_STRING=";
     if (method->getMethod() == "GET")
     {
-        QUERY_STRING += m_query;
+        QUERY_STRING += method->getQueryString();
     }
 
     std::string SERVER_NAME = "SERVER_NAME=";
