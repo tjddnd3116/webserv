@@ -6,6 +6,7 @@ std::map<int, std::string> response::s_statusCode;
 response::response(const configInfo& conf)
 {
 	m_conf = conf;
+	m_isCgi = 0;
 	m_method = NULL;
 	m_responseBuf.clear();
 	m_filePath.clear();
@@ -25,6 +26,7 @@ response::makeStatusLine(void)
 	m_filePath = m_method->getFilePath();
 	statusCode = m_method->getStatusCode();
 
+	std::cout << "Path: "<< m_filePath << std::endl;
 	m_file.open(m_filePath);
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr(statusCode);

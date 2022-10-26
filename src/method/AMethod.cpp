@@ -1,4 +1,5 @@
 #include "AMethod.hpp"
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -13,7 +14,6 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
-	std::cout << m_statusCode << std::endl;
 	if (!m_statusCode)
 	{
 		m_methodType = splittedLine[0];
@@ -153,19 +153,25 @@ AMethod::uriParse(void)
 
 	fileName.assign(uri, lastSlashPos, uri.size());
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-
 	m_filePath = root + fileName;
 
 	if (fileName == "/")
 		m_filePath += indexFile[0];
+	std::cout << m_filePath << std::endl;
+	m_statusCode = 202;
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 404;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+		return ;
 	}
-	m_statusCode = 200;
 	if (!this->checkMethodLimit(limitExcept))
+	{
+		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
 }
 
 const std::string&

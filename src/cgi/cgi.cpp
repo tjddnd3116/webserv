@@ -22,8 +22,8 @@ void
 cgi::initCgi(const AMethod *method)
 {
     // cgi_path = "/Users/gson/Archive/webserv/html/php/cgi_tester";
-    // cgi_path = "/Users/gson/Archive/webserv/html/php/php-cgi";
-    m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
+    m_cgiPath = "/Users/gson/Archive/webserv/html/php/php-cgi";
+    // m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
 
     std::string rootPath;

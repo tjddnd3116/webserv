@@ -33,7 +33,6 @@ request::readRequest(const std::string& request)
 		curPos = request.find("\n", prePos);
 	}
 	readLine = request.substr(prePos, request.size() - prePos);
-	// may be error?
 	m_method->loadRequest(readLine);
 	m_method->uriParse();
 	return (m_method);

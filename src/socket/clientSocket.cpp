@@ -91,7 +91,7 @@ clientSocket::readSock(void)
 			// std::cout << "read size : " << readRet << std::endl;
 			request request(m_conf);
 			m_method = request.readRequest(m_readBuffer);
-			if (0)
+			if (1)
 			{
 				std::cout << *m_method << std::endl;
 				m_method->printBody();
