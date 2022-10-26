@@ -63,7 +63,6 @@ configInfo::setTable()
 void
 configInfo::setRootPath(std::vector<std::string>& set)
 {
-	std::cout << set[0] << std::endl;
 	if (set.size() != 1)
 		throw (WsException("invalid root size"));
 	m_root = set[0];

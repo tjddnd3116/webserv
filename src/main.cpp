@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	{
 		std::cerr << e.what() << std::endl;
 		// TODO
-		// clear(free) all data
+		// free all data
 		// clear();
 		std::cerr << "Webserv server exit....." << std::endl;
 	}

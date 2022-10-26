@@ -25,33 +25,32 @@ class response
 		int					m_isCgi;
 		std::string			m_filePath;
 
-		std::string			m_rootPath;
 
-
-		int 				check_isCgi();
+		int 				checkIsCgi(void);
 		void				makeStatusLine(void);
 		void				makeResponseHeader(void);
 		void				makeEntityHeader(void);
 		void				makeGeneralHeader(void);
-		void				extractExt();
-		void				parseBody();
+		void				extractExt(void);
+		void				parseBody(void);
 		const std::string	getDate(void);
 		const std::string	getStatusCodeStr(int statusCode);
 
 		response(const response& copy);
 		response& operator=(const response& copy);
+
 	public:
 		response(const configInfo& conf);
 		~response();
 
 		static std::map<int, std::string>	s_statusCode;
 
-		static void	setStatusCode(void);
-		void		makeBody(void);
-		void		makeResponse(const AMethod* method);
-		void		makeDate(void);
-		size_t		getBufSize(void) const;
-		const std::string& operator()(void);
+		static void			setStatusCode(void);
+		void				makeBody(void);
+		void				makeResponse(const AMethod* method);
+		void				makeDate(void);
+		size_t				getBufSize(void) const;
+		const std::string&	operator()(void);
 
 };
 #endif //response_hpp
