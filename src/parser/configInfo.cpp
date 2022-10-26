@@ -140,6 +140,7 @@ void	 configInfo::setErrorPage(std::vector<std::string>& set)
 {
 	m_errorCode = set;
 	m_errorPath = m_errorCode.back();
+	m_errorPath = m_root + m_errorPath;
 	m_errorCode.pop_back();
 	if (!isNum(m_errorCode))
 		throw (WsException("invalid error code"));

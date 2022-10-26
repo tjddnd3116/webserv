@@ -1,4 +1,5 @@
 #include "AMethod.hpp"
+#include <string>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -13,7 +14,6 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
-	std::cout << m_statusCode << std::endl;
 	if (!m_statusCode)
 	{
 		m_method = splittedLine[0];
@@ -142,8 +142,8 @@ AMethod::uriParse(void)
 	queryStringPos = uri.find("?");
 	if (queryStringPos != std::string::npos)
 	{
-		m_queryString.assign(uri, queryStringPos, uri.size());
-		uri.substr(0, queryStringPos);
+		m_queryString.assign(uri, queryStringPos + 1, uri.size());
+		uri = uri.substr(0, queryStringPos);
 	}
 	lastSlashPos = uri.find_last_of("/");
 	if (lastSlashPos == 0)
@@ -152,18 +152,26 @@ AMethod::uriParse(void)
 		locationPath.assign(uri, 0, lastSlashPos + 1);
 	fileName.assign(uri, lastSlashPos, uri.size());
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-	if (!this->checkMethodLimit(limitExcept))
-		m_statusCode = 405;
 	m_filePath = root + fileName;
 	if (fileName == "/")
 		m_filePath += indexFile[0];
+	std::cout << m_filePath << std::endl;
+	m_statusCode = 202;
 	if (!checkFileExists(m_filePath))
 	{
 		std::cout << "not exist" << std::endl;
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 404;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+		return ;
 	}
-	m_statusCode = 202;
+	if (!this->checkMethodLimit(limitExcept))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
+		
 }
 
 const std::string&
