@@ -19,7 +19,6 @@ request::readRequest(const std::string& request)
 
 	prePos = 0;
 	curPos = request.find("\n", prePos);
-	std::cout << request << std::endl;
 	while (curPos != std::string::npos)
 	{
 		readLine = request.substr(prePos, curPos - prePos);

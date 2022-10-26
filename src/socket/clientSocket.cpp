@@ -67,9 +67,9 @@ clientSocket::readSock(void)
 	else
 	{
 		m_readBuffer += buffer;
+		std::cout << "Buffer: " << m_readBuffer << std::endl;
 		if (readRet == BUF_SIZE)
 			return (readRet);
-		std::cout << m_method << std::endl;
 		if (m_method != NULL && m_method->getMethod() == "POST")
 		{
 			postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
@@ -88,7 +88,6 @@ clientSocket::readSock(void)
 		}
 		else if (m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
 		{
-			// std::cout << "read size : " << readRet << std::endl;
 			request request(m_conf);
 			m_method = request.readRequest(m_readBuffer);
 			if (1)

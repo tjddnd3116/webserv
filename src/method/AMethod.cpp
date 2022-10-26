@@ -153,10 +153,12 @@ AMethod::uriParse(void)
 
 	fileName.assign(uri, lastSlashPos, uri.size());
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-	m_filePath = root + fileName;
+	m_filePath = root;
 
 	if (fileName == "/")
 		m_filePath += indexFile[0];
+	else
+		m_filePath += fileName;
 	std::cout << m_filePath << std::endl;
 	m_statusCode = 202;
 	if (!checkFileExists(m_filePath))
