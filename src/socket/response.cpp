@@ -8,7 +8,6 @@ response::response(const configInfo& conf)
 	m_conf = conf;
 	m_method = NULL;
 	m_responseBuf.clear();
-	m_statusCode = 0;
 	m_filePath.clear();
 }
 
@@ -17,31 +16,18 @@ response::~response()
 	delete m_method;
 }
 
-// response::response(const response& copy)
-// {
-//     *this = copy;
-// }
-//
-// response&
-// response::operator=(const response& copy)
-// {
-//     m_file.clear();
-//     m_responseBuf = copy.m_responseBuf;
-//     m_method = copy.m_method;
-//     m_conf = copy.m_conf;
-//     m_statusCode = copy.m_statusCode;
-//     return (*this);
-// }
-
 void
 response::makeStatusLine(void)
 {
+
+	int statusCode;
+
 	m_filePath = m_method->getFilePath();
-	m_statusCode = m_method->getStatusCode();
+	statusCode = m_method->getStatusCode();
 
 	m_file.open(m_filePath);
 	m_responseBuf = "HTTP/1.1 ";
-	m_responseBuf += getStatusCodeStr();
+	m_responseBuf += getStatusCodeStr(statusCode);
 }
 
 void response::makeBody(void)
@@ -325,12 +311,12 @@ response::setStatusCode(void)
 }
 
 const std::string
-response::getStatusCodeStr(void)
+response::getStatusCodeStr(int statusCode)
 {
 	std::string statusCodeStr;
 
 	std::map<int, std::string>::iterator statusIt;
-	statusIt = s_statusCode.find(m_statusCode);
+	statusIt = s_statusCode.find(statusCode);
 	statusCodeStr = std::to_string(statusIt->first) + " ";
 	statusCodeStr += statusIt->second + "\n";
 	return (statusCodeStr);
