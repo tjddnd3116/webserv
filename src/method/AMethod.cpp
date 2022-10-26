@@ -145,22 +145,16 @@ AMethod::uriParse(void)
 		m_queryString.assign(uri, queryStringPos, uri.size());
 		uri.substr(0, queryStringPos);
 	}
-
 	lastSlashPos = uri.find_last_of("/");
 	if (lastSlashPos == 0)
 		locationPath.assign(uri, 0, uri.size());
 	else
 		locationPath.assign(uri, 0, lastSlashPos + 1);
-
 	fileName.assign(uri, lastSlashPos, uri.size());
-
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-
 	if (!this->checkMethodLimit(limitExcept))
 		m_statusCode = 405;
-
 	m_filePath = root + fileName;
-
 	if (fileName == "/")
 		m_filePath += indexFile[0];
 	if (!checkFileExists(m_filePath))

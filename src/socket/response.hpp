@@ -21,7 +21,6 @@ class response
 		configInfo			m_conf;
 
 		// 필요없음
-		int					m_statusCode;
 		std::string 		m_fileExt;
 		int					m_isCgi;
 		std::string			m_filePath;
@@ -37,7 +36,7 @@ class response
 		void				extractExt();
 		void				parseBody();
 		const std::string	getDate(void);
-		const std::string	getStatusCodeStr(void);
+		const std::string	getStatusCodeStr(int statusCode);
 
 		response(const response& copy);
 		response& operator=(const response& copy);
