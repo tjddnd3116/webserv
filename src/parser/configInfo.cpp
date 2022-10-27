@@ -296,53 +296,58 @@ configInfo::getErrorPath(void) const
 std::ostream&
 operator<<(std::ostream &os, const configInfo& conf)
 {
-	os << "\033[35m";
 	os << "------configInfo-----" << std::endl;
 	conf.printServerBlock(os);
 	for (size_t i = 0; i < conf.m_location.size(); i++)
+	{
+		os << std::endl;
 		conf.printLocationBlock(os, i);
-	os << "---------------------" << "\033[0m" << std::endl;
+	}
+	os << "---------------------" << std::endl;
 	return (os);
 }
 
 void
 configInfo::printServerBlock(std::ostream& os) const
 {
-	os << "--------server block--------" << std::endl;
-	os << "root : " << std::endl;
-		os << "\t" << m_root << std::endl;
-	os << "index : " << std::endl;
+	os << "server block" << std::endl;
+	os << "root : " << m_root << std::endl;
+
+	os << "index :";
 	for (size_t i = 0; i < m_index.size(); i++)
-		os << "\t" << m_index[i] << std::endl;
-	os << "server_name : " << std::endl;
+		os << " " << m_index[i];
+	os << std::endl;
+
+	os << "server_name :";
 	for (size_t i = 0; i < m_serverName.size(); i++)
-		os << "\t" << m_serverName[i] << std::endl;
-	os << "listen : " << std::endl;
-		os << "\t" << m_listen << std::endl;
-	os << "uri buffer size : " << std::endl;
-			os << "\t" << m_uriBufferSize << std::endl;
-	os << "client_max_body_size : " << std::endl;
-		os << "\t" << m_clientMaxBodySize << std::endl;
+		os << " " << m_serverName[i];
+	os << std::endl;
+
+	os << "listen : " << m_listen << std::endl;
+
+	os << "uri buffer size : " << m_uriBufferSize << std::endl;
+
+	os << "client_max_body_size : " << m_clientMaxBodySize << std::endl;
+
 	if (!m_errorCode.empty())
 	{
-		os << "error_code : " << std::endl;
+		os << "error_code :";
 			for (size_t i = 0; i < m_errorCode.size(); i++)
-				os << "\t" << m_errorCode[i] << std::endl;
-		os << "error_Path : " << std::endl;
-		os << "\t" << m_errorPath << std::endl;
+				os << " " << m_errorCode[i];
+		os << std::endl;
+
+		os << "error_Path : " << m_errorPath << std::endl;
 	}
 }
 
 void
 configInfo::printLocationBlock(std::ostream& os, size_t i) const
 {
-	os << "[" << i + 1 << "]--------location block--------" << std::endl;
+	os << "location block[" << i + 1 << "]" << std::endl;
 
-	os << "path : " << std::endl;
-	os << "\t" << m_location[i].locPath << std::endl;
+	os << "path : " << m_location[i].locPath << std::endl;
 
-	os << "root :" << std::endl;
-		os << "\t" << m_location[i].locRoot << std::endl;
+	os << "root : " << m_location[i].locRoot << std::endl;
 
 	if (!m_location[i].locExpires.empty())
 	{
@@ -353,15 +358,15 @@ configInfo::printLocationBlock(std::ostream& os, size_t i) const
 
 	if (m_location[i].locCgiPass.size())
 	{
-		os << "pass :" << std::endl;
-			os << "\t" << m_location[i].locCgiPass << std::endl;
+		os << "pass :" << m_location[i].locCgiPass << std::endl;
 	}
 
 	if (!m_location[i].locLimitExpect.empty())
 	{
-		os << "limit_except :" << std::endl;
+		os << "limit_except :";
 		for (size_t j = 0; j < m_location[i].locLimitExpect.size(); j++)
-			os << "\t" << m_location[i].locLimitExpect[j] << std::endl;
+			os << " " << m_location[i].locLimitExpect[j];
+		os << std::endl;
 	}
 }
 
