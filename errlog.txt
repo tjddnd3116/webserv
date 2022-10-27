@@ -1,0 +1,71 @@
+1 server {
+2 [31m	listen 1000		<< error occured [miss ';'][0m
+3 
+4 	root /Users/soum/webserv/html;
+5 
+6 	index index.html;
+7 
+8 	server_name localhost;
+9 
+10 	client_header_buffer_size 3k;
+11 
+12 	client_max_body_size 2m;
+13 
+14 	error_page 500 502 503 /Users/soum/webserv/html/404.html;
+15 
+16 	location / {
+17 
+18 		root /Users/soum/webserv/html;
+19 
+20 		index index.html;
+21 
+22 		limit_except POST GET;
+23 
+24 	}
+25 
+26 	location /42/ {
+27 
+28 		root /Users/soum/webserv/html/42;
+29 
+30 		index soum1.html;
+31 
+32 		limit_except POST;
+33 	}
+34 
+35 	location /bluprint/ {
+36 
+37 		root /Users/soum/webserv/html/bluprint;
+38 
+39 		index index.html;
+40 
+41 		limit_except POST;
+42 	}
+43 	location /php/ {
+44 		root /Users/soum/webserv/html/php;
+45 
+46 		index form.php;
+47 
+48 		limit_except GET DELETE;
+49 
+50 		cgi_pass /Users/soum/webserv/cgi-bin/php-cgi;
+51 	}
+52 
+53 	location /test/ {
+54 		root /Users/soum/webserv/html/test;
+55 
+56 		index index.html;
+57 
+58 		cgi_pass /Users/soum/webserv/cgi-bin/php-cgi;
+59 	}
+60 
+61 	location /directory/ {
+62 		root /Users/soum/webserv/youpiBanane;
+63 
+64 		index youpi.bad_extension;
+65 
+66 		limit_except GET;
+67 	}
+68 }
+69 
+70 
+Error : invalid config file

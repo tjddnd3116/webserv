@@ -27,9 +27,16 @@ class parser
 		~parser();
 
 		void							makeToken(void);
-		void							parse(void);
-		void							configParse(void);
+		// void							parse(void);
+		// void							configParse(void);
 		const std::vector<configInfo>&	getConfigInfo(void);
+
+
+		// refactor
+		void							parse(std::vector<configInfo>& configInfo,
+											  std::fstream& logFile);
+		void							configParse(std::vector<configInfo>& configInfo,
+													std::fstream& logFile);
 };
 
 #endif //parser_hpp

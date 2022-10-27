@@ -25,34 +25,65 @@ parser::makeToken(void)
 	m_configBuffer = m_fileReader.getAllBuffer();
 }
 
-void
-parser::parse(void)
-{
-	try
-	{
-		m_tokenizer.parseToken(m_config);
-	}
-	catch (WsException& e)
-	{
-		e.printConfigErr(m_configBuffer);
-		throw WsException("invalid config file");
-	}
-}
-
-void
-parser::configParse(void)
-{
-	makeToken();
-	parse();
-	for (size_t i = 0; i < m_config.size(); i++)
-	{
-		m_config[i].checkConfig();
-		// std::cout << m_config[i] << std::endl;
-	}
-}
+// void
+// parser::parse(void)
+// {
+//     try
+//     {
+//         m_tokenizer.parseToken(m_config);
+//     }
+//     catch (WsException& e)
+//     {
+//         e.printConfigErr(m_configBuffer);
+//         throw WsException("invalid config file");
+//     }
+// }
+//
+// void
+// parser::configParse(void)
+// {
+//     makeToken();
+//     parse();
+//     for (size_t i = 0; i < m_config.size(); i++)
+//     {
+//         m_config[i].checkConfig();
+//         // std::cout << m_config[i] << std::endl;
+//     }
+// }
 
 const std::vector<configInfo>&
 parser::getConfigInfo(void)
 {
 	return (m_config);
 }
+
+
+// refactor
+void
+parser::parse(std::vector<configInfo>& configInfo,
+			  std::fstream& logFile)
+{
+	try
+	{
+		m_tokenizer.parseToken(configInfo);
+	}
+	catch (WsException& e)
+	{
+		e.printConfigErr(m_configBuffer, logFile);
+		throw WsException("invalid config file");
+	}
+}
+
+void
+parser::configParse(std::vector<configInfo>& configInfo,
+					std::fstream& logFile)
+{
+	makeToken();
+	parse(configInfo, logFile);
+	for (size_t i = 0; i < configInfo.size(); i++)
+	{
+		configInfo[i].checkConfig();
+		logFile << configInfo[i] << std::endl;
+	}
+}
+
