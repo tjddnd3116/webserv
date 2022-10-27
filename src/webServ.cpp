@@ -4,9 +4,9 @@
 webServ::webServ()
 {
 	m_logFile.open(ERR_LOG_FILE_PATH);
-
 	if (m_logFile.fail())
 		throw (WsException("log file open error"));
+	m_logFile << "";
 }
 
 webServ::~webServ()
@@ -23,7 +23,7 @@ webServ::parsing(const char* configFilePath)
 	parser.configParse(m_configInfo, m_logFile);
 	} catch (std::exception& e) {
 		m_logFile << e.what() << std::endl;
-		throw (WsException("check log file"));
+		throw (WsException("check log file [" ERR_LOG_FILE_PATH "]"));
 	}
 }
 
@@ -38,6 +38,4 @@ webServ::serverRun(void)
 
 void
 webServ::clear(void)
-{
-
-}
+{}

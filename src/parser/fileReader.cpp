@@ -14,11 +14,15 @@ fileReader::~fileReader()
 void
 fileReader::initFileReader(const char *path)
 {
-	std::string extension(path);
+	std::string	extension(path);
+	size_t		dotPos;
+
+	dotPos = extension.find_last_of(".");
+	if (dotPos == std::string::npos)
+		throw WsException("invalid config file extension");
 	extension = extension.substr(extension.find_last_of("."));
 	if (extension != ".conf")
 		throw WsException("invalid config file extension");
-
 	m_configFile.open(path);
 	if (m_configFile.fail())
 		throw WsException("config file open failed");

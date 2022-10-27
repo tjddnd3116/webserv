@@ -36,13 +36,10 @@ class tokenizer
 
 		e_tokenType	selectTokenType(const std::string& str) const;
 
-		void	 	serverParse(configInfo &Info);
-		void		serverContextParse(configInfo &info);
-		void		locationParse(configInfo &info);
-		void		locationContextParse(configInfo &info);
-		void		limitExceptParse(configInfo& info);
-		void		limitExceptContextParse(configInfo& info);
+		void	 	blockParse(configInfo &Info, const std::string& blockType = "");
+		void		contextParse(configInfo &info, const std::string& blockType);
 
+		bool		isLocationBlock(const std::string& blockType);
 		bool		isSafeIdx(void);
 		bool		isComment(const t_token& token) const;
 		bool		isOpenBrace(void);
@@ -52,15 +49,18 @@ class tokenizer
 		bool		isLocationPath(configInfo& info);
 		bool		isLimitExcept(configInfo& info);
 
+		// hide copy
 		tokenizer(const tokenizer& copy);
 		tokenizer& operator=(const tokenizer& copy);
 
 	public:
+		// constructor & destructor
 		tokenizer();
 		~tokenizer();
 
+		// make token & parse token
 		void		pushBackToken(t_token& token);
-		void	 	parseToken(std::vector<configInfo>& config);
+		void	 	parseToken(std::vector<configInfo>& config, std::fstream& logFile);
 
 };
 
