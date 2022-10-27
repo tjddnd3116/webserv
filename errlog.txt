@@ -1,5 +1,5 @@
 1 server {
-2 [31m	listen 1000		<< error occured [miss ';'][0m
+2 	listen 1000;
 3 
 4 	root /Users/soum/webserv/html;
 5 
@@ -21,8 +21,8 @@
 21 
 22 		limit_except POST GET;
 23 
-24 	}
-25 
+24 	
+25 [31m		<< error occured [miss '}'][0m
 26 	location /42/ {
 27 
 28 		root /Users/soum/webserv/html/42;
@@ -69,3 +69,4 @@
 69 
 70 
 Error : invalid config file
+config file
