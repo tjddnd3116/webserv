@@ -12,6 +12,7 @@ class clientSocket : public ASocket
 		AMethod*	m_method;
 		std::string	m_readBuffer;
 		bool		m_readFinish;
+		bool		is_bodySection;
 
 	public:
 		clientSocket(const configInfo& conf);
