@@ -26,33 +26,21 @@ parser::makeToken(void)
 }
 
 void
-parser::parse(void)
+parser::parse(std::vector<configInfo>& configInfo,
+			  std::fstream& logFile)
 {
-	try
-	{
-		m_tokenizer.parseToken(m_config);
-	}
-	catch (WsException& e)
-	{
-		e.printConfigErr(m_configBuffer);
+	try {
+		m_tokenizer.parseToken(configInfo, logFile);
+	} catch (WsException& e) {
+		e.printConfigErr(m_configBuffer, logFile);
 		throw WsException("invalid config file");
 	}
 }
 
 void
-parser::configParse(void)
+parser::configParse(std::vector<configInfo>& configInfo,
+					std::fstream& logFile)
 {
 	makeToken();
-	parse();
-	for (size_t i = 0; i < m_config.size(); i++)
-	{
-		m_config[i].checkConfig();
-		// std::cout << m_config[i] << std::endl;
-	}
-}
-
-const std::vector<configInfo>&
-parser::getConfigInfo(void)
-{
-	return (m_config);
+	parse(configInfo, logFile);
 }
