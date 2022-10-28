@@ -20,20 +20,21 @@ WsException::what() const throw()
 }
 
 void
-WsException::printConfigErr(const std::vector<std::string>& configFile)
+WsException::printConfigErr(const std::vector<std::string>& configFile,
+							std::fstream& logFile)
 {
 	for (size_t i = 0; i < configFile.size(); i++)
 	{
-		std::cout << i + 1;
-		std::cout << " ";
+		logFile << i + 1;
+		logFile << " ";
 		if (m_errLine == i)
 		{
-			std::cout << RED << configFile[i];
-			std::cout << "\t\t<< error occured";
-			std::cout << " [" << m_errMsg << "]" << NC << std::endl;
+			logFile << RED << configFile[i];
+			logFile << "\t\t<< error occured";
+			logFile << " [" << m_errMsg << "]" << NC << std::endl;
 		}
 		else
-			std::cout << configFile[i] << std::endl;
+			logFile << configFile[i] << std::endl;
 	}
 }
 

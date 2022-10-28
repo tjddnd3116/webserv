@@ -12,24 +12,26 @@
 class parser
 {
 	private:
+		std::vector<std::string>	m_configBuffer;
 		fileReader					m_fileReader;
 		tokenizer					m_tokenizer;
-		std::vector<std::string>	m_configBuffer;
-		std::vector<configInfo>		m_config;
 
-		// can't copy
-		// just create to use default constructor
+		// hide copy
 		parser(const parser& copy);
 		parser& operator=(const parser& copy);
 
 	public:
+		// constructor & destructor
 		parser(const char* path);
 		~parser();
 
-		void							makeToken(void);
-		void							parse(void);
-		void							configParse(void);
-		const std::vector<configInfo>&	getConfigInfo(void);
+		// parsing
+		void	makeToken(void);
+		void	parse(std::vector<configInfo>& configInfo,
+					  std::fstream& logFile);
+		void	configParse(std::vector<configInfo>& configInfo,
+							std::fstream& logFile);
+
 };
 
 #endif //parser_hpp

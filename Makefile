@@ -6,7 +6,7 @@
 #    By: gson <gson@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/16 17:07:04 by gson             ###   ########.fr        #
+#    Updated: 2022/10/27 16:20:49 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,7 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -g -fsanitize=address
 
 SRCS = ./src/main.cpp \
+	   ./src/webServ.cpp \
 	   ./src/WsException.cpp \
 	   ./src/server.cpp \
 	   ./src/parser/parser.cpp \
