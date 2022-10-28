@@ -70,23 +70,18 @@ clientSocket::readSock(void)
 		std::cout << "Buffer: " << m_readBuffer << std::endl;
 		if (readRet == BUF_SIZE)
 			return (readRet);
-		if (m_method != NULL && m_method->getMethod() == "POST")
+		if (m_method != NULL)
 		{
-			postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-
-			tempPost->loadBody(m_readBuffer);
-
-			unsigned int	contentLen = std::stoi((tempPost->getRequestSet()).at("Content-Length")[0]);
-			if (tempPost->getBody().size() < contentLen)
+			if (m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
 				return readRet;
 			else
 			{
 				m_readFinish = true;
 				m_readBuffer.clear();
-				tempPost->printBody();
+				m_method->printBody();
 			}
 		}
-		else if (m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+		if (m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
 		{
 			request request(m_conf);
 			m_method = request.readRequest(m_readBuffer);
