@@ -34,3 +34,6 @@ path : /directory/
 root : /Users/gson/webserv_cgi/YoupiBanane/
 limit_except : GET
 ---------------------
+gi/cgi-bin/php-cgi
+limit_except : GET POST DELETE
+---------------------

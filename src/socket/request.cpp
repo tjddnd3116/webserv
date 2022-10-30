@@ -43,7 +43,7 @@ request::methodGenerator(const std::string& readLine)
 	std::string method;
 
 	method.assign(readLine, 0, readLine.find(" ", 0));
-	if (method == "GET")
+	if (method == "GET" || method == "HEAD")
 		return (new getMethod(readLine, m_conf));
 	else if (method == "POST")
 		return (new postMethod(readLine, m_conf));
