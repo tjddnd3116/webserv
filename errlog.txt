@@ -31,10 +31,9 @@ limit_except : POST
 
 location block[5]
 path : /directory/
-root : /Users/gson/webserv_cgi/YoupiBanane/
+root : /Users/gson/webserv_cgi/html/YoupiBanane/
 limit_except : GET
 ---------------------
-----
 n /directory/ {
 49 
 50 		root /Users/gson/webserv_cgi/YoupiBanane/;
