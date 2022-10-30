@@ -56,7 +56,10 @@ response::makeBody(void)
 	allReadLineSize = allReadLine.size();
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
-	m_responseBuf += allReadLine;
+	if (m_method->getMethod() != "HEAD")
+	{
+		m_responseBuf += allReadLine;
+	}
 }
 
 void

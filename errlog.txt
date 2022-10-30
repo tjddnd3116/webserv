@@ -34,6 +34,17 @@ path : /directory/
 root : /Users/gson/webserv_cgi/YoupiBanane/
 limit_except : GET
 ---------------------
-gi/cgi-bin/php-cgi
-limit_except : GET POST DELETE
----------------------
+----
+n /directory/ {
+49 
+50 		root /Users/gson/webserv_cgi/YoupiBanane/;
+51 
+52 		index youpi.bad_extension;
+53 
+54 		limit_except GET;
+55 
+56 	}	
+57 }
+58 
+59 
+Error : invalid config file

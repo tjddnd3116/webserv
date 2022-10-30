@@ -129,7 +129,7 @@ clientSocket::sendSock(void)
 	response response(m_conf);
 
 	response.makeResponse(m_method);
-	if (0)
+	if (1)
 	{
 		std::cout << BLUE << "-----------response----------------" << std::endl;
 		std::cout << response().c_str() << std::endl;
