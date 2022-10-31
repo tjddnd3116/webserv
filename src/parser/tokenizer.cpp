@@ -1,5 +1,4 @@
 #include "tokenizer.hpp"
-#include <exception>
 
 tokenizer::tokenizer()
 {

@@ -21,8 +21,8 @@ class clientSocket : public ASocket
 		clientSocket& operator=(const clientSocket& copy);
 
 		void	createSock(void);
-		int		readSock(void);
-		int		sendSock(void);
+		int		readSock(std::fstream& logFile);
+		int		sendSock(std::fstream& logFile);
 		bool	getReadStatus(void) const;
 };
 #endif //clientSocket_hpp

@@ -23,17 +23,22 @@ webServ::parsing(const char* configFilePath)
 	parser.configParse(m_configInfo, m_logFile);
 	} catch (std::exception& e) {
 		m_logFile << e.what() << std::endl;
-		throw (WsException("check log file [" ERR_LOG_FILE_PATH "]"));
+		throw (WsException("parsing error check log file [" ERR_LOG_FILE_PATH "]"));
 	}
 }
 
 void
 webServ::serverRun(void)
 {
-	server server(m_configInfo);
+	try {
+		server server(m_configInfo, m_logFile);
 
-	server.createServerSock();
-	server.run();
+		server.createServerSock();
+		server.run();
+	} catch (std::exception& e) {
+		m_logFile << e.what() << std::endl;
+		throw (WsException("server error check log file [" ERR_LOG_FILE_PATH "]"));
+	}
 }
 
 void

@@ -7,7 +7,8 @@
 
 #include <map>
 #include <vector>
-#include <iostream>
+// #include <iostream>
+#include <fstream>
 
 #include "./parser/configInfo.hpp"
 #include "./socket/clientSocket.hpp"
@@ -21,6 +22,10 @@ class server
 	private:
 		// member variable
 		std::vector<configInfo>		m_conf;
+		std::fstream&				m_logFile;
+		//
+		//
+
 		std::map<int, serverSocket>	m_serverSock;
 		std::map<int, clientSocket>	m_clientSock;
 		std::vector<struct kevent>	m_changeList;
@@ -39,11 +44,13 @@ class server
 		void	writeEvent(struct kevent* curEvent);
 		void	disconnectClient(int fd);
 
+		// hide copy
 		server(const server& copy);
 		server& operator=(const server& copy);
+
 	public:
-		// Orthodox Canonical Form
-		server(const std::vector<configInfo>& conf);
+		// constructor & destructor
+		server(const std::vector<configInfo>& conf, std::fstream& logFile);
 		~server();
 
 		void		createServerSock(void);

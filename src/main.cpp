@@ -16,21 +16,13 @@ int main(int argc, char **argv)
 		webServ webServ;
 
 		webServ.parsing(argv[1]);
-		// webServ.serverRun();
-
-		// parser parser(argv[1]);
-		// parser.configParse();
-        //
-		// server	server(parser.getConfigInfo());
-		// server.createServerSock();
-		// server.run();
+		webServ.serverRun();
 	}
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
 		// TODO
 		// free all data
-		// clear();
 		// webServ.clear();
 		std::cerr << "Webserv server exit....." << std::endl;
 	}

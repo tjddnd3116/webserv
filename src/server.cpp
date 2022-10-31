@@ -1,7 +1,7 @@
 #include "server.hpp"
 
-server::server(const std::vector<configInfo> &conf)
-	:m_conf(conf)
+server::server(const std::vector<configInfo> &conf, std::fstream& logFile)
+	:m_conf(conf), m_logFile(logFile)
 {
 	m_serverSize = m_conf.size();
 	m_kq = kqueue();
@@ -18,6 +18,7 @@ server::createServerSock(void)
 	for (size_t serverSockIdx = 0; serverSockIdx < m_serverSize; serverSockIdx++)
 	{
 		serverSocket serverSock(m_conf[serverSockIdx]);
+
 		serverSock.createSock();
 		serverSock.initAddr();
 		serverSock.bindSock();
@@ -25,7 +26,7 @@ server::createServerSock(void)
 		m_serverSock.insert(std::make_pair(serverSock.getSocketFd(), serverSock));
 		addEvents(serverSock.getSocketFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 	}
-	std::cout << "all server socket created" << std::endl;
+	m_logFile << "all server socket created" << std::endl;
 }
 
 void
@@ -51,14 +52,14 @@ server::addEvents(uintptr_t ident, int16_t filter, uint16_t flags, uint32_t ffla
 }
 
 int
-server::waitEvent()
+server::waitEvent(void)
 {
 	int newEvents;
 
-	std::cout << "\n---waiting event---" << std::endl;
+	m_logFile << "\n---waiting event---" << std::endl;
 	newEvents = kevent(m_kq, &m_changeList[0], m_changeList.size(),
 			m_eventList, EVENT_SIZE, NULL);
-	std::cout << "new events count : " << newEvents << std::endl;
+	m_logFile << "new events count : " << newEvents << std::endl;
 	if (newEvents == -1)
 		throw (WsException("kevent fail"));
 	m_changeList.clear();
@@ -73,11 +74,11 @@ server::communicateSock(int newEvents)
 		struct kevent* curEvent;
 
 		curEvent = &m_eventList[i];
-		std::cout << "new event fd : " << curEvent->ident << std::endl;
+		m_logFile << "new event fd : " << curEvent->ident << std::endl;
 		if (curEvent->filter == EVFILT_READ)
-			std::cout << "[read] event occured" << std::endl;
+			m_logFile << "[read] event occured" << std::endl;
 		else if (curEvent->filter == -2)
-			std::cout << "[write] event occured" << std::endl;
+			m_logFile << "[write] event occured" << std::endl;
 		if (curEvent->flags & EV_ERROR)
 		{
 			if (isServerSocket(curEvent->ident))
@@ -122,8 +123,8 @@ server::readEvent(struct kevent* curEvent)
 		m_clientSock.insert(std::make_pair(clientSock.getSocketFd(), clientSock));
 		addEvents(clientSock.getSocketFd(), EVFILT_READ,
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
-		std::cout << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
-		std::cout << "now client socket size : " << m_clientSock.size() << std::endl;
+		m_logFile << "client socket[" << clientSock.getSocketFd() << "] created, server read finish ";
+		m_logFile << "now client socket size : " << m_clientSock.size() << std::endl;
 		return (1);
 	}
 	else if(isClientSocket(curEvent->ident))
@@ -132,18 +133,18 @@ server::readEvent(struct kevent* curEvent)
 
 		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
-		readRet = (*clientIt).second.readSock();
+		readRet = (*clientIt).second.readSock(m_logFile);
 		if (readRet <= 0)
 		{
 			if (readRet < 0)
-				std::cout << "client read error" << std::endl;
+				m_logFile << "client read error" << std::endl;
 			disconnectClient(curEvent->ident);
 			return (1);
 		}
 		if ((*clientIt).second.getReadStatus())
 			addEvents((*clientIt).first, EVFILT_WRITE,
 				EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
-		std::cout << "client read finish" << std::endl;
+		m_logFile << "client read finish" << std::endl;
 	}
 	return (0);
 }
@@ -157,21 +158,21 @@ server::writeEvent(struct kevent* curEvent)
 
 		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
-		sendRet = (*clientIt).second.sendSock();
+		sendRet = (*clientIt).second.sendSock(m_logFile);
 		if (sendRet < 0)
 		{
-			std::cout << "client send error" << std::endl;
+			m_logFile << "client send error" << std::endl;
 			disconnectClient(curEvent->ident);
 		}
 		else
-			std::cout << "client send finish" << std::endl;
+			m_logFile << "client send finish" << std::endl;
 	}
 }
 
 void
 server::disconnectClient(int fd)
 {
-	std::cout << "client disconnected : " << fd << std::endl;
+	m_logFile << "client disconnected : " << fd << std::endl;
 	m_clientSock.at(fd).closeSock();
 	m_clientSock.erase(fd);
 }

@@ -12,14 +12,13 @@ request::~request()
 AMethod*
 request::readRequest(const std::string& request)
 {
-	size_t		prePos;
-	size_t		curPos;
 	std::string readLine;
 	std::string buffer;
+	size_t		prePos;
+	size_t		curPos;
 
 	prePos = 0;
 	curPos = request.find("\n", prePos);
-	std::cout << request << std::endl;
 	while (curPos != std::string::npos)
 	{
 		readLine = request.substr(prePos, curPos - prePos);
@@ -52,8 +51,6 @@ request::methodGenerator(const std::string& readLine)
 		return (new putMethod(readLine, m_conf));
 	else if (method == "DELETE")
 		return (new deleteMethod(readLine, m_conf));
-	// else
-	//     thow error;
 	return (NULL);
 }
 
