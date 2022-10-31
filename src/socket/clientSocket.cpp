@@ -6,6 +6,7 @@ clientSocket::clientSocket(const configInfo& conf)
 {
 	m_readBuffer.clear();
 	m_method = NULL;
+	is_bodySection = 0;
 }
 
 clientSocket::clientSocket(const ASocket& serverSock)
@@ -14,6 +15,7 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	m_SocketFd = serverSock.getSocketFd();
 	m_readBuffer.clear();
 	m_method = NULL;
+	is_bodySection = 0;
 }
 
 clientSocket::~clientSocket()
@@ -30,6 +32,7 @@ clientSocket::operator=(const clientSocket& copy)
 {
 	m_method = copy.m_method;
 	m_conf = copy.m_conf;
+	is_bodySection = copy.is_bodySection;
 	m_SocketAddr = copy.m_SocketAddr;
 	m_SocketAddrSize = copy.m_SocketAddrSize;
 	m_SocketFd = copy.m_SocketFd;
@@ -124,18 +127,53 @@ clientSocket::readSock(std::fstream& logFile)
 	else
 	{
 		m_readBuffer += buffer;
-		if (readRet < BUF_SIZE)
+		if (readRet == BUF_SIZE)
+			return (readRet);
+		if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
 		{
-			logFile << "read size : " << readRet << std::endl;
+			return readRet;
+		}
+		else if (is_bodySection == false && \
+			m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+		{
+			std::cout << "Found carrage return!" << std::endl;
 			request request(m_conf);
-
 			m_method = request.readRequest(m_readBuffer);
-			if (1)
+			if (m_method->getMethod() == "POST")
 			{
-				logFile << *m_method << std::endl;
+				
+				//postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
+				//tempPost->loadBody(m_readBuffer);
+				std::cout << "m_body is : " << m_method->getBody() << std::endl;
+				std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
+				transferIt = m_method->getRequestSet().find("Transfer-Encoding");
+				std::string type;
+				if (transferIt != m_method->getRequestSet().end())
+				{
+				    type = transferIt->second[0];
+				}
+				if (type == "chunked" && type.find("0\n") == std::string::npos)
+				{
+					is_bodySection = true;
+					return readRet;
+				}
+			}
+			if (m_method->getMethod() != "POST")
+			{
+				is_bodySection = false;
+				std::cout << *m_method << std::endl;
 				m_method->printBody();
 			}
 			m_readFinish = true;
+			m_readBuffer.clear();
+		}
+		else if (is_bodySection == true && \
+			m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+		{
+			std::cout << *m_method << std::endl;
+			m_method->printBody();
+			m_readFinish = true;
+			is_bodySection = false;
 			m_readBuffer.clear();
 		}
 	}

@@ -26,7 +26,6 @@ response::makeStatusLine(void)
 	m_filePath = m_method->getFilePath();
 	statusCode = m_method->getStatusCode();
 
-	std::cout << "Path: "<< m_filePath << std::endl;
 	m_file.open(m_filePath);
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr(statusCode);
@@ -57,7 +56,10 @@ response::makeBody(void)
 	allReadLineSize = allReadLine.size();
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
-	m_responseBuf += allReadLine;
+	if (m_method->getMethod() != "HEAD")
+	{
+		m_responseBuf += allReadLine;
+	}
 }
 
 void
@@ -80,15 +82,27 @@ response::parseBody()
 		m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
 		m_type = m_newBody.substr(0, m_newBody.find("\n"));
 		m_newBody = m_newBody.substr(m_newBody.find("\n"));
+		return ;
 	}
+	m_type = "Content-type: ";
 	if (m_fileExt == ".png")
-	{
-		m_type = "Content-type: image/png";
-	}
+		m_type += "image/png";
+	else if (m_fileExt == ".css")
+		m_type += "text/css";
+	else if (m_fileExt == ".txt")
+		m_type += "text/plain";
+	else if (m_fileExt == ".jpg" || m_fileExt == ".jpeg")
+		m_type += "image/Jpeg";
+	else if (m_fileExt == ".gif")
+		m_type += "image/gif";
+	else if (m_fileExt == ".webp")
+		m_type += "image/webp";
+	else if (m_fileExt == ".js")
+		m_type += "text/javascript";
+	else if (m_fileExt == ".xml")
+		m_type += "text/xml";
 	else
-	{
-		m_type = "Content-type: text/css, text/html; charset=UTF-8";
-	}
+		m_type += "text/html; charset=UTF-8";
 }
 
 int
@@ -117,7 +131,7 @@ response::makeResponse(const AMethod* method)
 	{
 		defaultCgi.initCgi(m_method);
 		m_newBody = defaultCgi.execCgi(m_method);
-		std::cout << m_newBody << std::endl;
+		//std::cout << m_newBody << std::endl;
 	}
 	parseBody();
 	makeEntityHeader();

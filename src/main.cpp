@@ -17,6 +17,16 @@ int main(int argc, char **argv)
 
 		webServ.parsing(argv[1]);
 		webServ.serverRun();
+<<<<<<< HEAD
+=======
+
+		// parser parser(argv[1]);
+		// parser.configParse();
+        //
+		// server	server(parser.getConfigInfo());
+		// server.createServerSock();
+		// server.run();
+>>>>>>> c5203a2b721e3d72c28bb69b465b8115710fb1ae
 	}
 	catch (std::exception& e)
 	{

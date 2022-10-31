@@ -151,12 +151,25 @@ AMethod::uriParse(void)
 	else
 		locationPath.assign(uri, 0, lastSlashPos + 1);
 
+	std::cout << "locationPath is: " << locationPath << std::endl;
 	fileName.assign(uri, lastSlashPos, uri.size());
 	m_conf.findLocation(locationPath, root, indexFile, limitExcept);
-	m_filePath = root + fileName;
-
-	if (fileName == "/")
+	m_filePath = root;
+	std::cout << "fileName is: " << fileName << std::endl;
+	std::cout << "indexFile is: " << indexFile[0] << std::endl;
+	if (fileName == "/" || locationPath == fileName)
 		m_filePath += indexFile[0];
+<<<<<<< HEAD
+=======
+	else
+	{
+		if (fileName.find("/", 0, 1) != std::string::npos)
+			m_filePath += fileName.substr(fileName.find("/", 0, 1) + 1);
+		else
+			m_filePath += fileName;
+	}
+	std::cout << "m_filePath is: " << m_filePath << std::endl;
+>>>>>>> c5203a2b721e3d72c28bb69b465b8115710fb1ae
 	m_statusCode = 202;
 	if (!checkFileExists(m_filePath))
 	{
