@@ -141,7 +141,6 @@ clientSocket::readSock(std::fstream& logFile)
 			m_method = request.readRequest(m_readBuffer);
 			if (m_method->getMethod() == "POST")
 			{
-				
 				//postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
 				//tempPost->loadBody(m_readBuffer);
 				std::cout << "m_body is : " << m_method->getBody() << std::endl;
