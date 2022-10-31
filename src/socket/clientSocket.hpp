@@ -10,6 +10,9 @@ class clientSocket : public ASocket
 {
 	private:
 		AMethod*	m_method;
+		request		m_request;
+
+
 		std::string	m_readBuffer;
 		bool		m_readFinish;
 		bool		is_bodySection;

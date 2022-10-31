@@ -1,28 +1,27 @@
 #include "clientSocket.hpp"
-#include <string>
 
 clientSocket::clientSocket(const configInfo& conf)
-	:ASocket(conf)
+	:ASocket(conf), m_request(conf)
 {
 	m_readBuffer.clear();
 	m_method = NULL;
-	is_bodySection = 0;
+	is_bodySection = false;
 }
 
 clientSocket::clientSocket(const ASocket& serverSock)
-	:ASocket(serverSock.getConf())
+	:ASocket(serverSock.getConf()), m_request(serverSock.getConf())
 {
 	m_SocketFd = serverSock.getSocketFd();
 	m_readBuffer.clear();
 	m_method = NULL;
-	is_bodySection = 0;
+	is_bodySection = false;
 }
 
 clientSocket::~clientSocket()
 {}
 
 clientSocket::clientSocket(const clientSocket& copy)
-	:ASocket(copy.m_conf)
+	:ASocket(copy.m_conf), m_request(copy.m_conf)
 {
 	*this = copy;
 }
@@ -111,11 +110,80 @@ clientSocket::createSock(void)
 //     return (readRet);
 // }
 
+// int
+// clientSocket::readSock(std::fstream& logFile)
+// {
+//     int readRet;
+//     char buffer[BUF_SIZE];
+//
+//     m_readFinish = false;
+//     std::memset(buffer, 0, sizeof(buffer));
+//     readRet = read(m_SocketFd, buffer, BUF_SIZE);
+//     if (readRet < 0)
+//         logFile << "non-blocking" << std::endl;
+//     else if (readRet == 0)
+//         logFile << "client socket close!" << std::endl;
+//     else
+//     {
+//         m_readBuffer += buffer;
+//         if (readRet == BUF_SIZE)
+//             return (readRet);
+//         if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
+//         {
+//             return readRet;
+//         }
+//         else if (is_bodySection == false && \
+//             m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+//         {
+//             std::cout << "Found carrage return!" << std::endl;
+//             request request(m_conf);
+//             m_method = request.readRequest(m_readBuffer);
+//             if (m_method->getMethod() == "POST")
+//             {
+//                 //postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
+//                 //tempPost->loadBody(m_readBuffer);
+//                 std::cout << "m_body is : " << m_method->getBody() << std::endl;
+//                 std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
+//                 transferIt = m_method->getRequestSet().find("Transfer-Encoding");
+//                 std::string type;
+//                 if (transferIt != m_method->getRequestSet().end())
+//                 {
+//                     type = transferIt->second[0];
+//                 }
+//                 if (type == "chunked" && type.find("0\n") == std::string::npos)
+//                 {
+//                     is_bodySection = true;
+//                     return readRet;
+//                 }
+//             }
+//             if (m_method->getMethod() != "POST")
+//             {
+//                 is_bodySection = false;
+//                 std::cout << *m_method << std::endl;
+//                 m_method->printBody();
+//             }
+//             m_readFinish = true;
+//             m_readBuffer.clear();
+//         }
+//         else if (is_bodySection == true && \
+//             m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+//         {
+//             std::cout << *m_method << std::endl;
+//             m_method->printBody();
+//             m_readFinish = true;
+//             is_bodySection = false;
+//             m_readBuffer.clear();
+//         }
+//     }
+//     return (readRet);
+// }
+
 int
 clientSocket::readSock(std::fstream& logFile)
 {
 	int readRet;
 	char buffer[BUF_SIZE];
+	int requestStatus;
 
 	m_readFinish = false;
 	std::memset(buffer, 0, sizeof(buffer));
@@ -129,52 +197,63 @@ clientSocket::readSock(std::fstream& logFile)
 		m_readBuffer += buffer;
 		if (readRet == BUF_SIZE)
 			return (readRet);
-		if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
+		requestStatus = m_request.readRequest(m_readBuffer);
+		if (requestStatus == READING)
+			return (readRet);
+		if (requestStatus == READ_FIN)
 		{
-			return readRet;
-		}
-		else if (is_bodySection == false && \
-			m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-		{
-			std::cout << "Found carrage return!" << std::endl;
-			request request(m_conf);
-			m_method = request.readRequest(m_readBuffer);
-			if (m_method->getMethod() == "POST")
-			{
-				//postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-				//tempPost->loadBody(m_readBuffer);
-				std::cout << "m_body is : " << m_method->getBody() << std::endl;
-				std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
-				transferIt = m_method->getRequestSet().find("Transfer-Encoding");
-				std::string type;
-				if (transferIt != m_method->getRequestSet().end())
-				{
-				    type = transferIt->second[0];
-				}
-				if (type == "chunked" && type.find("0\n") == std::string::npos)
-				{
-					is_bodySection = true;
-					return readRet;
-				}
-			}
-			if (m_method->getMethod() != "POST")
-			{
-				is_bodySection = false;
-				std::cout << *m_method << std::endl;
-				m_method->printBody();
-			}
+			m_method = m_request.getMethod();
+			m_request.clearRequest();
+			m_method->logMethodInfo(logFile);
 			m_readFinish = true;
 			m_readBuffer.clear();
 		}
-		else if (is_bodySection == true && \
-			m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-		{
-			std::cout << *m_method << std::endl;
-			m_method->printBody();
-			m_readFinish = true;
-			is_bodySection = false;
-			m_readBuffer.clear();
-		}
+		// if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
+		// {
+		//     return readRet;
+		// }
+		// else if (is_bodySection == false && \
+		//     m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+		// {
+		//     std::cout << "Found carrage return!" << std::endl;
+		//     request request(m_conf);
+		//     m_method = request.readRequest(m_readBuffer);
+		//     if (m_method->getMethod() == "POST")
+		//     {
+		//         //postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
+		//         //tempPost->loadBody(m_readBuffer);
+		//         std::cout << "m_body is : " << m_method->getBody() << std::endl;
+		//         std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
+		//         transferIt = m_method->getRequestSet().find("Transfer-Encoding");
+		//         std::string type;
+		//         if (transferIt != m_method->getRequestSet().end())
+		//         {
+		//             type = transferIt->second[0];
+		//         }
+		//         if (type == "chunked" && type.find("0\n") == std::string::npos)
+		//         {
+		//             is_bodySection = true;
+		//             return readRet;
+		//         }
+		//     }
+		//     if (m_method->getMethod() != "POST")
+		//     {
+		//         is_bodySection = false;
+		//         std::cout << *m_method << std::endl;
+		//         m_method->printBody();
+		//     }
+		//     m_readFinish = true;
+		//     m_readBuffer.clear();
+		// }
+		// else if (is_bodySection == true && \
+		//     m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
+		// {
+		//     std::cout << *m_method << std::endl;
+		//     m_method->printBody();
+		//     m_readFinish = true;
+		//     is_bodySection = false;
+		//     m_readBuffer.clear();
+		// }
 	}
 	return (readRet);
 }

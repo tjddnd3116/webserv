@@ -23,8 +23,6 @@ class server
 		// member variable
 		std::vector<configInfo>		m_conf;
 		std::fstream&				m_logFile;
-		//
-		//
 
 		std::map<int, serverSocket>	m_serverSock;
 		std::map<int, clientSocket>	m_clientSock;

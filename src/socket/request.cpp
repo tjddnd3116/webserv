@@ -9,11 +9,38 @@ request::request(const configInfo& conf)
 request::~request()
 {}
 
-AMethod*
+// AMethod*
+// request::readRequest(const std::string& request)
+// {
+//     std::string readLine;
+//     std::string buffer;
+//     size_t		prePos;
+//     size_t		curPos;
+//
+//     prePos = 0;
+//     curPos = request.find("\n", prePos);
+//     while (curPos != std::string::npos)
+//     {
+//         readLine = request.substr(prePos, curPos - prePos);
+//         if (readLine.size() > 0 && readLine.back() == '\r')
+//             readLine.pop_back();
+//         prePos = curPos + 1;
+//         if (m_method == NULL)
+//             m_method = methodGenerator(readLine);
+//         else
+//             m_method->loadRequest(readLine);
+//         curPos = request.find("\n", prePos);
+//     }
+//     readLine = request.substr(prePos, request.size() - prePos);
+//     m_method->loadRequest(readLine);
+//     m_method->uriParse();
+//     return (m_method);
+// }
+
+int
 request::readRequest(const std::string& request)
 {
 	std::string readLine;
-	std::string buffer;
 	size_t		prePos;
 	size_t		curPos;
 
@@ -22,7 +49,7 @@ request::readRequest(const std::string& request)
 	while (curPos != std::string::npos)
 	{
 		readLine = request.substr(prePos, curPos - prePos);
-		if (readLine.size() > 0 && readLine.back() == '\r')
+		if (readLine.size() > 1 && readLine.back() == '\r')
 			readLine.pop_back();
 		prePos = curPos + 1;
 		if (m_method == NULL)
@@ -33,8 +60,13 @@ request::readRequest(const std::string& request)
 	}
 	readLine = request.substr(prePos, request.size() - prePos);
 	m_method->loadRequest(readLine);
-	m_method->uriParse();
-	return (m_method);
+	if (m_method && m_method->isMethodCreateFin())
+	{
+		m_method->uriParse();
+		return (READ_FIN);
+	}
+	// m_method->uriParse();
+	return (READING);
 }
 
 AMethod*
@@ -44,7 +76,7 @@ request::methodGenerator(const std::string& readLine)
 
 	method.assign(readLine, 0, readLine.find(" ", 0));
 	if (method == "GET")
-		return (new getMethod(readLine, m_conf));
+		return (new class getMethod(readLine, m_conf));
 	else if (method == "HEAD")
 		return (new headMethod(readLine, m_conf));
 	else if (method == "POST")
@@ -54,5 +86,17 @@ request::methodGenerator(const std::string& readLine)
 	else if (method == "DELETE")
 		return (new deleteMethod(readLine, m_conf));
 	return (NULL);
+}
+
+AMethod*
+request::getMethod(void) const
+{
+	return (m_method);
+}
+
+void
+request::clearRequest(void)
+{
+	m_method = NULL;
 }
 

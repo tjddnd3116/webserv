@@ -11,6 +11,7 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	m_methodType = "";
 	m_uri = "";
 	m_httpVersion = "";
+	m_crlfCnt = 0;
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
@@ -95,29 +96,29 @@ AMethod::checkStartLine(std::vector<std::string>& splittedLine)
 	return (0);
 }
 
-std::ostream&
-operator<<(std::ostream& os, const AMethod& method)
-{
-	os << RED;
-	os << "---- request message -----" << std::endl;
-	os << "method :" << std::endl;
-	os << "\t" << method.m_methodType << std::endl;
-	os << "uri :" << std::endl;
-	os << "\t" << method.m_uri << std::endl;
-	os << "http version : " << std::endl;
-	os << "\t" << method.m_httpVersion << std::endl;
-
-	std::map<std::string, std::vector<std::string> >::const_iterator mapIt;
-	mapIt = method.m_requestSet.begin();
-	for (; mapIt != method.m_requestSet.end(); mapIt++)
-	{
-		os << mapIt->first << " :"<< std::endl;
-		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
-			os << "\t" << mapIt->second.at(setIdx) << std::endl;
-	}
-	os << "-------------------------" << RESET << std::endl;
-	return (os);
-}
+// std::ostream&
+// operator<<(std::ostream& os, const AMethod& method)
+// {
+//     os << RED;
+//     os << "---- request message -----" << std::endl;
+//     os << "method :" << std::endl;
+//     os << "\t" << method.m_methodType << std::endl;
+//     os << "uri :" << std::endl;
+//     os << "\t" << method.m_uri << std::endl;
+//     os << "http version : " << std::endl;
+//     os << "\t" << method.m_httpVersion << std::endl;
+//
+//     std::map<std::string, std::vector<std::string> >::const_iterator mapIt;
+//     mapIt = method.m_requestSet.begin();
+//     for (; mapIt != method.m_requestSet.end(); mapIt++)
+//     {
+//         os << mapIt->first << " :"<< std::endl;
+//         for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
+//             os << "\t" << mapIt->second.at(setIdx) << std::endl;
+//     }
+//     os << "-------------------------" << RESET << std::endl;
+//     return (os);
+// }
 
 const std::string&
 AMethod::getFilePath(void) const
@@ -188,7 +189,7 @@ AMethod::checkFileExists(const std::string& filePath)
 	int			exist;
 
 	exist = stat(filePath.c_str(), &buffer);
-	if (exist == 0 && ((buffer.st_mode & S_IFMT ) == S_IFREG))
+	if (exist == 0 && ((buffer.st_mode & S_IFMT) == S_IFREG))
 		return (true);
 	return (false);
 }

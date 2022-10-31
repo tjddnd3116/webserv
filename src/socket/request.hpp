@@ -12,6 +12,10 @@
 #include "../method/deleteMethod.hpp"
 #include "../parser/configInfo.hpp"
 
+#define READ_FIN 0
+#define READING 1
+
+
 // method maker
 class request
 {
@@ -26,7 +30,11 @@ class request
 			request(const configInfo& conf);
 			~request();
 
-			AMethod*			readRequest(const std::string& request);
+			// AMethod*			readRequest(const std::string& request);
 			AMethod*			methodGenerator(const std::string& readLine);
+
+			AMethod*			getMethod(void) const;
+			int					readRequest(const std::string& request);
+			void				clearRequest(void);
 };
 #endif //request_hpp

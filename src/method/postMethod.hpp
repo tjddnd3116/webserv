@@ -6,8 +6,8 @@
 class postMethod : public AMethod
 {
 	private:
-		bool		m_isBody;
 		std::string	m_bodyBuffer;
+		size_t		m_bodySize;
 
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
@@ -17,8 +17,10 @@ class postMethod : public AMethod
 		virtual const std::string&
 						getBody(void) const;
 		virtual bool	checkMethodLimit(const std::vector<std::string>& limitExcept) const;
+		virtual bool	isMethodCreateFin(void) const;
+		virtual void	logMethodInfo(std::fstream& logFile) const;
 
-		void			printBody(void) const;
 		void			loadBody(const std::string& readLine);
+		void			getBodySize(void);
 };
 #endif //postMethod_hpp
