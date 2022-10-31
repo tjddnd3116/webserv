@@ -1,18 +1,13 @@
 ------configInfo-----
 server block
-<<<<<<< HEAD
-root : /Users/soum/webserv/html
-=======
-root : /Users/gson/webserv_cgi/html/
->>>>>>> c5203a2b721e3d72c28bb69b465b8115710fb1ae
+root : /Users/soum/webserv/html/
 index : index.html
 server_name : localhost
 listen : 1000
 uri buffer size : 3072
-<<<<<<< HEAD
 client_max_body_size : 2000000
 error_code : 500 502 503
-error_Path : /Users/soum/webserv/html/Users/soum/webserv/html/404.html
+error_Path : /Users/soum/webserv/html//error/*.html
 
 location block[1]
 path : /42/
@@ -39,6 +34,11 @@ location block[5]
 path : /directory/
 root : /Users/soum/webserv/youpiBanane
 limit_except : GET
+
+location block[6]
+path : /
+root : /Users/soum/webserv/html/
+limit_except : GET POST
 ---------------------
 all server socket created
 
@@ -52,12 +52,6 @@ client socket[6] created, server read finish now client socket size : 1
 new events count : 1
 new event fd : 6
 [read] event occured
-read size : 718
-basic_string
-events count : 1
-new event fd : 6
-[read] event occured
-read size : 718
 [31m---- request message -----
 method :
 	GET
@@ -112,7 +106,6 @@ sec-ch-ua-mobile :
 sec-ch-ua-platform :
 	"macOS"
 -------------------------[0m
-
 client read finish
 
 ---waiting event---
@@ -120,10 +113,10 @@ new events count : 1
 new event fd : 6
 [write] event occured
 [34m-----------response----------------
-HTTP/1.1 202 Accepted
+HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 27 Oct 2022 23:53:03 KST
-Content-type: text/css, text/html; charset=UTF-8
+Date: Mon, 31 Oct 2022 20:36:32 KST
+Content-type: text/html; charset=UTF-8
 Content-Length: 807
 
 <!DOCTYPE html>
@@ -160,49 +153,101 @@ client send finish
 new events count : 1
 new event fd : 6
 [read] event occured
-read size : 624
-basic_string
-=======
-client_max_body_size : 100000000
-error_code : 500 502 503 404 405
-error_Path : /Users/gson/webserv_cgi/html//error/*.html
+[31m---- request message -----
+method :
+	GET
+uri :
+	/
+http version : 
+	HTTP/1.1
+Accept :
+	text/html
+	application/xhtml+xml
+	application/xml;q=0.9
+	image/avif
+	image/webp
+	image/apng
+	*/*;q=0.8
+	application/signed-exchange;v=b3;q=0.9
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	ko
+	ko-KR;q=0.9
+	en-US;q=0.8
+	en;q=0.7
+	ja;q=0.6
+Cache-Control :
+	max-age=0
+Connection :
+	keep-alive
+Host :
+	localhost:1000
+Sec-Fetch-Dest :
+	document
+Sec-Fetch-Mode :
+	navigate
+Sec-Fetch-Site :
+	none
+Sec-Fetch-User :
+	?1
+Upgrade-Insecure-Requests :
+	1
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
 
-location block[1]
-path : /
-root : /Users/gson/webserv_cgi/html/
-limit_except : GET
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Mon, 31 Oct 2022 20:36:33 KST
+Content-type: text/html; charset=UTF-8
+Content-Length: 807
 
-location block[2]
-path : /put_test/
-root : /Users/gson/webserv_cgi/html/put_test/
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+-------------------------------[0m
+client send finish
 
-location block[3]
-path : /bla
-root : /Users/gson/webserv_cgi/html/bla
-pass :/Users/gson/webserv_cgi/cgi-bin/cgi_tester
-limit_except : POST
-
-location block[4]
-path : /post_body
-root : /Users/gson/webserv_cgi/html/post_body
-limit_except : POST
-
-location block[5]
-path : /directory/
-root : /Users/gson/webserv_cgi/html/YoupiBanane/
-limit_except : GET
----------------------
-n /directory/ {
-49 
-50 		root /Users/gson/webserv_cgi/YoupiBanane/;
-51 
-52 		index youpi.bad_extension;
-53 
-54 		limit_except GET;
-55 
-56 	}	
-57 }
-58 
-59 
-Error : invalid config file
->>>>>>> c5203a2b721e3d72c28bb69b465b8115710fb1ae
+---waiting event---

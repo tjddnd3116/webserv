@@ -10,7 +10,8 @@ class putMethod : public AMethod
 		~putMethod();
 
 		virtual void	loadRequest(const std::string &readLine);
-		virtual void	printBody(void) const;
 		virtual bool	checkMethodLimit(const std::vector<std::string>& limitExcept) const;
+		virtual bool	isMethodCreateFin(void) const;
+		virtual void	logMethodInfo(std::fstream& logFile) const;
 };
 #endif //putMethod_hpp

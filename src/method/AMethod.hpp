@@ -30,6 +30,8 @@ class AMethod
 		std::string						m_queryString;
 		std::string						m_fileExt;
 
+		int								m_crlfCnt;
+
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 												  const std::string& str = " ");
 
@@ -44,8 +46,9 @@ class AMethod
 
 		// pure virtual functions
 		virtual void					loadRequest(const std::string& readLine) = 0;
-		virtual void					printBody(void) const = 0;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const = 0;
+		virtual bool					isMethodCreateFin(void) const = 0;
+		virtual void					logMethodInfo(std::fstream& logFile) const = 0;
 
 		// virtual functions
 		virtual const std::string&		getBody(void) const;
@@ -63,10 +66,6 @@ class AMethod
 										getRequestSet(void) const;
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
-
-		// friend functions
-		friend std::ostream&			operator<<(std::ostream& os,
-												   const AMethod& method);
 
 };
 #endif //AMethod_hpp

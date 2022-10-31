@@ -2,7 +2,7 @@
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
-configInfo::Location::Location(std::string &path)
+configInfo::Location::Location(const std::string &path)
 {
 	locPath = path;
 	locRoot = "html";
@@ -388,4 +388,16 @@ configInfo::findLocation(const std::string& locationPath,
 	}
 	rootPath = m_root;
 	indexFile = m_index;
+}
+
+void
+configInfo::createDefaultLocation(void)
+{
+	Location defaultLocaiton("/");
+
+	defaultLocaiton.locRoot = m_root;
+	defaultLocaiton.locIndex = m_index;
+	defaultLocaiton.locLimitExpect.push_back("GET");
+	defaultLocaiton.locLimitExpect.push_back("POST");
+	m_location.push_back(defaultLocaiton);
 }

@@ -36,7 +36,7 @@ class tokenizer
 
 		e_tokenType	selectTokenType(const std::string& str) const;
 
-		void	 	blockParse(configInfo &Info, const std::string& blockType = "");
+		void	 	blockParse(configInfo &info, const std::string& blockType = "");
 		void		contextParse(configInfo &info, const std::string& blockType);
 
 		bool		isLocationBlock(const std::string& blockType);
