@@ -19,7 +19,6 @@ request::readRequest(const std::string& request)
 
 	prePos = 0;
 	curPos = request.find("\n", prePos);
-	std::cout << request << std::endl;
 	while (curPos != std::string::npos)
 	{
 		readLine = request.substr(prePos, curPos - prePos);
@@ -46,6 +45,8 @@ request::methodGenerator(const std::string& readLine)
 	method.assign(readLine, 0, readLine.find(" ", 0));
 	if (method == "GET")
 		return (new getMethod(readLine, m_conf));
+	else if (method == "HEAD")
+		return (new headMethod(readLine, m_conf));
 	else if (method == "POST")
 		return (new postMethod(readLine, m_conf));
 	else if (method == "PUT")

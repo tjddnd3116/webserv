@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 		webServ webServ;
 
 		webServ.parsing(argv[1]);
-		// webServ.serverRun();
+		webServ.serverRun();
 
 		// parser parser(argv[1]);
 		// parser.configParse();

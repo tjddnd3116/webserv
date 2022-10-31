@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "../method/getMethod.hpp"
+#include "../method/headMethod.hpp"
 #include "../method/postMethod.hpp"
 #include "../method/putMethod.hpp"
 #include "../method/deleteMethod.hpp"

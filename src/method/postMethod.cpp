@@ -13,7 +13,6 @@ postMethod::~postMethod()
 void
 postMethod::loadRequest(const std::string &readLine)
 {
-	std::cout << readLine << std::endl;
 	if (!m_isBody && readLine.empty())
 	{
 		m_isBody = true;

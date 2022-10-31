@@ -6,7 +6,7 @@
 #    By: gson <gson@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/27 16:20:49 by soum             ###   ########.fr        #
+#    Updated: 2022/10/30 18:38:53 by gson             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,7 @@ SRCS = ./src/main.cpp \
 	   ./src/method/AMethod.cpp \
 	   ./src/method/putMethod.cpp \
 	   ./src/method/postMethod.cpp \
+	   ./src/method/headMethod.cpp \
 	   ./src/method/getMethod.cpp \
 	   ./src/method/deleteMethod.cpp \
 	   ./src/socket/ASocket.cpp \

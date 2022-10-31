@@ -233,7 +233,7 @@ configInfo::isMethod(const std::vector<std::string>& method)
 {
 	for (size_t i = 0; i < method.size(); i++)
 	{
-		if (method[i] != "GET" && method[i] != "DELETE" && method[i] != "POST")
+		if (method[i] != "GET" && method[i] != "DELETE" && method[i] != "POST" && method[i] != "HEAD")
 			return (false);
 	}
 	return (true);
