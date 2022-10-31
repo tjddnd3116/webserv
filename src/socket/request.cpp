@@ -65,7 +65,6 @@ request::readRequest(const std::string& request)
 		m_method->uriParse();
 		return (READ_FIN);
 	}
-	// m_method->uriParse();
 	return (READING);
 }
 
@@ -95,7 +94,7 @@ request::getMethod(void) const
 }
 
 void
-request::clearRequest(void)
+request::setMethodNull(void)
 {
 	m_method = NULL;
 }

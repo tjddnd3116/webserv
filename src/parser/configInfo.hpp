@@ -16,7 +16,7 @@ class configInfo
 	private:
 		struct Location
 		{
-			Location(std::string &path);
+			Location(const std::string &path);
 			std::vector<std::string>	locIndex;
 			std::vector<std::string>	locExpires;
 			std::vector<std::string>	locProxyPass;
@@ -73,6 +73,7 @@ class configInfo
 
 
 		int			createLocation(std::string& path);
+		void		createDefaultLocation(void);
 
 		void		checkConfig(void);
 

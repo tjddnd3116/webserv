@@ -42,6 +42,7 @@ tokenizer::parseToken(std::vector<configInfo>& config,
 		configInfo info;
 
 		blockParse(info);
+		info.createDefaultLocation();
 		info.checkConfig();
 		logFile << info;
 		config.push_back(info);

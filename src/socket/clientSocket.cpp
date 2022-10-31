@@ -203,11 +203,15 @@ clientSocket::readSock(std::fstream& logFile)
 		if (requestStatus == READ_FIN)
 		{
 			m_method = m_request.getMethod();
-			m_request.clearRequest();
+			m_request.setMethodNull();
 			m_method->logMethodInfo(logFile);
 			m_readFinish = true;
 			m_readBuffer.clear();
 		}
+		// TODO
+		// chunked 일때 처리
+
+		//
 		// if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
 		// {
 		//     return readRet;

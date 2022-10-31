@@ -96,30 +96,6 @@ AMethod::checkStartLine(std::vector<std::string>& splittedLine)
 	return (0);
 }
 
-// std::ostream&
-// operator<<(std::ostream& os, const AMethod& method)
-// {
-//     os << RED;
-//     os << "---- request message -----" << std::endl;
-//     os << "method :" << std::endl;
-//     os << "\t" << method.m_methodType << std::endl;
-//     os << "uri :" << std::endl;
-//     os << "\t" << method.m_uri << std::endl;
-//     os << "http version : " << std::endl;
-//     os << "\t" << method.m_httpVersion << std::endl;
-//
-//     std::map<std::string, std::vector<std::string> >::const_iterator mapIt;
-//     mapIt = method.m_requestSet.begin();
-//     for (; mapIt != method.m_requestSet.end(); mapIt++)
-//     {
-//         os << mapIt->first << " :"<< std::endl;
-//         for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
-//             os << "\t" << mapIt->second.at(setIdx) << std::endl;
-//     }
-//     os << "-------------------------" << RESET << std::endl;
-//     return (os);
-// }
-
 const std::string&
 AMethod::getFilePath(void) const
 {
@@ -160,7 +136,7 @@ AMethod::uriParse(void)
 	std::cout << "indexFile is: " << indexFile[0] << std::endl;
 	if (fileName == "/" || locationPath == fileName)
 		m_filePath += indexFile[0];
-	m_statusCode = 202;
+	m_statusCode = 200;
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();

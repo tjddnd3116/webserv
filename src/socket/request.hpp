@@ -23,18 +23,22 @@ class request
 			AMethod*	m_method;
 			configInfo	m_conf;
 
+			// hide copy
 			request(const request& copy);
 			request& operator=(const request& copy);
 
 		public:
+			// constructor & destructor
 			request(const configInfo& conf);
 			~request();
 
-			// AMethod*			readRequest(const std::string& request);
 			AMethod*			methodGenerator(const std::string& readLine);
-
-			AMethod*			getMethod(void) const;
 			int					readRequest(const std::string& request);
-			void				clearRequest(void);
+
+			// getter
+			AMethod*			getMethod(void) const;
+
+			// setter
+			void				setMethodNull(void);
 };
 #endif //request_hpp

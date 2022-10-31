@@ -67,9 +67,5 @@ class AMethod
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
 
-		// friend functions
-		// friend std::ostream&			operator<<(std::ostream& os,
-		//                                            const AMethod& method);
-
 };
 #endif //AMethod_hpp
