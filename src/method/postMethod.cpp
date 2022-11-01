@@ -5,6 +5,7 @@ postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
 {
 	m_bodyBuffer.clear();
+	m_bodySize = -1;
 }
 
 postMethod::~postMethod()
@@ -15,15 +16,14 @@ postMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine.empty() || readLine[0] == ' ')
 		return ;
-	if (readLine[0] == '\r')
+	if (readLine[0] == '\r' && m_crlfCnt == 0)
 	{
 		m_crlfCnt++;
-		getBodySize();
+		getBodyType();
 		return ;
 	}
 	if (m_crlfCnt == 1)
 		return (loadBody(readLine));
-
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
 	splittedLine[0].pop_back();
 	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
@@ -39,10 +39,25 @@ postMethod::getBody(void) const
 void
 postMethod::loadBody(const std::string& readLine)
 {
-	if (m_bodyBuffer.empty())
-		m_bodyBuffer += readLine;
-	else
-		m_bodyBuffer += "\n" + readLine;
+	if (m_bodyType == "size")
+	{
+		if (m_bodyBuffer.empty())
+			m_bodyBuffer += readLine;
+		else
+			m_bodyBuffer += "\n" + readLine;
+	}
+	else if (m_bodyType == "chunked")
+	{
+		if (m_bodySize == -1)
+		{
+			m_bodySize = std::stoi(readLine);
+		}
+		else
+		{
+			if (m_bodySize != 0)
+				m_bodyBuffer += readLine;
+		}
+	}
 }
 
 bool
@@ -59,9 +74,9 @@ postMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 bool
 postMethod::isMethodCreateFin(void) const
 {
-	if (m_bodySize == m_bodyBuffer.size())
+	if (m_bodySize == 0)
 		return (true);
-	if (m_crlfCnt == 2)
+	if ((size_t)m_bodySize == m_bodyBuffer.size())
 		return (true);
 	return (false);
 }
@@ -91,10 +106,22 @@ void postMethod::logMethodInfo(std::fstream& logFile) const
 }
 
 void
-postMethod::getBodySize(void)
+postMethod::getBodyType(void)
 {
 	std::map<std::string, std::vector<std::string> >::iterator mapIt;
 
 	mapIt = m_requestSet.find("content-length");
-	m_bodySize = std::stoi(mapIt->second[0]);
+	if (mapIt != m_requestSet.end())
+	{
+		m_bodySize = std::stoi(mapIt->second[0]);
+		m_bodyType = "size";
+		return ;
+	}
+	mapIt = m_requestSet.find("Transfer-Encoding");
+	if (mapIt != m_requestSet.end())
+	{
+		m_bodyType = mapIt->second[0];
+		m_bodySize = -1;
+		return ;
+	}
 }

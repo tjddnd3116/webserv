@@ -12,9 +12,7 @@ int main(int argc, char **argv)
 	{
 		if (argc != 2)
 			throw (WsException("invalid arguments count"));
-
 		webServ webServ;
-
 		webServ.parsing(argv[1]);
 		webServ.serverRun();
 	}

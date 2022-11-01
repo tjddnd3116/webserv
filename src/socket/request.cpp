@@ -1,41 +1,15 @@
 #include "request.hpp"
+#include <unistd.h>
 
 request::request(const configInfo& conf)
 {
 	m_conf = conf;
 	m_method = NULL;
+	m_buffer.clear();
 }
 
 request::~request()
 {}
-
-// AMethod*
-// request::readRequest(const std::string& request)
-// {
-//     std::string readLine;
-//     std::string buffer;
-//     size_t		prePos;
-//     size_t		curPos;
-//
-//     prePos = 0;
-//     curPos = request.find("\n", prePos);
-//     while (curPos != std::string::npos)
-//     {
-//         readLine = request.substr(prePos, curPos - prePos);
-//         if (readLine.size() > 0 && readLine.back() == '\r')
-//             readLine.pop_back();
-//         prePos = curPos + 1;
-//         if (m_method == NULL)
-//             m_method = methodGenerator(readLine);
-//         else
-//             m_method->loadRequest(readLine);
-//         curPos = request.find("\n", prePos);
-//     }
-//     readLine = request.substr(prePos, request.size() - prePos);
-//     m_method->loadRequest(readLine);
-//     m_method->uriParse();
-//     return (m_method);
-// }
 
 int
 request::readRequest(const std::string& request)
@@ -45,10 +19,11 @@ request::readRequest(const std::string& request)
 	size_t		curPos;
 
 	prePos = 0;
-	curPos = request.find("\n", prePos);
+	m_buffer += request;
+	curPos = m_buffer.find("\n", prePos);
 	while (curPos != std::string::npos)
 	{
-		readLine = request.substr(prePos, curPos - prePos);
+		readLine = m_buffer.substr(prePos, curPos - prePos);
 		if (readLine.size() > 1 && readLine.back() == '\r')
 			readLine.pop_back();
 		prePos = curPos + 1;
@@ -56,10 +31,12 @@ request::readRequest(const std::string& request)
 			m_method = methodGenerator(readLine);
 		else
 			m_method->loadRequest(readLine);
-		curPos = request.find("\n", prePos);
+		curPos = m_buffer.find("\n", prePos);
 	}
-	readLine = request.substr(prePos, request.size() - prePos);
-	m_method->loadRequest(readLine);
+	readLine = m_buffer.substr(prePos, m_buffer.size() - prePos);
+	m_buffer.clear();
+	// m_method->loadRequest(readLine);
+	m_buffer += readLine;
 	if (m_method && m_method->isMethodCreateFin())
 	{
 		m_method->uriParse();
@@ -94,8 +71,9 @@ request::getMethod(void) const
 }
 
 void
-request::setMethodNull(void)
+request::setMethodToNull(void)
 {
 	m_method = NULL;
+	m_buffer.clear();
 }
 

@@ -130,10 +130,12 @@ server::readEvent(struct kevent* curEvent)
 	else if(isClientSocket(curEvent->ident))
 	{
 		int readRet;
+		int msgSize;
 
+		msgSize = curEvent->data + 1;
 		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
-		readRet = (*clientIt).second.readSock(m_logFile);
+		readRet = (*clientIt).second.readSock(m_logFile, msgSize);
 		if (readRet <= 0)
 		{
 			if (readRet < 0)

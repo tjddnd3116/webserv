@@ -5,40 +5,34 @@ index : index.html
 server_name : localhost
 listen : 1000
 uri buffer size : 3072
-client_max_body_size : 2000000
-error_code : 500 502 503
+client_max_body_size : 100000000
+error_code : 500 502 503 404 405
 error_Path : /Users/soum/webserv/html//error/*.html
 
 location block[1]
-path : /42/
-root : /Users/soum/webserv/html/42
-limit_except : POST
+path : /put_test/
+root : /Users/soum/webserv/html/put_test/
 
 location block[2]
-path : /bluprint/
-root : /Users/soum/webserv/html/bluprint
+path : /bla
+root : /Users/soum/webserv/html/bla
+pass :/Users/soum/webserv/cgi-bin/cgi_tester
 limit_except : POST
 
 location block[3]
-path : /php/
-root : /Users/soum/webserv/html/php
-pass :/Users/soum/webserv/cgi-bin/php-cgi
-limit_except : GET DELETE
+path : /post_body
+root : /Users/soum/webserv/html/post_body
+limit_except : POST
 
 location block[4]
-path : /test/
-root : /Users/soum/webserv/html/test
-pass :/Users/soum/webserv/cgi-bin/php-cgi
-
-location block[5]
 path : /directory/
-root : /Users/soum/webserv/youpiBanane
+root : /Users/soum/webserv/html/YoupiBanane/
 limit_except : GET
 
-location block[6]
+location block[5]
 path : /
 root : /Users/soum/webserv/html/
-limit_except : GET POST
+limit_except : GET
 ---------------------
 all server socket created
 
@@ -52,6 +46,15 @@ client socket[6] created, server read finish now client socket size : 1
 new events count : 1
 new event fd : 6
 [read] event occured
+message size : 96
+-----origin request message-----
+GET / HTTP/1.1
+Host: localhost:1000
+User-Agent: Go-http-client/1.1
+Accept-Encoding: gzip
+
+
+--------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -59,52 +62,12 @@ uri :
 	/
 http version : 
 	HTTP/1.1
-Accept :
-	text/html
-	application/xhtml+xml
-	application/xml;q=0.9
-	image/avif
-	image/webp
-	image/apng
-	*/*;q=0.8
-	application/signed-exchange;v=b3;q=0.9
 Accept-Encoding :
 	gzip
-	 deflate
-	 br
-Accept-Language :
-	ko
-	ko-KR;q=0.9
-	en-US;q=0.8
-	en;q=0.7
-	ja;q=0.6
-Cache-Control :
-	max-age=0
-Connection :
-	keep-alive
 Host :
 	localhost:1000
-Sec-Fetch-Dest :
-	document
-Sec-Fetch-Mode :
-	navigate
-Sec-Fetch-Site :
-	none
-Sec-Fetch-User :
-	?1
-Upgrade-Insecure-Requests :
-	1
 User-Agent :
-	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
-	 like Gecko) Chrome/106.0.0.0 Safari/537.36
-sec-ch-ua :
-	"Chromium";v="106"
-	 "Google Chrome";v="106"
-	 "Not;A=Brand";v="99"
-sec-ch-ua-mobile :
-	?0
-sec-ch-ua-platform :
-	"macOS"
+	Go-http-client/1.1
 -------------------------[0m
 client read finish
 
@@ -115,7 +78,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Mon, 31 Oct 2022 20:36:32 KST
+Date: Tue, 01 Nov 2022 18:10:05 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 807
 
@@ -153,59 +116,48 @@ client send finish
 new events count : 1
 new event fd : 6
 [read] event occured
+message size : 108
+-----origin request message-----
+POST / HTTP/1.1
+Host: localhost:1000
+User-Agent: Go-http-client/1.1
+Transfer-Encoding: chunked
+Content-
+--------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 48
+-----origin request message-----
+Type: test/file
+Accept-Encoding: gzip
+
+0
+
+
+--------------------------------
 [31m---- request message -----
 method :
-	GET
+	POST
 uri :
 	/
 http version : 
 	HTTP/1.1
-Accept :
-	text/html
-	application/xhtml+xml
-	application/xml;q=0.9
-	image/avif
-	image/webp
-	image/apng
-	*/*;q=0.8
-	application/signed-exchange;v=b3;q=0.9
 Accept-Encoding :
 	gzip
-	 deflate
-	 br
-Accept-Language :
-	ko
-	ko-KR;q=0.9
-	en-US;q=0.8
-	en;q=0.7
-	ja;q=0.6
-Cache-Control :
-	max-age=0
-Connection :
-	keep-alive
+Content-Type :
+	test/file
 Host :
 	localhost:1000
-Sec-Fetch-Dest :
-	document
-Sec-Fetch-Mode :
-	navigate
-Sec-Fetch-Site :
-	none
-Sec-Fetch-User :
-	?1
-Upgrade-Insecure-Requests :
-	1
+Transfer-Encoding :
+	chunked
 User-Agent :
-	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
-	 like Gecko) Chrome/106.0.0.0 Safari/537.36
-sec-ch-ua :
-	"Chromium";v="106"
-	 "Google Chrome";v="106"
-	 "Not;A=Brand";v="99"
-sec-ch-ua-mobile :
-	?0
-sec-ch-ua-platform :
-	"macOS"
+	Go-http-client/1.1
+-------body--------
+
 -------------------------[0m
 client read finish
 
@@ -214,40 +166,192 @@ new events count : 1
 new event fd : 6
 [write] event occured
 [34m-----------response----------------
-HTTP/1.1 200 OK
+HTTP/1.1 405 Method not allowed
 Server: localhost
-Date: Mon, 31 Oct 2022 20:36:33 KST
+Date: Tue, 01 Nov 2022 18:10:05 KST
 Content-type: text/html; charset=UTF-8
-Content-Length: 807
+Content-Length: 657
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="theme-color" content="#ffffff">
-<title>Welcome to nginx!</title>
-<style>
-    body {
-        width: 35em;
-        margin: 0 auto;
-        font-family: Tahoma, Verdana, Arial, sans-serif;
-    }
-</style>
+	<link rel="stylesheet" type="text/css" href="/_errors/main.css"/>
+	<title>Error 405 - %{HOSTNAME}</title>
+	<style>
+		html{
+			background-color: #e74c3c;
+		}
+		
+		body{
+			color: #fefefe;
+		}
+	</style>
 </head>
 <body>
-<h1>Welcome to nginx!</h1>
-<p>If you see this page, the nginx web server is successfully installed and
-working. Further configuration is required.</p>
-<p>For online documentation and support please refer to
-<a href="http://nginx.org/">nginx.org</a>.<br/>
-Commercial support is available at
-<a href="http://nginx.com/">nginx.com</a>.</p>
-<p><em>Thank you for using nginx.</em></p>
+<div class="error-middle">
+	<h1>Error 405 - Method Not Allowed</h1>
+	<p>The 405 (Method Not Allowed) status code indicates that the method received in the request-line is known by the origin server but not supported by the target resource. The origin server MUST generate an Allow header field in a 405 response containing a list of the target resource's currently supported methods.</p>
+</div>
 </body>
 </html>
 -------------------------------[0m
 client send finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 9
+-----origin request message-----
+HEAD / H
+--------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 36
+-----origin request message-----
+TTP/1.1
+Host: localhost:1000
+User
+--------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 31
+-----origin request message-----
+-Agent: Go-http-client/1.1
+
+
+--------------------------------
+[31m---- request message -----
+method :
+	HEAD
+uri :
+	/
+http version : 
+	HTTP/1.1
+Host :
+	localhost:1000
+User-Agent :
+	Go-http-client/1.1
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 405 Method not allowed
+Server: localhost
+Date: Tue, 01 Nov 2022 18:10:05 KST
+Content-type: text/html; charset=UTF-8
+Content-Length: 657
+
+
+-------------------------------[0m
+client send finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 76
+-----origin request message-----
+GET /directory HTTP/1.1
+Host: localhost:1000
+User-Agent: Go-http-client/1
+--------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 29
+-----origin request message-----
+.1
+Accept-Encoding: gzip
+
+--------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 2
+-----origin request message-----
+
+
+--------------------------------
+[31m---- request message -----
+method :
+	GET
+uri :
+	/directory
+http version : 
+	HTTP/1.1
+Accept-Encoding :
+	gzip
+Host :
+	localhost:1000
+User-Agent :
+	Go-http-client/1.1
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 405 Method not allowed
+Server: localhost
+Date: Tue, 01 Nov 2022 18:10:05 KST
+Content-type: text/html; charset=UTF-8
+Content-Length: 657
+
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="/_errors/main.css"/>
+	<title>Error 405 - %{HOSTNAME}</title>
+	<style>
+		html{
+			background-color: #e74c3c;
+		}
+		
+		body{
+			color: #fefefe;
+		}
+	</style>
+</head>
+<body>
+<div class="error-middle">
+	<h1>Error 405 - Method Not Allowed</h1>
+	<p>The 405 (Method Not Allowed) status code indicates that the method received in the request-line is known by the origin server but not supported by the target resource. The origin server MUST generate an Allow header field in a 405 response containing a list of the target resource's currently supported methods.</p>
+</div>
+</body>
+</html>
+-------------------------------[0m
+client send finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 1
+-----origin request message-----
+
+--------------------------------
+client socket close!
+client disconnected : 6
 
 ---waiting event---
