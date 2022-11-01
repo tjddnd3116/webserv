@@ -398,6 +398,5 @@ configInfo::createDefaultLocation(void)
 	defaultLocaiton.locRoot = m_root;
 	defaultLocaiton.locIndex = m_index;
 	defaultLocaiton.locLimitExpect.push_back("GET");
-	defaultLocaiton.locLimitExpect.push_back("POST");
 	m_location.push_back(defaultLocaiton);
 }

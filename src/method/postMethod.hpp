@@ -7,7 +7,8 @@ class postMethod : public AMethod
 {
 	private:
 		std::string	m_bodyBuffer;
-		size_t		m_bodySize;
+		int32_t		m_bodySize;
+		std::string m_bodyType;
 
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
@@ -21,6 +22,6 @@ class postMethod : public AMethod
 		virtual void	logMethodInfo(std::fstream& logFile) const;
 
 		void			loadBody(const std::string& readLine);
-		void			getBodySize(void);
+		void			getBodyType(void);
 };
 #endif //postMethod_hpp

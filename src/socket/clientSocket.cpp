@@ -179,31 +179,36 @@ clientSocket::createSock(void)
 // }
 
 int
-clientSocket::readSock(std::fstream& logFile)
+clientSocket::readSock(std::fstream& logFile, int msgSize)
 {
-	int readRet;
-	char buffer[BUF_SIZE];
-	int requestStatus;
+	int		readRet;
+	char*	buffer;
+	int		requestStatus;
 
+	logFile << "message size : " << msgSize << std::endl;
+	buffer = new char[msgSize];
 	m_readFinish = false;
-	std::memset(buffer, 0, sizeof(buffer));
-	readRet = read(m_SocketFd, buffer, BUF_SIZE);
+	std::memset(buffer, 0, msgSize);
+	readRet = read(m_SocketFd, buffer, msgSize - 1);
+	logFile << "-----origin request message-----" << std::endl;
+	logFile << buffer << std::endl;
+	logFile << "--------------------------------" << std::endl;
 	if (readRet < 0)
 		logFile << "non-blocking" << std::endl;
 	else if (readRet == 0)
 		logFile << "client socket close!" << std::endl;
 	else
 	{
-		m_readBuffer += buffer;
+		// m_readBuffer += buffer;
 		if (readRet == BUF_SIZE)
 			return (readRet);
-		requestStatus = m_request.readRequest(m_readBuffer);
+		requestStatus = m_request.readRequest(buffer);
 		if (requestStatus == READING)
 			return (readRet);
 		if (requestStatus == READ_FIN)
 		{
 			m_method = m_request.getMethod();
-			m_request.setMethodNull();
+			m_request.setMethodToNull();
 			m_method->logMethodInfo(logFile);
 			m_readFinish = true;
 			m_readBuffer.clear();
@@ -211,7 +216,6 @@ clientSocket::readSock(std::fstream& logFile)
 		// TODO
 		// chunked 일때 처리
 
-		//
 		// if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
 		// {
 		//     return readRet;

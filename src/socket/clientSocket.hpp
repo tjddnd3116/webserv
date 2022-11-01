@@ -25,7 +25,7 @@ class clientSocket : public ASocket
 		clientSocket& operator=(const clientSocket& copy);
 
 		void	createSock(void);
-		int		readSock(std::fstream& logFile);
+		int		readSock(std::fstream& logFile, int msgSize);
 		int		sendSock(std::fstream& logFile);
 		bool	getReadStatus(void) const;
 };

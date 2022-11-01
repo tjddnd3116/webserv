@@ -6,7 +6,7 @@
 #    By: gson <gson@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/10/30 18:38:53 by gson             ###   ########.fr        #
+#    Updated: 2022/11/01 16:41:08 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,12 +47,12 @@ $(NAME) : $(OBJS)
 
 debug : all
 	$(CXX) $(CXXFLAGS) -g $(SRCS) -o $(NAME)
-	$(shell cp ~/vimspector.json ./.vimspector.json)
-	$(shell perl -pi -e 's/filename/webserv/g' .vimspector.json)
+	# $(shell cp ~/vimspector.json ./.vimspector.json)
+	# $(shell perl -pi -e 's/filename/webserv/g' .vimspector.json)
 
 clean :
 	rm -f $(OBJS)
-	rm -f .vimspector.json
+	# rm -f .vimspector.json
 	rm -rf $(NAME).dSYM
 
 fclean : clean
