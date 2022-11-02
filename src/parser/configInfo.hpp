@@ -24,6 +24,7 @@ class configInfo
 			std::string					locPath;
 			std::string					locRoot;
 			std::string					locCgiPass;
+			std::string					locAlias;
 		};
 
 		std::vector<std::string>	m_index;
@@ -35,6 +36,7 @@ class configInfo
 		int32_t						m_clientMaxBodySize;
 		int32_t						m_uriBufferSize;
 
+		// std::map<std::string, Location> m_location;
 		std::vector<Location>		m_location;
 
 		bool	isPath(const std::string& str);
@@ -70,6 +72,7 @@ class configInfo
 		void		setLocationCgiPass(std::vector<std::string>& set);
 		void		setLocationLimitExcept(std::vector<std::string>& set);
 		void		setLocationIndex(std::vector<std::string>& set);
+		void		setLocationAlias(std::vector<std::string>& set);
 
 
 		int			createLocation(std::string& path);

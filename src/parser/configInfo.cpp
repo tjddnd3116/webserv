@@ -58,6 +58,7 @@ configInfo::setTable()
 	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
 	s_table["error_page"] = &configInfo::setErrorPage;
 	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
+	s_table["loc_alias"] = &configInfo::setLocationAlias;
 }
 
 void
@@ -125,7 +126,8 @@ configInfo::setUriBufferSize(std::vector<std::string>& set)
 	m_uriBufferSize = std::atoi(set[0].c_str()) * 1024;
 }
 
-void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
+void
+configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 {
 	if (set.size() > 1)
 	{
@@ -135,7 +137,8 @@ void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 	m_clientMaxBodySize = std::atoi(set[0].c_str()) * 1000000;
 }
 
-void	 configInfo::setErrorPage(std::vector<std::string>& set)
+void
+configInfo::setErrorPage(std::vector<std::string>& set)
 {
 	m_errorCode = set;
 	m_errorPath = m_errorCode.back();
@@ -162,6 +165,13 @@ configInfo::setLocationCgiPass(std::vector<std::string>& set)
 	m_location.back().locCgiPass = set[0];
 }
 
+void
+configInfo::setLocationAlias(std::vector<std::string>& set)
+{
+	if (set.size() != 1)
+		throw (WsException("invalid alias size"));
+	m_location.back().locAlias = set[0];
+}
 
 int
 configInfo::createLocation(std::string& path)
@@ -400,3 +410,4 @@ configInfo::createDefaultLocation(void)
 	defaultLocaiton.locLimitExpect.push_back("GET");
 	m_location.push_back(defaultLocaiton);
 }
+

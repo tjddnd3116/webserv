@@ -136,7 +136,10 @@ AMethod::uriParse(void)
 	std::cout << "indexFile is: " << indexFile[0] << std::endl;
 	if (fileName == "/" || locationPath == fileName)
 		m_filePath += indexFile[0];
+	else
+		m_filePath += fileName;
 	m_statusCode = 200;
+	std::cout << "file path" << m_filePath << std::endl;
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
