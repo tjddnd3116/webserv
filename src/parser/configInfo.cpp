@@ -1,4 +1,5 @@
 #include "configInfo.hpp"
+#include <utility>
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
@@ -39,6 +40,7 @@ configInfo::operator=(const configInfo& copy)
 	m_clientMaxBodySize = copy.getClinetMaxBodySize();
 	m_errorCode = copy.getErrorCode();
 	m_errorPath = copy.getErrorPath();
+	m_mapLocation = copy.getMapLocation();
 	return (*this);
 }
 
@@ -58,6 +60,7 @@ configInfo::setTable()
 	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
 	s_table["error_page"] = &configInfo::setErrorPage;
 	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
+	s_table["loc_alias"] = &configInfo::setLocationAlias;
 }
 
 void
@@ -125,7 +128,8 @@ configInfo::setUriBufferSize(std::vector<std::string>& set)
 	m_uriBufferSize = std::atoi(set[0].c_str()) * 1024;
 }
 
-void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
+void
+configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 {
 	if (set.size() > 1)
 	{
@@ -135,7 +139,8 @@ void	 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 	m_clientMaxBodySize = std::atoi(set[0].c_str()) * 1000000;
 }
 
-void	 configInfo::setErrorPage(std::vector<std::string>& set)
+void
+configInfo::setErrorPage(std::vector<std::string>& set)
 {
 	m_errorCode = set;
 	m_errorPath = m_errorCode.back();
@@ -162,6 +167,13 @@ configInfo::setLocationCgiPass(std::vector<std::string>& set)
 	m_location.back().locCgiPass = set[0];
 }
 
+void
+configInfo::setLocationAlias(std::vector<std::string>& set)
+{
+	if (set.size() != 1)
+		throw (WsException("invalid alias size"));
+	m_location.back().locAlias = set[0];
+}
 
 int
 configInfo::createLocation(std::string& path)
@@ -293,6 +305,12 @@ configInfo::getErrorPath(void) const
 	return (m_errorPath);
 }
 
+std::map<std::string, configInfo::Location>
+configInfo::getMapLocation(void) const
+{
+	return (m_mapLocation);
+}
+
 std::ostream&
 operator<<(std::ostream &os, const configInfo& conf)
 {
@@ -399,4 +417,11 @@ configInfo::createDefaultLocation(void)
 	defaultLocaiton.locIndex = m_index;
 	defaultLocaiton.locLimitExpect.push_back("GET");
 	m_location.push_back(defaultLocaiton);
+}
+
+void
+configInfo::locationVecToMap(void)
+{
+	for (size_t i = 0; i < m_location.size(); i++)
+		m_mapLocation.insert(std::make_pair(m_location[i].locPath, m_location[i]));
 }
