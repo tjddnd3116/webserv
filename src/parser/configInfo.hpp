@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cctype>
 
+#include <map>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -27,17 +28,17 @@ class configInfo
 			std::string					locAlias;
 		};
 
-		std::vector<std::string>	m_index;
-		std::vector<std::string>	m_serverName;
-		std::vector<std::string>	m_errorCode;
-		std::string					m_root;
-		std::string					m_errorPath;
-		int32_t						m_listen;
-		int32_t						m_clientMaxBodySize;
-		int32_t						m_uriBufferSize;
+		std::vector<std::string>		m_index;
+		std::vector<std::string>		m_serverName;
+		std::vector<std::string>		m_errorCode;
+		std::string						m_root;
+		std::string						m_errorPath;
+		int32_t							m_listen;
+		int32_t							m_clientMaxBodySize;
+		int32_t							m_uriBufferSize;
 
-		// std::map<std::string, Location> m_location;
-		std::vector<Location>		m_location;
+		std::map<std::string, Location>	m_mapLocation;
+		std::vector<Location>			m_location;
 
 		bool	isPath(const std::string& str);
 		bool	isPath(const std::vector<std::string>& str);
@@ -81,24 +82,26 @@ class configInfo
 		void		checkConfig(void);
 
 		// getter
-		int32_t						getListenPort(void) const;
-		std::string					getRootPath(void) const;
-		std::vector<std::string>	getIndexFile(void) const;
-		std::vector<std::string>	getServerName(void) const;
-		int32_t						getUriBufferSize(void) const;
-		int32_t						getClinetMaxBodySize(void) const;
-		std::vector<Location>		getLocation(void) const;
-		std::vector<std::string>	getErrorCode(void) const;
-		std::string					getErrorPath(void) const;
+		int32_t							getListenPort(void) const;
+		std::string						getRootPath(void) const;
+		std::vector<std::string>		getIndexFile(void) const;
+		std::vector<std::string>		getServerName(void) const;
+		int32_t							getUriBufferSize(void) const;
+		int32_t							getClinetMaxBodySize(void) const;
+		std::vector<Location>			getLocation(void) const;
+		std::vector<std::string>		getErrorCode(void) const;
+		std::string						getErrorPath(void) const;
+		std::map<std::string, Location>	getMapLocation(void) const;
 
-		void						printServerBlock(std::ostream& os) const;
-		void						printLocationBlock(std::ostream& os, size_t i) const;
-		void						findLocation(const std::string& locationPath,
-												 std::string& rootPath,
-												 std::vector<std::string>& indexFile,
-												 std::vector<std::string>& limitExcept);
+		void							printServerBlock(std::ostream& os) const;
+		void							printLocationBlock(std::ostream& os, size_t i) const;
+		void							findLocation(const std::string& locationPath,
+													 std::string& rootPath,
+													 std::vector<std::string>& indexFile,
+													 std::vector<std::string>& limitExcept);
+		void							locationVecToMap(void);
 
-		friend std::ostream&		operator<<(std::ostream &os, const configInfo& conf);
+		friend std::ostream&			operator<<(std::ostream &os, const configInfo& conf);
 };
 
 #endif //configInfo_hpp

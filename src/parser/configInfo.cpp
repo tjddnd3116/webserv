@@ -1,4 +1,5 @@
 #include "configInfo.hpp"
+#include <utility>
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
@@ -39,6 +40,7 @@ configInfo::operator=(const configInfo& copy)
 	m_clientMaxBodySize = copy.getClinetMaxBodySize();
 	m_errorCode = copy.getErrorCode();
 	m_errorPath = copy.getErrorPath();
+	m_mapLocation = copy.getMapLocation();
 	return (*this);
 }
 
@@ -303,6 +305,12 @@ configInfo::getErrorPath(void) const
 	return (m_errorPath);
 }
 
+std::map<std::string, configInfo::Location>
+configInfo::getMapLocation(void) const
+{
+	return (m_mapLocation);
+}
+
 std::ostream&
 operator<<(std::ostream &os, const configInfo& conf)
 {
@@ -411,3 +419,9 @@ configInfo::createDefaultLocation(void)
 	m_location.push_back(defaultLocaiton);
 }
 
+void
+configInfo::locationVecToMap(void)
+{
+	for (size_t i = 0; i < m_location.size(); i++)
+		m_mapLocation.insert(std::make_pair(m_location[i].locPath, m_location[i]));
+}
