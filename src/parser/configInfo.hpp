@@ -47,14 +47,18 @@ class configInfo
 		bool	isMethod(const std::vector<std::string>& method);
 
 	public:
+		// constructor & destructor
 		configInfo();
 		~configInfo();
+
+		// copy constructor & copy operator
 		configInfo(const configInfo& copy);
 		configInfo& operator=(const configInfo& copy);
 
-
 		typedef void 		(t_setter)(std::vector<std::string>&);
 		typedef t_setter	configInfo::*t_setterType;
+
+
 		static std::unordered_map<std::string, t_setterType>	s_table;
 
 		// setter
@@ -66,7 +70,6 @@ class configInfo
 		void		setUriBufferSize(std::vector<std::string>& set);
 		void		setClientMaxBodySize(std::vector<std::string>& set);
 		void		setErrorPage(std::vector<std::string>& set);
-
 		void		setLocationExpires(std::vector<std::string>& set);
 		void		setLocationRoot(std::vector<std::string>& set);
 		void		setLocationProxy(std::vector<std::string>& set);
@@ -75,11 +78,6 @@ class configInfo
 		void		setLocationIndex(std::vector<std::string>& set);
 		void		setLocationAlias(std::vector<std::string>& set);
 
-
-		int			createLocation(std::string& path);
-		void		createDefaultLocation(void);
-
-		void		checkConfig(void);
 
 		// getter
 		int32_t							getListenPort(void) const;
@@ -93,13 +91,18 @@ class configInfo
 		std::string						getErrorPath(void) const;
 		std::map<std::string, Location>	getMapLocation(void) const;
 
-		void							printServerBlock(std::ostream& os) const;
-		void							printLocationBlock(std::ostream& os, size_t i) const;
-		void							findLocation(const std::string& locationPath,
-													 std::string& rootPath,
-													 std::vector<std::string>& indexFile,
-													 std::vector<std::string>& limitExcept);
-		void							locationVecToMap(void);
+
+		int		createLocation(std::string& path);
+		void	createDefaultLocation(void);
+		void	checkConfig(void);
+		void	printServerBlock(std::ostream& os) const;
+		void	printLocationBlock(std::ostream& os, size_t i) const;
+		void	findLocation(const std::string& locationPath,
+							 std::string& rootPath,
+							 std::vector<std::string>& indexFile,
+							 std::vector<std::string>& limitExcept);
+		int		isLocationBlock(const std::vector<std::string>& directoryVec);
+		void	locationVecToMap(void);
 
 		friend std::ostream&			operator<<(std::ostream &os, const configInfo& conf);
 };

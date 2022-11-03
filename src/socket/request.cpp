@@ -40,6 +40,7 @@ request::readRequest(const std::string& request)
 	if (m_method && m_method->isMethodCreateFin())
 	{
 		m_method->uriParse();
+
 		return (READ_FIN);
 	}
 	return (READING);
