@@ -38,6 +38,8 @@ class AMethod
 		int							checkStartLine(std::vector<std::string>& splittedLine);
 		void						loadBody(const std::string& readLine);
 		bool						checkFileExists(const std::string& filePath);
+		bool						checkDirExists(const std::string& filePath);
+		int							hexToDecimal(const std::string& readLine);
 
 	public:
 		// constructor & destructor
@@ -54,6 +56,9 @@ class AMethod
 		virtual const std::string&		getBody(void) const;
 
 		// member functions
+		void							queryStringParse(std::string& uri);
+		void							directoryParse(std::string& uri,
+													   std::vector<std::string>& dirVec);
 		void							uriParse(void);
 		void							printInfo(void) const;
 

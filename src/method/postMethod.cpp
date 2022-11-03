@@ -1,5 +1,4 @@
 #include "postMethod.hpp"
-#include <string>
 
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -49,13 +48,13 @@ postMethod::loadBody(const std::string& readLine)
 	else if (m_bodyType == "chunked")
 	{
 		if (m_bodySize == -1)
-		{
-			m_bodySize = std::stoi(readLine);
-		}
+			m_bodySize = hexToDecimal(readLine);
 		else
 		{
 			if (m_bodySize != 0)
 				m_bodyBuffer += readLine;
+			if ((size_t)m_bodySize == m_bodyBuffer.size())
+				m_bodySize = -1;
 		}
 	}
 }
@@ -74,7 +73,7 @@ postMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 bool
 postMethod::isMethodCreateFin(void) const
 {
-	if (m_bodySize == 0)
+	if (m_bodySize == 0 || m_bodySize == -1)
 		return (true);
 	if ((size_t)m_bodySize == m_bodyBuffer.size())
 		return (true);

@@ -1,5 +1,4 @@
 #include "configInfo.hpp"
-#include <utility>
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
@@ -245,7 +244,8 @@ configInfo::isMethod(const std::vector<std::string>& method)
 {
 	for (size_t i = 0; i < method.size(); i++)
 	{
-		if (method[i] != "GET" && method[i] != "DELETE" && method[i] != "POST" && method[i] != "HEAD")
+		if (method[i] != "GET" && method[i] != "DELETE" && method[i] != "POST"
+				&& method[i] != "HEAD" && method[i] != "PUT")
 			return (false);
 	}
 	return (true);
@@ -394,18 +394,27 @@ configInfo::findLocation(const std::string& locationPath,
 						 std::vector<std::string>& indexFile,
 						 std::vector<std::string>& limitExcept)
 {
-	for (size_t i = 0; i < m_location.size(); i++)
-	{
-		if (m_location[i].locPath == locationPath)
-		{
-			rootPath = m_location[i].locRoot;
-			indexFile = m_location[i].locIndex;
-			limitExcept = m_location[i].locLimitExpect;
-			return;
-		}
-	}
-	rootPath = m_root;
-	indexFile = m_index;
+	std::map<std::string, Location>::iterator mapIt;
+
+	mapIt = m_mapLocation.find(locationPath);
+	if (mapIt->second.locAlias != "")
+		rootPath = mapIt->second.locAlias + "/";
+	else
+		rootPath = mapIt->second.locRoot + locationPath;
+	indexFile = mapIt->second.locIndex;
+	limitExcept = mapIt->second.locLimitExpect;
+	// for (size_t i = 0; i < m_location.size(); i++)
+	// {
+	//     if (m_location[i].locPath == locationPath)
+	//     {
+	//         rootPath = m_location[i].locRoot;
+	//         indexFile = m_location[i].locIndex;
+	//         limitExcept = m_location[i].locLimitExpect;
+	//         return;
+	//     }
+	// }
+	// rootPath = m_root;
+	// indexFile = m_index;
 }
 
 void
@@ -424,4 +433,15 @@ configInfo::locationVecToMap(void)
 {
 	for (size_t i = 0; i < m_location.size(); i++)
 		m_mapLocation.insert(std::make_pair(m_location[i].locPath, m_location[i]));
+}
+
+int
+configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
+{
+	for (size_t i = directoryVec.size() - 1; i >= 0; i--)
+	{
+		if (m_mapLocation.find(directoryVec[i]) != m_mapLocation.end())
+			return (i);
+	}
+	return (-1);
 }
