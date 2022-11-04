@@ -15,10 +15,11 @@ putMethod::loadRequest(const std::string &readLine)
 {
 	if (readLine.empty() || readLine[0] == ' ')
 		return ;
-	if (readLine[0] == '\r' && m_crlfCnt == 0)
+	if (readLine[0] == '\r')
 	{
 		m_crlfCnt++;
-		getBodyType();
+		if (m_crlfCnt == 1)
+			getBodyType();
 		return ;
 	}
 	if (m_crlfCnt == 1)
@@ -73,10 +74,8 @@ putMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 bool
 putMethod::isMethodCreateFin(void) const
 {
-	if (m_bodySize == 0)
+	if (m_crlfCnt == 2)
 		return (true);
-	// if ((size_t)m_bodySize == m_bodyBuffer.size())
-	//     return (true);
 	return (false);
 }
 
@@ -99,9 +98,9 @@ void putMethod::logMethodInfo(std::fstream& logFile) const
 		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
 			logFile << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
-	logFile << "-------body--------" << std::endl;
-	logFile << m_bodyBuffer << std::endl;
-	logFile << "-------------------------" << RESET << std::endl;
+	// logFile << "-------body--------" << std::endl;
+	// logFile << m_bodyBuffer << std::endl;
+	// logFile << "-------------------------" << RESET << std::endl;
 }
 
 void
@@ -123,4 +122,70 @@ putMethod::getBodyType(void)
 		m_bodySize = -1;
 		return ;
 	}
+}
+
+void
+putMethod::uriParse(void)
+{
+	std::vector<std::string>	limitExcept;
+	std::vector<std::string>	indexFile;
+	std::string					root;
+	std::string					uri;
+	std::string					fileName;
+	std::string					locationPath;
+
+	std::vector<std::string>	directoryVec;
+	int							directoryIdx;
+	bool						isTrailingSlash;
+
+	uri = m_uri;
+	queryStringParse(uri);
+	if (uri.back() == '/')
+		isTrailingSlash = true;
+	else
+		isTrailingSlash = false;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	if (!isTrailingSlash)
+	{
+		if (checkFileExists(root + fileName))
+		{}
+		else if (checkDirExists(root + fileName))
+		{
+			root = root + fileName + "/";
+			fileName = "";
+		}
+		else
+		{
+			directoryVec.clear();
+			uri.push_back('/');
+			directoryParse(uri, directoryVec);
+			directoryIdx = m_conf.isLocationBlock(directoryVec);
+			if (directoryIdx != 0)
+			{
+				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
+				fileName = uri.substr(directoryVec[directoryIdx].size());
+			}
+		}
+	}
+	else
+	{
+		root = root + fileName;
+		fileName = "";
+	}
+	if (fileName == "")
+		fileName = indexFile[0];
+	m_filePath = root + fileName;
+	m_statusCode = 200;
+
+	if (!this->checkMethodLimit(limitExcept))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
+
 }

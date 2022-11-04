@@ -51,6 +51,7 @@ class AMethod
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const = 0;
 		virtual bool					isMethodCreateFin(void) const = 0;
 		virtual void					logMethodInfo(std::fstream& logFile) const = 0;
+		virtual void					uriParse(void) = 0;
 
 		// virtual functions
 		virtual const std::string&		getBody(void) const;
@@ -59,7 +60,6 @@ class AMethod
 		void							queryStringParse(std::string& uri);
 		void							directoryParse(std::string& uri,
 													   std::vector<std::string>& dirVec);
-		void							uriParse(void);
 		void							printInfo(void) const;
 
 		int								getStatusCode(void) const;
