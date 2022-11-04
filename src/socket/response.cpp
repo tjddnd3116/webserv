@@ -63,18 +63,6 @@ response::makeBody(void)
 }
 
 void
-response::extractExt()
-{
-	std::string filepath = m_filePath;
-
-	while (filepath.find("/") != std::string::npos)
-	{
-		filepath.erase(0, filepath.find("/") + 1);
-	}
-	m_fileExt = filepath.substr(filepath.find("."));
-}
-
-void
 response::parseBody()
 {
 	if (m_newBody.find("Content-type:") != std::string::npos)
@@ -121,21 +109,31 @@ response::makeResponse(const AMethod* method)
 	cgi defaultCgi;
 
 	m_method = method;
+	m_fileExt = method->getFileExt();
 
-	makeStatusLine();
-	extractExt();
-	makeResponseHeader();
-	makeGeneralHeader();
-	m_isCgi = checkIsCgi();
-	if (m_isCgi == 1)
+	if (method->getMethod() != "PUT")
 	{
-		defaultCgi.initCgi(m_method);
-		m_newBody = defaultCgi.execCgi(m_method);
-		//std::cout << m_newBody << std::endl;
+		makeStatusLine();
+		makeResponseHeader();
+		makeGeneralHeader();
+		m_isCgi = checkIsCgi();
+		if (m_isCgi == 1)
+		{
+			defaultCgi.initCgi(m_method);
+			m_newBody = defaultCgi.execCgi(m_method);
+		}
+		parseBody();
+		makeEntityHeader();
+		makeBody();
+
 	}
-	parseBody();
-	makeEntityHeader();
-	makeBody();
+	else
+	{
+		makeStatusLine();
+		makeResponseHeader();
+		makeGeneralHeader();
+		makeEntityHeader();
+	}
 }
 
 const std::string&

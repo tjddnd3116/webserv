@@ -40,6 +40,7 @@ class AMethod
 		bool						checkFileExists(const std::string& filePath);
 		bool						checkDirExists(const std::string& filePath);
 		int							hexToDecimal(const std::string& readLine);
+		void						extractExt(std::string& fileName);
 
 	public:
 		// constructor & destructor
@@ -60,7 +61,7 @@ class AMethod
 		void							queryStringParse(std::string& uri);
 		void							directoryParse(std::string& uri,
 													   std::vector<std::string>& dirVec);
-		void							printInfo(void) const;
+
 
 		int								getStatusCode(void) const;
 		const std::string&				getMethod(void) const;
@@ -71,6 +72,7 @@ class AMethod
 										getRequestSet(void) const;
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
+		const std::string&				getFileExt(void) const;
 
 };
 #endif //AMethod_hpp

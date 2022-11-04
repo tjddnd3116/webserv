@@ -31,7 +31,6 @@ class response
 		void				makeResponseHeader(void);
 		void				makeEntityHeader(void);
 		void				makeGeneralHeader(void);
-		void				extractExt(void);
 		void				parseBody(void);
 		const std::string	getDate(void);
 		const std::string	getStatusCodeStr(int statusCode);

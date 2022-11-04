@@ -185,4 +185,20 @@ AMethod::directoryParse(std::string& uri,
 	}
 }
 
+void
+AMethod::extractExt(std::string& fileName)
+{
+	size_t dotPos;
+
+	dotPos = fileName.find(".");
+	m_fileExt = "";
+	if (dotPos != std::string::npos)
+		m_fileExt = fileName.substr(dotPos);
+}
+
+const std::string&
+AMethod::getFileExt(void) const
+{
+	return (m_fileExt);
+}
 
