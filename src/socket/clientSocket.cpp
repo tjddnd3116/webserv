@@ -73,9 +73,6 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 		logFile << "client socket close!" << std::endl;
 	else
 	{
-		// m_readBuffer += buffer;
-		if (readRet == BUF_SIZE)
-			return (readRet);
 		requestStatus = m_request.readRequest(buffer);
 		if (requestStatus == READING)
 			return (readRet);
@@ -87,55 +84,6 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 			m_readFinish = true;
 			m_readBuffer.clear();
 		}
-		// TODO
-		// chunked 일때 처리
-
-		// if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
-		// {
-		//     return readRet;
-		// }
-		// else if (is_bodySection == false && \
-		//     m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-		// {
-		//     std::cout << "Found carrage return!" << std::endl;
-		//     request request(m_conf);
-		//     m_method = request.readRequest(m_readBuffer);
-		//     if (m_method->getMethod() == "POST")
-		//     {
-		//         //postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-		//         //tempPost->loadBody(m_readBuffer);
-		//         std::cout << "m_body is : " << m_method->getBody() << std::endl;
-		//         std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
-		//         transferIt = m_method->getRequestSet().find("Transfer-Encoding");
-		//         std::string type;
-		//         if (transferIt != m_method->getRequestSet().end())
-		//         {
-		//             type = transferIt->second[0];
-		//         }
-		//         if (type == "chunked" && type.find("0\n") == std::string::npos)
-		//         {
-		//             is_bodySection = true;
-		//             return readRet;
-		//         }
-		//     }
-		//     if (m_method->getMethod() != "POST")
-		//     {
-		//         is_bodySection = false;
-		//         std::cout << *m_method << std::endl;
-		//         m_method->printBody();
-		//     }
-		//     m_readFinish = true;
-		//     m_readBuffer.clear();
-		// }
-		// else if (is_bodySection == true && \
-		//     m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-		// {
-		//     std::cout << *m_method << std::endl;
-		//     m_method->printBody();
-		//     m_readFinish = true;
-		//     is_bodySection = false;
-		//     m_readBuffer.clear();
-		// }
 	}
 	return (readRet);
 }
@@ -154,7 +102,14 @@ clientSocket::sendSock(std::fstream& logFile)
 		logFile << "-------------------------------" << RESET << std::endl;
 	}
 	sendRet = write(m_SocketFd, response().c_str(), response.getBufSize());
-	m_method = NULL;
+
+	// TODO
+	// just test!
+	if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
+	{
+		m_method = NULL;
+		return (-1);
+	}
 	return (sendRet);
 }
 

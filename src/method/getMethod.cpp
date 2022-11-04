@@ -119,6 +119,7 @@ getMethod::uriParse(void)
 	}
 	if (fileName == "")
 		fileName = indexFile[0];
+	extractExt(fileName);
 	m_filePath = root + fileName;
 	m_statusCode = 200;
 
