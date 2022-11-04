@@ -52,132 +52,6 @@ clientSocket::createSock(void)
 		throw WsException("create(accept) socket fail");
 }
 
-// int
-// clientSocket::readSock(std::fstream& logFile)
-// {
-//     int readRet;
-//     char buffer[BUF_SIZE];
-//
-//     m_readFinish = false;
-//     std::memset(buffer, 0, sizeof(buffer));
-//     readRet = read(m_SocketFd, buffer, BUF_SIZE);
-//
-//     if (readRet < 0)
-//         logFile << "non-blocking" << std::endl;
-//     else if (readRet == 0)
-//         logFile << "client socket close!" << std::endl;
-//     else
-//     {
-//         m_readBuffer += buffer;
-//         if (readRet == BUF_SIZE)
-//             return (readRet);
-//         if (m_method != NULL && m_method->getMethod() == "POST")
-//         {
-//             postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-//
-//             tempPost->loadBody(m_readBuffer);
-//
-//             unsigned int	contentLen = std::stoi((tempPost->getRequestSet()).at("Content-Length")[0]);
-//             if (tempPost->getBody().size() < contentLen)
-//                 return readRet;
-//             else
-//             {
-//                 m_readFinish = true;
-//                 m_readBuffer.clear();
-//                 tempPost->printBody();
-//             }
-//         }
-//         else if (m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-//         {
-//             request request(m_conf);
-//             m_method = request.readRequest(m_readBuffer);
-//             if (1)
-//             {
-//                 logFile << *m_method << std::endl;
-//                 m_method->printBody();
-//             }
-//             if (m_method->getMethod() == "POST")
-//             {
-//                 postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-//                 unsigned int	contentLen = std::stoi((tempPost->getRequestSet()).at("Content-Length")[0]);
-//                 if (tempPost->getBody().size() < contentLen)
-//                     return readRet;
-//             }
-//             m_readFinish = true;
-//             m_readBuffer.clear();
-//         }
-//     }
-//     return (readRet);
-// }
-
-// int
-// clientSocket::readSock(std::fstream& logFile)
-// {
-//     int readRet;
-//     char buffer[BUF_SIZE];
-//
-//     m_readFinish = false;
-//     std::memset(buffer, 0, sizeof(buffer));
-//     readRet = read(m_SocketFd, buffer, BUF_SIZE);
-//     if (readRet < 0)
-//         logFile << "non-blocking" << std::endl;
-//     else if (readRet == 0)
-//         logFile << "client socket close!" << std::endl;
-//     else
-//     {
-//         m_readBuffer += buffer;
-//         if (readRet == BUF_SIZE)
-//             return (readRet);
-//         if (m_readBuffer.rfind("\r\n\r\n") == std::string::npos)
-//         {
-//             return readRet;
-//         }
-//         else if (is_bodySection == false && \
-//             m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-//         {
-//             std::cout << "Found carrage return!" << std::endl;
-//             request request(m_conf);
-//             m_method = request.readRequest(m_readBuffer);
-//             if (m_method->getMethod() == "POST")
-//             {
-//                 //postMethod* 	tempPost = dynamic_cast<postMethod*>(m_method);
-//                 //tempPost->loadBody(m_readBuffer);
-//                 std::cout << "m_body is : " << m_method->getBody() << std::endl;
-//                 std::map<std::string, std::vector<std::string> >::const_iterator transferIt;
-//                 transferIt = m_method->getRequestSet().find("Transfer-Encoding");
-//                 std::string type;
-//                 if (transferIt != m_method->getRequestSet().end())
-//                 {
-//                     type = transferIt->second[0];
-//                 }
-//                 if (type == "chunked" && type.find("0\n") == std::string::npos)
-//                 {
-//                     is_bodySection = true;
-//                     return readRet;
-//                 }
-//             }
-//             if (m_method->getMethod() != "POST")
-//             {
-//                 is_bodySection = false;
-//                 std::cout << *m_method << std::endl;
-//                 m_method->printBody();
-//             }
-//             m_readFinish = true;
-//             m_readBuffer.clear();
-//         }
-//         else if (is_bodySection == true && \
-//             m_readBuffer.rfind("\r\n\r\n") != std::string::npos)
-//         {
-//             std::cout << *m_method << std::endl;
-//             m_method->printBody();
-//             m_readFinish = true;
-//             is_bodySection = false;
-//             m_readBuffer.clear();
-//         }
-//     }
-//     return (readRet);
-// }
-
 int
 clientSocket::readSock(std::fstream& logFile, int msgSize)
 {
@@ -190,9 +64,9 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	m_readFinish = false;
 	std::memset(buffer, 0, msgSize);
 	readRet = read(m_SocketFd, buffer, msgSize - 1);
-	logFile << "-----origin request message-----" << std::endl;
-	logFile << buffer << std::endl;
-	logFile << "--------------------------------" << std::endl;
+	// logFile << "-----origin request message-----" << std::endl;
+	// logFile << buffer << std::endl;
+	// logFile << "--------------------------------" << std::endl;
 	if (readRet < 0)
 		logFile << "non-blocking" << std::endl;
 	else if (readRet == 0)

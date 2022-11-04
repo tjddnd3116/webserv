@@ -48,14 +48,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 96
------origin request message-----
-GET / HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -79,7 +71,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 807
 
@@ -118,13 +110,13 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 108
------origin request message-----
-POST / HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Content-
---------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 48
 [31m---- request message -----
 method :
 	POST
@@ -132,37 +124,26 @@ uri :
 	/
 http version : 
 	HTTP/1.1
+Accept-Encoding :
+	gzip
+Content-Type :
+	test/file
 Host :
 	localhost:1000
 Transfer-Encoding :
 	chunked
 User-Agent :
 	Go-http-client/1.1
--------body--------
-
--------------------------[0m
 client read finish
 
 ---waiting event---
-new events count : 2
-new event fd : 6
-[read] event occured
-message size : 48
------origin request message-----
-Type: test/file
-Accept-Encoding: gzip
-
-0
-
-
---------------------------------
-client read finish
+new events count : 1
 new event fd : 6
 [write] event occured
 [34m-----------response----------------
 HTTP/1.1 405 Method not allowed
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 657
 
@@ -196,9 +177,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 9
------origin request message-----
-HEAD / H
---------------------------------
 client read finish
 
 ---waiting event---
@@ -206,11 +184,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 36
------origin request message-----
-TTP/1.1
-Host: localhost:1000
-User
---------------------------------
 client read finish
 
 ---waiting event---
@@ -218,11 +191,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 31
------origin request message-----
--Agent: Go-http-client/1.1
-
-
---------------------------------
 [31m---- request message -----
 method :
 	HEAD
@@ -244,7 +212,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 405 Method not allowed
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 657
 
@@ -257,11 +225,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 76
------origin request message-----
-GET /directory HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1
---------------------------------
 client read finish
 
 ---waiting event---
@@ -269,12 +232,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 30
------origin request message-----
-.1
-Accept-Encoding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -298,7 +255,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -311,9 +268,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 32
------origin request message-----
-GET /directory/youpi.bad_extens
---------------------------------
 client read finish
 
 ---waiting event---
@@ -321,11 +275,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 46
------origin request message-----
-ion HTTP/1.1
-Host: localhost:1000
-User-Agen
---------------------------------
 client read finish
 
 ---waiting event---
@@ -333,12 +282,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 49
------origin request message-----
-t: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -362,7 +305,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -375,9 +318,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 29
------origin request message-----
-GET /directory/youpi.bla HTT
---------------------------------
 client read finish
 
 ---waiting event---
@@ -385,11 +325,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 54
------origin request message-----
-P/1.1
-Host: localhost:1000
-User-Agent: Go-http-clie
---------------------------------
 client read finish
 
 ---waiting event---
@@ -397,12 +332,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 34
------origin request message-----
-nt/1.1
-Accept-Encoding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -426,7 +355,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -439,9 +368,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 23
------origin request message-----
-GET /directory/oulalal
---------------------------------
 client read finish
 
 ---waiting event---
@@ -449,12 +375,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 80
------origin request message-----
-a HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Encodi
---------------------------------
 client read finish
 
 ---waiting event---
@@ -462,11 +382,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 13
------origin request message-----
-ng: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -490,7 +405,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 404 Not found
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 777
 
@@ -524,12 +439,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 104
------origin request message-----
-GET /directory/nop HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzi
---------------------------------
 client read finish
 
 ---waiting event---
@@ -537,11 +446,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 6
------origin request message-----
-p
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -565,7 +469,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -578,12 +482,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 96
------origin request message-----
-GET /directory/nop/ HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Enco
---------------------------------
 client read finish
 
 ---waiting event---
@@ -591,11 +489,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 15
------origin request message-----
-ding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -619,7 +512,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -632,10 +525,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 52
------origin request message-----
-GET /directory/nop/other.pouic HTTP/1.1
-Host: loca
---------------------------------
 client read finish
 
 ---waiting event---
@@ -643,13 +532,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 70
------origin request message-----
-lhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -673,7 +555,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -686,9 +568,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 6
------origin request message-----
-GET /
---------------------------------
 client read finish
 
 ---waiting event---
@@ -696,12 +575,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 101
------origin request message-----
-directory/nop/other.pouac HTTP/1.1
-Host: localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Enc
---------------------------------
 client read finish
 
 ---waiting event---
@@ -709,11 +582,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 16
------origin request message-----
-oding: gzip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -737,7 +605,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 404 Not found
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 777
 
@@ -771,24 +639,20 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 42
------origin request message-----
-GET /directory/Yeah HTTP/1.1
-Host: local
---------------------------------
 client read finish
 
 ---waiting event---
 new events count : 1
 new event fd : 6
 [read] event occured
-message size : 69
------origin request message-----
-host:1000
-User-Agent: Go-http-client/1.1
-Accept-Encoding: gzip
+message size : 68
+client read finish
 
-
---------------------------------
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 2
 [31m---- request message -----
 method :
 	GET
@@ -812,7 +676,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 404 Not found
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 777
 
@@ -846,10 +710,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 61
------origin request message-----
-GET /directory/Yeah/not_happy.bad_extension HTTP/1.1
-Host: 
---------------------------------
 client read finish
 
 ---waiting event---
@@ -857,11 +717,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 67
------origin request message-----
-localhost:1000
-User-Agent: Go-http-client/1.1
-Accept-Encoding: g
---------------------------------
 client read finish
 
 ---waiting event---
@@ -869,11 +724,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 8
------origin request message-----
-zip
-
-
---------------------------------
 [31m---- request message -----
 method :
 	GET
@@ -897,7 +747,7 @@ new event fd : 6
 [34m-----------response----------------
 HTTP/1.1 200 OK
 Server: localhost
-Date: Thu, 03 Nov 2022 18:13:04 KST
+Date: Fri, 04 Nov 2022 20:12:41 KST
 Content-type: text/html; charset=UTF-8
 Content-Length: 0
 
@@ -910,9 +760,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 35
------origin request message-----
-PUT /put_test/file_should_exist_af
---------------------------------
 client read finish
 
 ---waiting event---
@@ -920,10 +767,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 28
------origin request message-----
-ter HTTP/1.1
-Host: localho
---------------------------------
 client read finish
 
 ---waiting event---
@@ -931,14 +774,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 95
------origin request message-----
-st:1000
-User-Agent: Go-http-client/1.1
-Transfer-Encoding: chunked
-Accept-Encoding: gzip
-
-
---------------------------------
 client read finish
 
 ---waiting event---
@@ -946,10 +781,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 994
------origin request message-----
-3e8
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
---------------------------------
 client read finish
 
 ---waiting event---
@@ -957,20 +788,6 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 12
------origin request message-----
-eeeeeeeeeee
---------------------------------
-client read finish
-
----waiting event---
-new events count : 1
-new event fd : 6
-[read] event occured
-message size : 4
------origin request message-----
-e
-
---------------------------------
 client read finish
 
 ---waiting event---
@@ -978,9 +795,13 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 3
------origin request message-----
-0
---------------------------------
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 2
 client read finish
 
 ---waiting event---
@@ -988,10 +809,20 @@ new events count : 1
 new event fd : 6
 [read] event occured
 message size : 3
------origin request message-----
+client read finish
 
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 3
+client read finish
 
---------------------------------
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 2
 [31m---- request message -----
 method :
 	PUT
@@ -1007,21 +838,10 @@ Transfer-Encoding :
 	chunked
 User-Agent :
 	Go-http-client/1.1
--------body--------
-eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
--------------------------[0m
 client read finish
 
 ---waiting event---
-new events count : 2
-new event fd : 6
-[read] event occured
-message size : 2
------origin request message-----
-
-
---------------------------------
-client read finish
+new events count : 1
 new event fd : 6
 [write] event occured
 basic_string
