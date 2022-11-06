@@ -22,8 +22,9 @@ void
 cgi::initCgi(const AMethod *method)
 {
     // m_cgiPath = "/Users/gson/webserv_cgi/cgi-bin/cgi_tester";
-    m_cgiPath = "/Users/gson/webserv_cgi/cgi-bin/php-cgi";
-    // m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
+    // m_cgiPath = "/Users/gson/webserv_cgi/cgi-bin/php-cgi";
+	// m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
+	m_cgiPath = "/Users/soum/webserv/cgi-bin/cgi_tester";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
 
     std::string rootPath;
@@ -143,9 +144,9 @@ cgi::execCgi(const AMethod *method)
         dup2(fd_A[WRITE], STDOUT_FILENO);
         close(fd_A[WRITE]);
 
-        // std::cerr << "succcess?\n" << std::endl;
+		std::cerr << "succcess?\n" << std::endl;
         execve(m_cgiPath.c_str(), NULL, &m_envChar[0]);
-        // std::cerr << "fail\n" << std::endl;
+		std::cerr << "fail\n" << std::endl;
     }
     else
     {
@@ -163,10 +164,12 @@ cgi::execCgi(const AMethod *method)
         {
             memset(buf, 0, 1024);
             ret = read(fd_A[READ], buf, 1024 - 1);
+			std::cout << "buf : " << buf << std::endl;
             body += buf;
         }
         close(fd_A[READ]);
     }
+	std::cout << "body : " << body << std::endl;
     dup2(fd_in, STDIN_FILENO);
     dup2(fd_out, STDOUT_FILENO);
     close(fd_in);

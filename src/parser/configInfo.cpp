@@ -403,18 +403,6 @@ configInfo::findLocation(const std::string& locationPath,
 		rootPath = mapIt->second.locRoot + locationPath;
 	indexFile = mapIt->second.locIndex;
 	limitExcept = mapIt->second.locLimitExpect;
-	// for (size_t i = 0; i < m_location.size(); i++)
-	// {
-	//     if (m_location[i].locPath == locationPath)
-	//     {
-	//         rootPath = m_location[i].locRoot;
-	//         indexFile = m_location[i].locIndex;
-	//         limitExcept = m_location[i].locLimitExpect;
-	//         return;
-	//     }
-	// }
-	// rootPath = m_root;
-	// indexFile = m_index;
 }
 
 void
@@ -445,3 +433,4 @@ configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
 	}
 	return (-1);
 }
+

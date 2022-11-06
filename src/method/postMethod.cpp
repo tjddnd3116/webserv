@@ -5,6 +5,7 @@ postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 {
 	m_bodyBuffer.clear();
 	m_bodySize = -1;
+	m_readBody = "";
 }
 
 postMethod::~postMethod()
@@ -127,64 +128,31 @@ postMethod::getBodyType(void)
 void
 postMethod::uriParse(void)
 {
-	std::vector<std::string>	limitExcept;
-	std::vector<std::string>	indexFile;
-	std::string					root;
-	std::string					uri;
-	std::string					fileName;
-	std::string					locationPath;
-
-	std::vector<std::string>	directoryVec;
-	int							directoryIdx;
-	bool						isTrailingSlash;
+	std::string	uri;
 
 	uri = m_uri;
-	if (uri.back() == '/')
-		isTrailingSlash = true;
-	else
-		isTrailingSlash = false;
-
-	directoryParse(uri, directoryVec);
-	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
-	fileName = uri.substr(directoryVec[directoryIdx].size());
-	if (!isTrailingSlash)
-	{
-		if (checkFileExists(root + fileName))
-		{}
-		else if (checkDirExists(root + fileName))
-		{
-			root = root + fileName + "/";
-			fileName = "";
-		}
-		else
-		{
-			directoryVec.clear();
-			uri.push_back('/');
-			directoryParse(uri, directoryVec);
-			directoryIdx = m_conf.isLocationBlock(directoryVec);
-			if (directoryIdx != 0)
-			{
-				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
-				fileName = uri.substr(directoryVec[directoryIdx].size());
-			}
-		}
-	}
-	else
-	{
-		root = root + fileName;
-		fileName = "";
-	}
-	if (fileName == "")
-		fileName = indexFile[0];
-	m_filePath = root + fileName;
+	postFilePathParse(uri);
 	m_statusCode = 200;
 
-	if (!this->checkMethodLimit(limitExcept))
+}
+
+void postMethod::doMethodWork(void)
+{
+	if (!this->checkMethodLimit(m_limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+		readFile(m_readBody);
+		return ;
 	}
+	// TODO
+	// need error control
+	writeFile(m_bodyBuffer);
+}
 
+const std::string&
+postMethod::getReadBody(void) const
+{
+	return (m_readBody);
 }

@@ -67,59 +67,15 @@ headMethod::logMethodInfo(std::fstream& logFile) const
 
 void headMethod::uriParse(void)
 {
-	std::vector<std::string>	limitExcept;
-	std::vector<std::string>	indexFile;
-	std::string					root;
 	std::string					uri;
-	std::string					fileName;
-	std::string					locationPath;
-
-	std::vector<std::string>	directoryVec;
-	int							directoryIdx;
-	bool						isTrailingSlash;
 
 	uri = m_uri;
-	if (uri.back() == '/')
-		isTrailingSlash = true;
-	else
-		isTrailingSlash = false;
-
-	directoryParse(uri, directoryVec);
-	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
-	fileName = uri.substr(directoryVec[directoryIdx].size());
-	if (!isTrailingSlash)
-	{
-		if (checkFileExists(root + fileName))
-		{}
-		else if (checkDirExists(root + fileName))
-		{
-			root = root + fileName + "/";
-			fileName = "";
-		}
-		else
-		{
-			directoryVec.clear();
-			uri.push_back('/');
-			directoryParse(uri, directoryVec);
-			directoryIdx = m_conf.isLocationBlock(directoryVec);
-			if (directoryIdx != 0)
-			{
-				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, limitExcept);
-				fileName = uri.substr(directoryVec[directoryIdx].size());
-			}
-		}
-	}
-	else
-	{
-		root = root + fileName;
-		fileName = "";
-	}
-	if (fileName == "")
-		fileName = indexFile[0];
-	m_filePath = root + fileName;
+	filePathParse(uri);
 	m_statusCode = 200;
+}
 
+void headMethod::doMethodWork(void)
+{
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
@@ -127,10 +83,19 @@ void headMethod::uriParse(void)
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 		return ;
 	}
-	if (!this->checkMethodLimit(limitExcept))
+	if (!this->checkMethodLimit(m_limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 	}
+	// TODO
+	// need error control
+	readFile(m_readBody);
+}
+
+const std::string&
+headMethod::getReadBody(void) const
+{
+	return (m_readBody);
 }

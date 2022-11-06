@@ -13,7 +13,7 @@
 class response
 {
 	private:
-		std::fstream		m_file;
+		// std::fstream		m_file;
 		std::string			m_responseBuf;
 		std::string			m_newBody;
 		std::string			m_type;
@@ -21,9 +21,8 @@ class response
 		configInfo			m_conf;
 
 		// 필요없음
-		std::string 		m_fileExt;
 		int					m_isCgi;
-		std::string			m_filePath;
+		// std::string			m_filePath;
 
 
 		int 				checkIsCgi(void);
