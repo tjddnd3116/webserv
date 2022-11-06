@@ -60,3 +60,4 @@ tags
 .vimspector.json
 webserv
 errlog.txt
+*.bla

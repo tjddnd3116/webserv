@@ -27,7 +27,6 @@ class configInfo
 			std::string					locCgiPass;
 			std::string					locAlias;
 		};
-
 		std::vector<std::string>		m_index;
 		std::vector<std::string>		m_serverName;
 		std::vector<std::string>		m_errorCode;

@@ -83,6 +83,7 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 			m_method->logMethodInfo(logFile);
 			m_readFinish = true;
 			m_readBuffer.clear();
+			m_method->doMethodWork();
 		}
 	}
 	return (readRet);

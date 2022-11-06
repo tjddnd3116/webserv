@@ -202,3 +202,126 @@ AMethod::getFileExt(void) const
 	return (m_fileExt);
 }
 
+void
+AMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::vector<std::string>	indexFile;
+	std::string					fileName;
+	std::string					root;
+	bool						isTrailingSlash;
+	int							directoryIdx;
+
+
+	isTrailingSlash = getTrailingSlash(uri);
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	if (!isTrailingSlash)
+	{
+		if (checkFileExists(root + fileName))
+		{}
+		else if (checkDirExists(root + fileName))
+		{
+			root = root + fileName + "/";
+			fileName = "";
+		}
+		else
+		{
+			directoryVec.clear();
+			uri.push_back('/');
+			directoryParse(uri, directoryVec);
+			directoryIdx = m_conf.isLocationBlock(directoryVec);
+			if (directoryIdx != 0)
+			{
+				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+				fileName = uri.substr(directoryVec[directoryIdx].size());
+			}
+		}
+	}
+	else
+	{
+		root = root + fileName;
+		fileName = "";
+	}
+	if (fileName == "")
+		fileName = indexFile[0];
+	extractExt(fileName);
+	m_filePath = root + fileName;
+}
+
+bool
+AMethod::getTrailingSlash(const std::string& uri)
+{
+	if (uri.back() == '/')
+		return (true);
+	return (false);
+}
+
+void
+AMethod::readFile(std::string& readBody)
+{
+	std::fstream	file;
+	std::string		readLine;
+
+	file.open(m_filePath);
+	while (!file.eof())
+	{
+		std::getline(file, readLine);
+		if (readLine == "")
+			continue;
+		readBody += readLine + "\n";
+	}
+	readBody.pop_back();
+	file.close();
+}
+
+void
+AMethod::writeFile(std::string& bodyBuffer)
+{
+	std::ofstream file(m_filePath);
+
+	if (file.fail())
+	{
+		std::cout << "open fail!" << std::endl;
+		return ;
+	}
+	file << bodyBuffer;
+	file.close();
+}
+
+void
+AMethod::putFilePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::vector<std::string>	indexFile;
+	std::string					root;
+	std::string					fileName;
+	int							directoryIdx;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	extractExt(fileName);
+	m_filePath = root + fileName;
+}
+
+void
+AMethod::postFilePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::vector<std::string>	indexFile;
+	std::string					root;
+	std::string					fileName;
+	int							directoryIdx;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	extractExt(fileName);
+	m_filePath = root + fileName;
+
+}
