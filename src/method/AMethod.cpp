@@ -323,5 +323,4 @@ AMethod::postFilePathParse(std::string uri)
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
-
 }

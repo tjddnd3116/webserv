@@ -9,6 +9,7 @@ class putMethod : public AMethod
 		std::string	m_bodyBuffer;
 		std::string m_bodyType;
 		std::string	m_readBody;
+		int32_t		m_readLineSize;
 		int32_t		m_bodySize;
 
 	public:
@@ -19,7 +20,7 @@ class putMethod : public AMethod
 		virtual void					loadRequest(const std::string& readLine);
 		virtual const std::string&		getBody(void) const;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const;
-		virtual bool					isMethodCreateFin(void) const;
+		virtual bool					isMethodCreateFin(void);
 		virtual void					logMethodInfo(std::fstream& logFile) const;
 		virtual void					uriParse(void);
 		virtual void					doMethodWork(void);

@@ -1,4 +1,5 @@
 #include "postMethod.hpp"
+#include "../cgi/cgi.hpp"
 
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -6,6 +7,9 @@ postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	m_bodyBuffer.clear();
 	m_bodySize = -1;
 	m_readBody = "";
+	m_readLineSize = 0;
+	m_cgi = NULL;
+	m_testcnt = 0;
 }
 
 postMethod::~postMethod()
@@ -20,7 +24,10 @@ postMethod::loadRequest(const std::string &readLine)
 	{
 		m_crlfCnt++;
 		if (m_crlfCnt == 1)
+		{
+			this->uriParse();
 			getBodyType();
+		}
 		return ;
 	}
 	if (m_crlfCnt == 1)
@@ -40,23 +47,54 @@ postMethod::getBody(void) const
 void
 postMethod::loadBody(const std::string& readLine)
 {
-	if (m_bodyType == "size")
+	if (m_fileExt != ".bla")
 	{
-		if (m_bodyBuffer.empty())
-			m_bodyBuffer += readLine;
-		else
-			m_bodyBuffer += "\n" + readLine;
+		if (m_bodyType == "size")
+		{
+			if (m_bodyBuffer.empty())
+				m_bodyBuffer += readLine;
+			else
+				m_bodyBuffer += "\n" + readLine;
+		}
+		else if (m_bodyType == "chunked")
+		{
+			if (m_bodySize == -1)
+				m_bodySize = hexToDecimal(readLine);
+			else
+			{
+				if (m_bodySize != 0)
+				{
+					m_bodyBuffer += readLine;
+					m_readLineSize += readLine.size();
+				}
+				if (m_bodySize == m_readLineSize)
+				{
+					m_bodySize = -1;
+					m_readLineSize = 0;
+				}
+			}
+		}
 	}
-	else if (m_bodyType == "chunked")
+	else
 	{
 		if (m_bodySize == -1)
 			m_bodySize = hexToDecimal(readLine);
 		else
 		{
 			if (m_bodySize != 0)
-				m_bodyBuffer += readLine;
-			if ((size_t)m_bodySize == m_bodyBuffer.size())
+			{
+				m_tempBuffer += readLine;
+				m_readLineSize += readLine.size();
+			}
+			if (m_bodySize == m_readLineSize)
+			{
+				m_bodyBuffer += m_cgi->execCgi(m_tempBuffer);
+				m_testcnt++;
+				std::cout << m_testcnt << std::endl;
+				m_tempBuffer.clear();
 				m_bodySize = -1;
+				m_readLineSize = 0;
+			}
 		}
 	}
 }
@@ -73,9 +111,16 @@ postMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 }
 
 bool
-postMethod::isMethodCreateFin(void) const
+postMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 2)
+	{
+		std::cout << "cgi fin" << std::endl;
+		delete m_cgi;
+		m_cgi = NULL;
+		return (true);
+	}
+	else if (m_bodyType == "size" && m_bodyBuffer.size() == (size_t)m_bodySize)
 		return (true);
 	return (false);
 }
@@ -133,6 +178,11 @@ postMethod::uriParse(void)
 	uri = m_uri;
 	postFilePathParse(uri);
 	m_statusCode = 200;
+	if (m_fileExt == ".bla")
+	{
+		m_cgi = new cgi;
+		m_cgi->initCgi(this);
+	}
 
 }
 

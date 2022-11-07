@@ -3,6 +3,8 @@
 
 #include "AMethod.hpp"
 
+class cgi;
+
 class postMethod : public AMethod
 {
 	private:
@@ -10,6 +12,11 @@ class postMethod : public AMethod
 		std::string		m_bodyType;
 		std::string		m_readBody;
 		int32_t			m_bodySize;
+		int32_t			m_readLineSize;
+		cgi*			m_cgi;
+
+		std::string		m_tempBuffer;
+		int				m_testcnt;
 
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
@@ -19,7 +26,7 @@ class postMethod : public AMethod
 		virtual void					loadRequest(const std::string& readLine);
 		virtual const std::string&		getBody(void) const;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const;
-		virtual bool					isMethodCreateFin(void) const;
+		virtual bool					isMethodCreateFin(void);
 		virtual void					logMethodInfo(std::fstream& logFile) const;
 		virtual void					uriParse(void);
 		virtual void					doMethodWork(void);

@@ -7,7 +7,6 @@
 #include <unistd.h>
 
 #include "../method/AMethod.hpp"
-#include "../method/postMethod.hpp"
 
 #define READ 0
 #define WRITE 1
@@ -26,6 +25,6 @@ class cgi
 		cgi();
 		~cgi();
 		void initCgi(const AMethod *method);
-		std::string execCgi(const AMethod *method);
+		std::string execCgi(const std::string& readLine);
 };
 #endif //cgi_hpp
