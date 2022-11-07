@@ -6,6 +6,7 @@ putMethod::putMethod(const std::string& readLine, const configInfo& conf)
 	m_bodyBuffer.clear();
 	m_bodySize = -1;
 	m_readBody = "";
+	m_readLineSize = 0;
 }
 
 putMethod::~putMethod()
@@ -14,17 +15,21 @@ putMethod::~putMethod()
 void
 putMethod::loadRequest(const std::string &readLine)
 {
-	if (readLine.empty() || readLine[0] == ' ')
-		return ;
+
 	if (readLine[0] == '\r')
 	{
 		m_crlfCnt++;
 		if (m_crlfCnt == 1)
+		{
+			this->uriParse();
 			getBodyType();
+		}
 		return ;
 	}
 	if (m_crlfCnt == 1)
 		return (loadBody(readLine));
+	if (readLine.empty() || readLine[0] == ' ')
+		return ;
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
 	splittedLine[0].pop_back();
 	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
@@ -54,9 +59,15 @@ putMethod::loadBody(const std::string& readLine)
 		else
 		{
 			if (m_bodySize != 0)
+			{
 				m_bodyBuffer += readLine;
-			if ((size_t)m_bodySize == m_bodyBuffer.size())
+				m_readLineSize += readLine.size();
+			}
+			if (m_bodySize == m_readLineSize)
+			{
 				m_bodySize = -1;
+				m_readLineSize = 0;
+			}
 		}
 	}
 }
@@ -73,7 +84,7 @@ putMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 }
 
 bool
-putMethod::isMethodCreateFin(void) const
+putMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 2)
 		return (true);

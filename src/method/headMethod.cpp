@@ -35,10 +35,13 @@ headMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 }
 
 bool
-headMethod::isMethodCreateFin(void) const
+headMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 1)
+	{
+		this->uriParse();
 		return (true);
+	}
 	return (false);
 }
 

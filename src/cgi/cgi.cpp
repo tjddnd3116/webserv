@@ -52,11 +52,11 @@ cgi::initCgi(const AMethod *method)
         //type.erase(type.end() - 1, type.end()); // 캐리지리턴 삭제
         CONTENT_TYPE += type;
     }
-    if (method->getMethod() == "POST")
-    {
-        body_buffer = method->getBody();
-        CONTENT_LENGTH += std::to_string(body_buffer.length());
-    }
+    // if (method->getMethod() == "POST")
+    // {
+    //     body_buffer = method->getBody();
+    //     CONTENT_LENGTH += std::to_string(body_buffer.length());
+    // }
 
     std::string REDIRECT_STATUS = "REDIRECT_STATUS=200"; // php-cgi direct exec
     std::string SERVER_PROTOCOL = "SERVER_PROTOCOL=HTTP/1.1"; // different GET POST
@@ -118,7 +118,7 @@ cgi::initCgi(const AMethod *method)
 }
 
 std::string
-cgi::execCgi(const AMethod *method)
+cgi::execCgi(const std::string& readLine)
 {
     int fd_A[2];
     int fd_B[2];
@@ -134,8 +134,8 @@ cgi::execCgi(const AMethod *method)
     {
         exit(0);
     }
-    fcntl(fd_B[0], F_SETFL, O_NONBLOCK);
-    fcntl(fd_B[1], F_SETFL, O_NONBLOCK);
+	fcntl(fd_B[0], F_SETFL, O_NONBLOCK);
+	fcntl(fd_B[1], F_SETFL, O_NONBLOCK);
     if (pid == 0)
     {
         close(fd_A[READ]);
@@ -143,15 +143,12 @@ cgi::execCgi(const AMethod *method)
         dup2(fd_B[READ], STDIN_FILENO);
         dup2(fd_A[WRITE], STDOUT_FILENO);
         close(fd_A[WRITE]);
-
-		std::cerr << "succcess?\n" << std::endl;
         execve(m_cgiPath.c_str(), NULL, &m_envChar[0]);
-		std::cerr << "fail\n" << std::endl;
     }
     else
     {
         char    buf[1024] = {0};
-        body_buffer = method->getBody();
+        body_buffer = readLine;
 
         close(fd_A[WRITE]);
         close(fd_B[READ]);
@@ -164,12 +161,10 @@ cgi::execCgi(const AMethod *method)
         {
             memset(buf, 0, 1024);
             ret = read(fd_A[READ], buf, 1024 - 1);
-			std::cout << "buf : " << buf << std::endl;
             body += buf;
         }
         close(fd_A[READ]);
     }
-	std::cout << "body : " << body << std::endl;
     dup2(fd_in, STDIN_FILENO);
     dup2(fd_out, STDOUT_FILENO);
     close(fd_in);

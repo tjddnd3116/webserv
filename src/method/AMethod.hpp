@@ -57,7 +57,7 @@ class AMethod
 		// pure virtual functions
 		virtual void					loadRequest(const std::string& readLine) = 0;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const = 0;
-		virtual bool					isMethodCreateFin(void) const = 0;
+		virtual bool					isMethodCreateFin(void) = 0;
 		virtual void					logMethodInfo(std::fstream& logFile) const = 0;
 		virtual void					uriParse(void) = 0;
 		virtual void					doMethodWork(void) = 0;

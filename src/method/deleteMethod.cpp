@@ -37,10 +37,13 @@ deleteMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) cons
 }
 
 bool
-deleteMethod::isMethodCreateFin(void) const
+deleteMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 1)
+	{
+		this->uriParse();
 		return (true);
+	}
 	return (false);
 }
 
