@@ -91,7 +91,6 @@ postMethod::loadBody(const std::string& readLine)
 			{
 				std::string tmp;
 				m_testcnt++;
-				std::cout << m_testcnt << std::endl;
 				tmp = m_cgi->execCgi(m_tempBuffer);
 				while (tmp.size() == 0)
 					tmp = m_cgi->readCgi();
@@ -208,7 +207,7 @@ void postMethod::doMethodWork(void)
 	}
 	// TODO
 	// need error control
-	writeFile(m_bodyBuffer);
+	// writeFile(m_bodyBuffer);
 }
 
 const std::string&
