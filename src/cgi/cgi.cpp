@@ -249,11 +249,6 @@ cgi::readCgi(void)
 		ret = read(m_fdA[READ], buf, BUFFER_SIZE - 1);
 		body += buf;
 	}
-	if (!m_bodyFlag && body.find("\r\n\r\n") != std::string::npos)
-	{
-		m_bodyFlag = true;
-		body = body.substr(body.find("\r\n\r\n") + 4);
-	}
 	return (body);
 
 }

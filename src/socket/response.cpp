@@ -56,7 +56,10 @@ response::makeBody(void)
 	// }
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	m_responseBuf += std::to_string(readBodySize) + "\n\n";
+	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")
+		m_responseBuf += std::to_string(readBodySize - 58) + "\n";
+	else
+		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
 	{
 		m_responseBuf += readBody;
@@ -94,7 +97,7 @@ response::parseBody()
 	else if (fileExt == ".xml")
 		m_type += "text/xml";
 	else
-		m_type += "text/html; charset=UTF-8";
+		m_type += "text/html; charset=utf-8";
 }
 
 int
@@ -127,8 +130,11 @@ response::makeResponse(const AMethod* method)
 	//     m_newBody = defaultCgi.execCgi(m_method);
 	//     std::cout << "new body : " << m_newBody << std::endl;
 	// }
-	parseBody();
-	makeEntityHeader();
+	// if (method->getMethod() == "POST" && method->getFileExt() == ".bla")
+	// {}
+	// else
+	//     parseBody();
+	// makeEntityHeader();
 	makeBody();
 }
 

@@ -5,6 +5,7 @@ clientSocket::clientSocket(const configInfo& conf)
 {
 	m_readBuffer.clear();
 	m_method = NULL;
+	m_sentSize = 0;
 	is_bodySection = false;
 }
 
@@ -14,6 +15,7 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	m_SocketFd = serverSock.getSocketFd();
 	m_readBuffer.clear();
 	m_method = NULL;
+	m_sentSize = 0;
 	is_bodySection = false;
 }
 
@@ -35,6 +37,7 @@ clientSocket::operator=(const clientSocket& copy)
 	m_SocketAddr = copy.m_SocketAddr;
 	m_SocketAddrSize = copy.m_SocketAddrSize;
 	m_SocketFd = copy.m_SocketFd;
+	m_sentSize = 0;
 	return (*this);
 }
 
@@ -93,23 +96,39 @@ int
 clientSocket::sendSock(std::fstream& logFile)
 {
 	int sendRet;
-	response response(m_conf);
+//	response response(m_conf);
+	static response* responsePtr;
 
-	response.makeResponse(m_method);
-	if (1)
+	if (m_sentSize == 0)
 	{
-		logFile << BLUE << "-----------response----------------" << std::endl;
-		logFile << response().c_str() << std::endl;
-		logFile << "-------------------------------" << RESET << std::endl;
+
+		responsePtr = new response(m_conf);
+	//	response.makeResponse(m_method);
+		responsePtr->makeResponse(m_method);
+		if (1)
+		{
+			logFile << BLUE << "-----------response----------------" << std::endl;
+	//		logFile << response().c_str() << std::endl;
+			logFile << (*responsePtr)().c_str() << std::endl;
+			logFile << "-------------------------------" << RESET << std::endl;
+		}
 	}
-	sendRet = write(m_SocketFd, response().c_str(), response.getBufSize());
-	std::cout << sendRet << std::endl;
+//	sendRet = write(m_SocketFd, response().c_str() + m_sentSize, response.getBufSize() - m_sentSize);
+	sendRet = write(m_SocketFd, (*responsePtr)().c_str() + m_sentSize, (*responsePtr).getBufSize() - m_sentSize);
 	// TODO
 	// just test!
-	if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
+	m_sentSize += sendRet;
+	if (m_sentSize == (*responsePtr).getBufSize())
 	{
-		m_method = NULL;
-		return (-1);
+		m_sentSize = 0;
+		if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
+		{
+			m_method = NULL;
+			delete responsePtr;
+			return (-1);
+		}
+		delete responsePtr;
+		return 0;
 	}
 	return (sendRet);
 }
@@ -118,4 +137,9 @@ bool
 clientSocket::getReadStatus(void) const
 {
 	return (m_readFinish);
+}
+
+void clientSocket::sendFinished(void)
+{
+	m_sentSize = 0;
 }
