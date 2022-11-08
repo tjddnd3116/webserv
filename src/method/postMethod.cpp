@@ -1,5 +1,6 @@
 #include "postMethod.hpp"
 #include "../cgi/cgi.hpp"
+#include <unistd.h>
 
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -88,9 +89,12 @@ postMethod::loadBody(const std::string& readLine)
 			}
 			if (m_bodySize == m_readLineSize)
 			{
-				m_bodyBuffer += m_cgi->execCgi(m_tempBuffer);
+				std::string tmp;
 				m_testcnt++;
-				std::cout << m_testcnt << std::endl;
+				tmp = m_cgi->execCgi(m_tempBuffer);
+				while (tmp.size() == 0)
+					tmp = m_cgi->readCgi();
+				m_bodyBuffer += tmp;
 				m_tempBuffer.clear();
 				m_bodySize = -1;
 				m_readLineSize = 0;
@@ -116,8 +120,12 @@ postMethod::isMethodCreateFin(void)
 	if (m_crlfCnt == 2)
 	{
 		std::cout << "cgi fin" << std::endl;
-		delete m_cgi;
-		m_cgi = NULL;
+		if (m_cgi != NULL)
+		{
+			m_cgi->closeCgi();
+			delete m_cgi;
+			m_cgi = NULL;
+		}
 		return (true);
 	}
 	else if (m_bodyType == "size" && m_bodyBuffer.size() == (size_t)m_bodySize)
@@ -182,6 +190,7 @@ postMethod::uriParse(void)
 	{
 		m_cgi = new cgi;
 		m_cgi->initCgi(this);
+		m_cgi->runCgi();
 	}
 
 }

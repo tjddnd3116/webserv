@@ -103,7 +103,7 @@ clientSocket::sendSock(std::fstream& logFile)
 		logFile << "-------------------------------" << RESET << std::endl;
 	}
 	sendRet = write(m_SocketFd, response().c_str(), response.getBufSize());
-
+	std::cout << sendRet << std::endl;
 	// TODO
 	// just test!
 	if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
