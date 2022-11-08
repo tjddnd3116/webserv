@@ -11,6 +11,7 @@ class clientSocket : public ASocket
 	private:
 		AMethod*	m_method;
 		request		m_request;
+		size_t		m_sentSize;
 
 
 		std::string	m_readBuffer;
@@ -28,5 +29,6 @@ class clientSocket : public ASocket
 		int		readSock(std::fstream& logFile, int msgSize);
 		int		sendSock(std::fstream& logFile);
 		bool	getReadStatus(void) const;
+		void	sendFinished(void);
 };
 #endif //clientSocket_hpp
