@@ -36,6 +36,9 @@ response::makeBody(void)
 	size_t		readBodySize;
 
 	readBody = m_method->getReadBody();
+	if (m_method->getMethod() == "POST")
+		readBody = m_method->getBody();
+	std::cout << readBody.size() << std::endl;
 	// if (m_isCgi == 0)
 	// {
 	//     while (!m_file.eof())
@@ -54,7 +57,7 @@ response::makeBody(void)
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
 	m_responseBuf += std::to_string(readBodySize) + "\n\n";
-	if (m_method->getMethod() != "HEAD")
+	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
 	{
 		m_responseBuf += readBody;
 	}
