@@ -55,12 +55,22 @@ cgi::initCgi(const AMethod *method)
         //type.erase(type.end() - 1, type.end()); // 캐리지리턴 삭제
         CONTENT_TYPE += type;
     }
+
+	std::string	HTTP_X_SECRET_HEADER_FOR_TEST;
+    contentIt = method->getRequestSet().find("x_secret_header_for_test");
+    if (contentIt != method->getRequestSet().end())
+    {
+        // contentIt = method->getRequestSet().find("x_secret_header_for_test");
+        std::string type = contentIt->second[0];
+        //type.erase(type.end() - 1, type.end()); // 캐리지리턴 삭제
+    	HTTP_X_SECRET_HEADER_FOR_TEST += "HTTP_X_SECRET_HEADER_FOR_TEST=" + type;
+    }
+
     // if (method->getMethod() == "POST")
     // {
     //     body_buffer = method->getBody();
     //     CONTENT_LENGTH += std::to_string(body_buffer.length());
     // }
-
     std::string REDIRECT_STATUS = "REDIRECT_STATUS=200"; // php-cgi direct exec
     std::string SERVER_PROTOCOL = "SERVER_PROTOCOL=HTTP/1.1"; // different GET POST
     std::string GATEWAY_INTERFACE = "GATEWAY_INTERFACE=CGI/1.1";
@@ -112,6 +122,7 @@ cgi::initCgi(const AMethod *method)
     m_env.push_back(REMOTE_HOST);
     m_env.push_back(REMOTE_IDENT);
     m_env.push_back(SERVER_SOFTWARE);
+	m_env.push_back(HTTP_X_SECRET_HEADER_FOR_TEST);
 
     for (size_t i = 0; i < m_env.size(); i++)
 	{
@@ -219,7 +230,6 @@ cgi::execCgi(const std::string& readLine)
 	close(m_fdB[READ]);
 	write(m_fdB[WRITE], body_buffer.c_str(), body_buffer.length());
 
-
 	int ret = 1;
 	while (ret > 0)
 	{
@@ -227,11 +237,11 @@ cgi::execCgi(const std::string& readLine)
 		ret = read(m_fdA[READ], buf, BUFFER_SIZE - 1);
 		body += buf;
 	}
-	if (!m_bodyFlag && body.find("\r\n\r\n") != std::string::npos)
-	{
-		m_bodyFlag = true;
-		body = body.substr(body.find("\r\n\r\n") + 4);
-	}
+	// if (!m_bodyFlag && body.find("\r\n\r\n") != std::string::npos)
+	// {
+	//     m_bodyFlag = true;
+	//     body = body.substr(body.find("\r\n\r\n") + 4);
+	// }
 	// close(m_fdA[READ]);
 	return (body);
 }

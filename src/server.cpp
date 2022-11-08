@@ -160,19 +160,18 @@ server::writeEvent(struct kevent* curEvent)
 	if (!isClientSocket(curEvent->ident))
 		return;
 	//std::map<int, clientSocket>::iterator clientIt =
-	clientSocket clientsocket
+	clientSocket& clientsocket
 		= (*m_clientSock.find(curEvent->ident)).second;
 	sendRet = clientsocket.sendSock(m_logFile);
-	if (sendRet < 0)
-	{
-		m_logFile << "client send error" << std::endl;
-		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
-		disconnectClient(curEvent->ident);
-	}
-	else if (sendRet == 0)
+	if (clientsocket.getWriteStatus())
 	{
 		m_logFile << "client send finish" << std::endl;
 		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
+	}
+	else if (sendRet < 0)
+	{
+		m_logFile << "non blocking" << std::endl;
+		// addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
 		// disconnectClient(curEvent->ident);
 	}
 	else

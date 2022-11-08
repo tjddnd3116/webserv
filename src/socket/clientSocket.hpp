@@ -18,6 +18,8 @@ class clientSocket : public ASocket
 		bool		m_readFinish;
 		bool		is_bodySection;
 
+		bool		m_writeFinish;
+
 	public:
 		clientSocket(const configInfo& conf);
 		clientSocket(const ASocket& serverSock);
@@ -29,6 +31,7 @@ class clientSocket : public ASocket
 		int		readSock(std::fstream& logFile, int msgSize);
 		int		sendSock(std::fstream& logFile);
 		bool	getReadStatus(void) const;
+		bool 	getWriteStatus(void) const;
 		void	sendFinished(void);
 };
 #endif //clientSocket_hpp

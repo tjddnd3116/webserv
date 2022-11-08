@@ -6,6 +6,7 @@ clientSocket::clientSocket(const configInfo& conf)
 	m_readBuffer.clear();
 	m_method = NULL;
 	m_sentSize = 0;
+	m_writeFinish = false;
 	is_bodySection = false;
 }
 
@@ -16,6 +17,7 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	m_readBuffer.clear();
 	m_method = NULL;
 	m_sentSize = 0;
+	m_writeFinish = false;
 	is_bodySection = false;
 }
 
@@ -38,6 +40,7 @@ clientSocket::operator=(const clientSocket& copy)
 	m_SocketAddrSize = copy.m_SocketAddrSize;
 	m_SocketFd = copy.m_SocketFd;
 	m_sentSize = 0;
+	m_writeFinish = false;
 	return (*this);
 }
 
@@ -63,6 +66,7 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	int		requestStatus;
 
 	logFile << "message size : " << msgSize << std::endl;
+	std::cout << "message size : " << msgSize << std::endl;
 	buffer = new char[msgSize];
 	m_readFinish = false;
 	std::memset(buffer, 0, msgSize);
@@ -101,7 +105,7 @@ clientSocket::sendSock(std::fstream& logFile)
 
 	if (m_sentSize == 0)
 	{
-
+		m_writeFinish = false;
 		responsePtr = new response(m_conf);
 	//	response.makeResponse(m_method);
 		responsePtr->makeResponse(m_method);
@@ -114,13 +118,14 @@ clientSocket::sendSock(std::fstream& logFile)
 		}
 	}
 //	sendRet = write(m_SocketFd, response().c_str() + m_sentSize, response.getBufSize() - m_sentSize);
+	// if ((*responsePtr).getBufSize() >= 10000000)
+	//     write(2, (*responsePtr)().c_str() + m_sentSize, (*responsePtr).getBufSize() - m_sentSize);
 	sendRet = write(m_SocketFd, (*responsePtr)().c_str() + m_sentSize, (*responsePtr).getBufSize() - m_sentSize);
-	// TODO
-	// just test!
 	m_sentSize += sendRet;
 	if (m_sentSize == (*responsePtr).getBufSize())
 	{
 		m_sentSize = 0;
+		m_writeFinish = true;
 		if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
 		{
 			m_method = NULL;
@@ -142,4 +147,9 @@ clientSocket::getReadStatus(void) const
 void clientSocket::sendFinished(void)
 {
 	m_sentSize = 0;
+}
+
+bool  clientSocket::getWriteStatus(void) const
+{
+	return (m_writeFinish);
 }
