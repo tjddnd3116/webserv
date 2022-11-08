@@ -45,6 +45,7 @@ tokenizer::parseToken(std::vector<configInfo>& config,
 		info.createDefaultLocation();
 		info.checkConfig();
 		logFile << info;
+		info.locationVecToMap();
 		config.push_back(info);
 	}
 	if (m_tokIdx != m_tokVec.size())

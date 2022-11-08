@@ -1,8 +1,14 @@
 #include <iostream>
+#include <fstream>
 
 int main(void)
 {
-	std::cout << "$" << '\r' << "$" << std::endl;
+	std::ofstream createFile("/Users/soum/webserv/aaa");
+	if (createFile.fail())
+		std::cout << "file open fail" << std::endl;
+	createFile << "hello 42";
+	createFile.close();
+
 	return (0);
 }
 

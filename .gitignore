@@ -59,3 +59,5 @@ tags
 *.DS_Store
 .vimspector.json
 webserv
+errlog.txt
+*.bla

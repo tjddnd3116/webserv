@@ -9,7 +9,6 @@ response::response(const configInfo& conf)
 	m_isCgi = 0;
 	m_method = NULL;
 	m_responseBuf.clear();
-	m_filePath.clear();
 }
 
 response::~response()
@@ -23,10 +22,8 @@ response::makeStatusLine(void)
 
 	int statusCode;
 
-	m_filePath = m_method->getFilePath();
 	statusCode = m_method->getStatusCode();
 
-	m_file.open(m_filePath);
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr(statusCode);
 }
@@ -35,48 +32,46 @@ void
 response::makeBody(void)
 {
 	std::string	readLine;
-	std::string	allReadLine;
-	size_t		allReadLineSize;
+	std::string	readBody;
+	size_t		readBodySize;
 
-	if (m_isCgi == 0)
-	{
-		while (!m_file.eof())
-		{
-			std::getline(m_file, readLine);
-			if (readLine == "")
-				continue;
-			allReadLine += readLine + "\n";
-		}
-		allReadLine.pop_back();
-	}
-	else
-	{
-		allReadLine = m_newBody;
-	}
-	allReadLineSize = allReadLine.size();
+	readBody = m_method->getReadBody();
+	if (m_method->getMethod() == "POST")
+		readBody = m_method->getBody();
+	std::cout << readBody.size() << std::endl;
+	// if (m_isCgi == 0)
+	// {
+	//     while (!m_file.eof())
+	//     {
+	//         std::getline(m_file, readLine);
+	//         if (readLine == "")
+	//             continue;
+	//         allReadLine += readLine + "\n";
+	//     }
+	//     allReadLine.pop_back();
+	// }
+	// else
+	// {
+	//     allReadLine = m_newBody;
+	// }
+	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	m_responseBuf += std::to_string(allReadLineSize) + "\n\n";
-	if (m_method->getMethod() != "HEAD")
+	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")
+		m_responseBuf += std::to_string(readBodySize - 58) + "\n";
+	else
+		m_responseBuf += std::to_string(readBodySize) + "\n\n";
+	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
 	{
-		m_responseBuf += allReadLine;
+		m_responseBuf += readBody;
 	}
-}
-
-void
-response::extractExt()
-{
-	std::string filepath = m_filePath;
-
-	while (filepath.find("/") != std::string::npos)
-	{
-		filepath.erase(0, filepath.find("/") + 1);
-	}
-	m_fileExt = filepath.substr(filepath.find("."));
 }
 
 void
 response::parseBody()
 {
+	std::string fileExt;
+
+	fileExt = m_method->getFileExt();
 	if (m_newBody.find("Content-type:") != std::string::npos)
 	{
 		m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
@@ -85,31 +80,34 @@ response::parseBody()
 		return ;
 	}
 	m_type = "Content-type: ";
-	if (m_fileExt == ".png")
+	if (fileExt == ".png")
 		m_type += "image/png";
-	else if (m_fileExt == ".css")
+	else if (fileExt == ".css")
 		m_type += "text/css";
-	else if (m_fileExt == ".txt")
+	else if (fileExt == ".txt")
 		m_type += "text/plain";
-	else if (m_fileExt == ".jpg" || m_fileExt == ".jpeg")
+	else if (fileExt == ".jpg" || fileExt == ".jpeg")
 		m_type += "image/Jpeg";
-	else if (m_fileExt == ".gif")
+	else if (fileExt == ".gif")
 		m_type += "image/gif";
-	else if (m_fileExt == ".webp")
+	else if (fileExt == ".webp")
 		m_type += "image/webp";
-	else if (m_fileExt == ".js")
+	else if (fileExt == ".js")
 		m_type += "text/javascript";
-	else if (m_fileExt == ".xml")
+	else if (fileExt == ".xml")
 		m_type += "text/xml";
 	else
-		m_type += "text/html; charset=UTF-8";
+		m_type += "text/html; charset=utf-8";
 }
 
 int
 response::checkIsCgi()
 {
+	std::string fileExt;
+
+	fileExt = m_method->getFileExt();
 	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
-	if (m_fileExt == ".php")
+	if (fileExt == ".bla")
 		return (1);
 	else
 	 	return (0);
@@ -123,18 +121,20 @@ response::makeResponse(const AMethod* method)
 	m_method = method;
 
 	makeStatusLine();
-	extractExt();
 	makeResponseHeader();
 	makeGeneralHeader();
-	m_isCgi = checkIsCgi();
-	if (m_isCgi == 1)
-	{
-		defaultCgi.initCgi(m_method);
-		m_newBody = defaultCgi.execCgi(m_method);
-		//std::cout << m_newBody << std::endl;
-	}
-	parseBody();
-	makeEntityHeader();
+	// m_isCgi = checkIsCgi();
+	// if (m_isCgi == 1)
+	// {
+	//     defaultCgi.initCgi(m_method);
+	//     m_newBody = defaultCgi.execCgi(m_method);
+	//     std::cout << "new body : " << m_newBody << std::endl;
+	// }
+	// if (method->getMethod() == "POST" && method->getFileExt() == ".bla")
+	// {}
+	// else
+	//     parseBody();
+	// makeEntityHeader();
 	makeBody();
 }
 

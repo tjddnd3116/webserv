@@ -7,10 +7,10 @@
 #include <unistd.h>
 
 #include "../method/AMethod.hpp"
-#include "../method/postMethod.hpp"
 
 #define READ 0
 #define WRITE 1
+#define BUFFER_SIZE 65535
 
 class cgi
 {
@@ -22,10 +22,20 @@ class cgi
 		std::string					m_script;
 		std::string					m_query;
 
+		int							m_fdA[2];
+		int							m_fdB[2];
+		int							m_fd_in;
+		int							m_fd_out;
+		pid_t						m_pid;
+		bool						m_bodyFlag;
+
 	public:
 		cgi();
 		~cgi();
-		void initCgi(const AMethod *method);
-		std::string execCgi(const AMethod *method);
+		void		initCgi(const AMethod *method);
+		void		runCgi(void);
+		std::string	execCgi(const std::string& readLine);
+		void		closeCgi(void);
+		std::string readCgi(void);
 };
 #endif //cgi_hpp

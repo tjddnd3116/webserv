@@ -15,13 +15,12 @@
 #define READ_FIN 0
 #define READING 1
 
-
-// method maker
 class request
 {
 		private:
 			AMethod*	m_method;
 			configInfo	m_conf;
+			std::string	m_buffer;
 
 			// hide copy
 			request(const request& copy);
@@ -32,6 +31,7 @@ class request
 			request(const configInfo& conf);
 			~request();
 
+			// member function
 			AMethod*			methodGenerator(const std::string& readLine);
 			int					readRequest(const std::string& request);
 
@@ -39,6 +39,6 @@ class request
 			AMethod*			getMethod(void) const;
 
 			// setter
-			void				setMethodNull(void);
+			void				setMethodToNull(void);
 };
 #endif //request_hpp

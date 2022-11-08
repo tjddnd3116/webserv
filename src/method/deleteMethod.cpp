@@ -37,10 +37,13 @@ deleteMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) cons
 }
 
 bool
-deleteMethod::isMethodCreateFin(void) const
+deleteMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 1)
+	{
+		this->uriParse();
 		return (true);
+	}
 	return (false);
 }
 
@@ -67,3 +70,39 @@ deleteMethod::logMethodInfo(std::fstream& logFile) const
 	logFile << "-------------------------" << RESET << std::endl;
 }
 
+void
+deleteMethod::uriParse(void)
+{
+	std::string					uri;
+
+	uri = m_uri;
+	filePathParse(uri);
+	m_statusCode = 200;
+}
+
+void
+deleteMethod::doMethodWork(void)
+{
+	if (!checkFileExists(m_filePath))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 404;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+		return ;
+	}
+	if (!this->checkMethodLimit(m_limitExcept))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
+	// TODO
+	// need error control
+	readFile(m_readBody);
+}
+
+const std::string&
+deleteMethod::getReadBody(void) const
+{
+	return (m_readBody);
+}

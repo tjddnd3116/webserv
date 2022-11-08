@@ -1,4 +1,5 @@
 #include "server.hpp"
+#include <sys/event.h>
 
 server::server(const std::vector<configInfo> &conf, std::fstream& logFile)
 	:m_conf(conf), m_logFile(logFile)
@@ -130,10 +131,12 @@ server::readEvent(struct kevent* curEvent)
 	else if(isClientSocket(curEvent->ident))
 	{
 		int readRet;
+		int msgSize;
 
+		msgSize = curEvent->data + 1;
 		std::map<int, clientSocket>::iterator clientIt =
 			m_clientSock.find(curEvent->ident);
-		readRet = (*clientIt).second.readSock(m_logFile);
+		readRet = (*clientIt).second.readSock(m_logFile, msgSize);
 		if (readRet <= 0)
 		{
 			if (readRet < 0)
@@ -143,7 +146,7 @@ server::readEvent(struct kevent* curEvent)
 		}
 		if ((*clientIt).second.getReadStatus())
 			addEvents((*clientIt).first, EVFILT_WRITE,
-				EV_ADD | EV_ENABLE | EV_ONESHOT, 0, 0, NULL);
+				EV_ADD | EV_ENABLE, 0, 0, NULL);
 		m_logFile << "client read finish" << std::endl;
 	}
 	return (0);
@@ -152,21 +155,28 @@ server::readEvent(struct kevent* curEvent)
 void
 server::writeEvent(struct kevent* curEvent)
 {
-	if (isClientSocket(curEvent->ident))
-	{
-		int sendRet;
+	int sendRet;
 
-		std::map<int, clientSocket>::iterator clientIt =
-			m_clientSock.find(curEvent->ident);
-		sendRet = (*clientIt).second.sendSock(m_logFile);
-		if (sendRet < 0)
-		{
-			m_logFile << "client send error" << std::endl;
-			disconnectClient(curEvent->ident);
-		}
-		else
-			m_logFile << "client send finish" << std::endl;
+	if (!isClientSocket(curEvent->ident))
+		return;
+	//std::map<int, clientSocket>::iterator clientIt =
+	clientSocket clientsocket
+		= (*m_clientSock.find(curEvent->ident)).second;
+	sendRet = clientsocket.sendSock(m_logFile);
+	if (sendRet < 0)
+	{
+		m_logFile << "client send error" << std::endl;
+		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
+		disconnectClient(curEvent->ident);
 	}
+	else if (sendRet == 0)
+	{
+		m_logFile << "client send finish" << std::endl;
+		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
+		// disconnectClient(curEvent->ident);
+	}
+	else
+		m_logFile << "client send = " << sendRet << std::endl;
 }
 
 void

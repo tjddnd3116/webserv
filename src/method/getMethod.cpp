@@ -35,10 +35,13 @@ getMethod::checkMethodLimit(const std::vector<std::string>& limitExcept) const
 }
 
 bool
-getMethod::isMethodCreateFin(void) const
+getMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 1)
+	{
+		this->uriParse();
 		return (true);
+	}
 	return (false);
 }
 
@@ -63,4 +66,40 @@ getMethod::logMethodInfo(std::fstream& logFile) const
 			logFile << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
 	logFile << "-------------------------" << RESET << std::endl;
+}
+
+void
+getMethod::uriParse(void)
+{
+	std::string	uri;
+
+	uri = m_uri;
+	queryStringParse(uri);
+	filePathParse(uri);
+	m_statusCode = 200;
+}
+
+void getMethod::doMethodWork(void)
+{
+	if (!checkFileExists(m_filePath))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 404;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
+	if (!this->checkMethodLimit(m_limitExcept))
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+	}
+	// TODO
+	// need error control
+	readFile(m_readBody);
+}
+
+const std::string&
+getMethod::getReadBody(void) const
+{
+	return (m_readBody);
 }
