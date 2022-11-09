@@ -22,10 +22,8 @@ class cgi
 		std::string					m_script;
 		std::string					m_query;
 
-		int							m_fdA[2];
-		int							m_fdB[2];
-		int							m_fd_in;
-		int							m_fd_out;
+		int							m_fromCgiToServer[2];
+		int							m_fromServerToCgi[2];
 		pid_t						m_pid;
 		bool						m_bodyFlag;
 
@@ -35,7 +33,8 @@ class cgi
 		void		initCgi(const AMethod *method);
 		void		runCgi(void);
 		std::string	execCgi(const std::string& readLine);
-		void		closeCgi(void);
+		ssize_t		writeCgi(const void* buf, size_t size);
+		void		closeCgi(int pipeEnd);
 		std::string readCgi(void);
 };
 #endif //cgi_hpp

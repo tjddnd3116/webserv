@@ -7,6 +7,7 @@ clientSocket::clientSocket(const configInfo& conf)
 	m_method = NULL;
 	m_sentSize = 0;
 	m_writeFinish = false;
+	m_responsePtr = 0;
 	is_bodySection = false;
 }
 
@@ -18,6 +19,7 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	m_method = NULL;
 	m_sentSize = 0;
 	m_writeFinish = false;
+	m_responsePtr = 0;
 	is_bodySection = false;
 }
 
@@ -40,6 +42,7 @@ clientSocket::operator=(const clientSocket& copy)
 	m_SocketAddrSize = copy.m_SocketAddrSize;
 	m_SocketFd = copy.m_SocketFd;
 	m_sentSize = 0;
+	m_responsePtr = 0;
 	m_writeFinish = false;
 	return (*this);
 }
@@ -66,7 +69,7 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	int		requestStatus;
 
 	logFile << "message size : " << msgSize << std::endl;
-	std::cout << "message size : " << msgSize << std::endl;
+//	std::cout << "message size : " << msgSize << std::endl;
 	buffer = new char[msgSize];
 	m_readFinish = false;
 	std::memset(buffer, 0, msgSize);
@@ -101,38 +104,37 @@ clientSocket::sendSock(std::fstream& logFile)
 {
 	int sendRet;
 //	response response(m_conf);
-	static response* responsePtr;
 
 	if (m_sentSize == 0)
 	{
 		m_writeFinish = false;
-		responsePtr = new response(m_conf);
+		m_responsePtr = new response(m_conf);
 	//	response.makeResponse(m_method);
-		responsePtr->makeResponse(m_method);
+		m_responsePtr->makeResponse(m_method);
 		if (1)
 		{
 			logFile << BLUE << "-----------response----------------" << std::endl;
 	//		logFile << response().c_str() << std::endl;
-			logFile << (*responsePtr)().c_str() << std::endl;
+			logFile << (*m_responsePtr)().c_str() << std::endl;
 			logFile << "-------------------------------" << RESET << std::endl;
 		}
 	}
 //	sendRet = write(m_SocketFd, response().c_str() + m_sentSize, response.getBufSize() - m_sentSize);
-	// if ((*responsePtr).getBufSize() >= 10000000)
-	//     write(2, (*responsePtr)().c_str() + m_sentSize, (*responsePtr).getBufSize() - m_sentSize);
-	sendRet = write(m_SocketFd, (*responsePtr)().c_str() + m_sentSize, (*responsePtr).getBufSize() - m_sentSize);
+	// if ((*m_responsePtr).getBufSize() >= 10000000)
+	//     write(2, (*m_responsePtr)().c_str() + m_sentSize, (*m_responsePtr).getBufSize() - m_sentSize);
+	sendRet = write(m_SocketFd, (*m_responsePtr)().c_str() + m_sentSize, (*m_responsePtr).getBufSize() - m_sentSize);
 	m_sentSize += sendRet;
-	if (m_sentSize == (*responsePtr).getBufSize())
+	if (m_sentSize == (*m_responsePtr).getBufSize())
 	{
 		m_sentSize = 0;
 		m_writeFinish = true;
 		if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
 		{
 			m_method = NULL;
-			delete responsePtr;
+			delete m_responsePtr;
 			return (-1);
 		}
-		delete responsePtr;
+		delete m_responsePtr;
 		return 0;
 	}
 	return (sendRet);

@@ -139,9 +139,9 @@ server::readEvent(struct kevent* curEvent)
 		readRet = (*clientIt).second.readSock(m_logFile, msgSize);
 		if (readRet <= 0)
 		{
-			if (readRet < 0)
-				m_logFile << "client read error" << std::endl;
-			disconnectClient(curEvent->ident);
+			if (readRet == 0)
+				disconnectClient(curEvent->ident);
+			m_logFile << "client read error" << std::endl;
 			return (1);
 		}
 		if ((*clientIt).second.getReadStatus())
@@ -165,7 +165,8 @@ server::writeEvent(struct kevent* curEvent)
 	sendRet = clientsocket.sendSock(m_logFile);
 	if (clientsocket.getWriteStatus())
 	{
-		m_logFile << "client send finish" << std::endl;
+		m_logFile << "INFO: send finished on socket = "
+			<< clientsocket.getSocketFd() << std::endl;
 		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
 	}
 	else if (sendRet < 0)
@@ -175,7 +176,8 @@ server::writeEvent(struct kevent* curEvent)
 		// disconnectClient(curEvent->ident);
 	}
 	else
-		m_logFile << "client send = " << sendRet << std::endl;
+		m_logFile << "INFO: send = " << sendRet
+			<< ", on socket = " << clientsocket.getSocketFd() << std::endl;
 }
 
 void

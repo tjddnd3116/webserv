@@ -15,6 +15,8 @@
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
+class Location;
+
 class AMethod
 {
 	protected:
@@ -25,9 +27,11 @@ class AMethod
 										m_requestSet;
 		int								m_statusCode;
 		configInfo						m_conf;
+		Location*						m_locationPtr;
 		std::string						s;
 		std::string						m_body;
 
+		int								m_maxBodySize;
 		std::vector<std::string>		m_limitExcept;
 		std::string						m_filePath;
 		std::string						m_queryString;
@@ -82,5 +86,7 @@ class AMethod
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
 		const std::string&				getFileExt(void) const;
+
+		friend void	configInfo::__findLocation(std::string const& uri, AMethod* method);
 };
 #endif //AMethod_hpp

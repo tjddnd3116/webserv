@@ -38,7 +38,6 @@ response::makeBody(void)
 	readBody = m_method->getReadBody();
 	if (m_method->getMethod() == "POST")
 		readBody = m_method->getBody();
-	std::cout << readBody.size() << std::endl;
 	// if (m_isCgi == 0)
 	// {
 	//     while (!m_file.eof())
@@ -273,7 +272,7 @@ void response::makeEntityHeader(void)
 void response::makeGeneralHeader(void)
 {
 	m_responseBuf += "Date: " + getDate() + "\n";
-	// m_responseBuf += "Connection: close\n";
+	 m_responseBuf += "Connection: Keep-Alive\n";
 	// Connection
 	// 클라이언트와 서버간 연결에 대한 옵션 설정 (다소 모호한 복잡성 있음)
 	// 	ex) Connection: close
@@ -325,6 +324,7 @@ response::setStatusCode(void)
 	s_statusCode[408] = "Request timeout";
 	s_statusCode[410] = "Gone";
 	s_statusCode[412] = "Precondition failed";
+	s_statusCode[413] = "Payload too large";
 	s_statusCode[414] = "Request-URI too long";
 	s_statusCode[500] = "Internal server error";
 	s_statusCode[501] = "Not implemented";

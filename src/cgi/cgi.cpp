@@ -27,7 +27,7 @@ cgi::initCgi(const AMethod *method)
     // m_cgiPath = "/Users/gson/webserv_cgi/cgi-bin/cgi_tester";
     // m_cgiPath = "/Users/gson/webserv_cgi/cgi-bin/php-cgi";
 	// m_cgiPath = "/Users/soum/webserv/html/php/php-cgi";
-	m_cgiPath = "/Users/soum/webserv/cgi-bin/cgi_tester";
+	m_cgiPath = "/Users/hseong/webserv/cgi-bin/cgi_tester";
     // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
 
     std::string rootPath;
@@ -57,11 +57,12 @@ cgi::initCgi(const AMethod *method)
     }
 
 	std::string	HTTP_X_SECRET_HEADER_FOR_TEST;
-    contentIt = method->getRequestSet().find("x_secret_header_for_test");
+    contentIt = method->getRequestSet().find("X-Secret-Header-For-Test");
     if (contentIt != method->getRequestSet().end())
     {
         // contentIt = method->getRequestSet().find("x_secret_header_for_test");
         std::string type = contentIt->second[0];
+		std::cout << "secret = " << type << std::endl;
         //type.erase(type.end() - 1, type.end()); // 캐리지리턴 삭제
     	HTTP_X_SECRET_HEADER_FOR_TEST += "HTTP_X_SECRET_HEADER_FOR_TEST=" + type;
     }
@@ -189,35 +190,44 @@ cgi::initCgi(const AMethod *method)
 void
 cgi::runCgi(void)
 {
-	m_fd_in = dup(STDIN_FILENO);
-	m_fd_out = dup(STDOUT_FILENO);
-	if (pipe(m_fdA) == -1 || pipe(m_fdB) == -1 || (m_pid = fork()) == -1)
-			exit(0);
-	fcntl(m_fdB[0], F_SETFL, O_NONBLOCK);
-	fcntl(m_fdB[1], F_SETFL, O_NONBLOCK);
-	fcntl(m_fdA[0], F_SETFL, O_NONBLOCK);
-	fcntl(m_fdA[1], F_SETFL, O_NONBLOCK);
+//	m_fd_in = dup(STDIN_FILENO);
+//	m_fd_out = dup(STDOUT_FILENO);
+	if (pipe(m_fromCgiToServer) == -1 || pipe(m_fromServerToCgi) == -1)
+		exit(0);
+	fcntl(m_fromServerToCgi[0], F_SETFL, O_NONBLOCK);
+	fcntl(m_fromServerToCgi[1], F_SETFL, O_NONBLOCK);
+	fcntl(m_fromCgiToServer[0], F_SETFL, O_NONBLOCK);
+	fcntl(m_fromCgiToServer[1], F_SETFL, O_NONBLOCK);
+	if ((m_pid = fork()) == -1)
+		exit(1);
 	if (m_pid == 0)
 	{
-		close(m_fdA[READ]);
-        close(m_fdB[WRITE]);
-        dup2(m_fdB[READ], STDIN_FILENO);
-        dup2(m_fdA[WRITE], STDOUT_FILENO);
-        close(m_fdA[WRITE]);
+		close(m_fromCgiToServer[READ]);
+        close(m_fromServerToCgi[WRITE]);
+        dup2(m_fromServerToCgi[READ], STDIN_FILENO);
+        dup2(m_fromCgiToServer[WRITE], STDOUT_FILENO);
+        close(m_fromCgiToServer[WRITE]);
+		close(m_fromServerToCgi[READ]);
         execve(m_cgiPath.c_str(), NULL, &m_envChar[0]);
+		throw std::runtime_error("ERROR: execve fail");
 	}
+	close(m_fromCgiToServer[WRITE]);
+	close(m_fromServerToCgi[READ]);
 }
 
-void	 cgi::closeCgi(void)
+void	 cgi::closeCgi(int pipeEnd)
 {
-	close(m_fdB[WRITE]);
-	close(m_fdA[READ]);
-	dup2(m_fd_in, STDIN_FILENO);
-	dup2(m_fd_out, STDOUT_FILENO);
-	close(m_fd_in);
-	close(m_fd_out);
+	if (pipeEnd == READ)
+		close(m_fromCgiToServer[READ]);
+	else if (pipeEnd == WRITE)
+		close(m_fromServerToCgi[WRITE]);
+//	dup2(m_fd_in, STDIN_FILENO);
+//	dup2(m_fd_out, STDOUT_FILENO);
+//	close(m_fd_in);
+//	close(m_fd_out);
 }
 
+/*
 std::string
 cgi::execCgi(const std::string& readLine)
 {
@@ -226,17 +236,19 @@ cgi::execCgi(const std::string& readLine)
 	char		buf[BUFFER_SIZE] = {0};
 
 	body_buffer = readLine;
-	close(m_fdA[WRITE]);
-	close(m_fdB[READ]);
-	write(m_fdB[WRITE], body_buffer.c_str(), body_buffer.length());
+	write(m_fromServerToCgi[WRITE], body_buffer.c_str(), body_buffer.length());
 
 	int ret = 1;
-	while (ret > 0)
+	do
 	{
-		memset(buf, 0, BUFFER_SIZE);
-		ret = read(m_fdA[READ], buf, BUFFER_SIZE - 1);
-		body += buf;
+		while (ret > 0)
+		{
+			memset(buf, 0, BUFFER_SIZE);
+			ret = read(m_fromCgiToServer[READ], buf, BUFFER_SIZE - 1);
+			body += buf;
+		}
 	}
+	while (body.size() == 0);
 	// if (!m_bodyFlag && body.find("\r\n\r\n") != std::string::npos)
 	// {
 	//     m_bodyFlag = true;
@@ -245,20 +257,47 @@ cgi::execCgi(const std::string& readLine)
 	// close(m_fdA[READ]);
 	return (body);
 }
+*/
 
 std::string
-cgi::readCgi(void)
+cgi::readCgi()
 {
+	int			ret;
 	std::string	body;
-	int ret = 1;
 	char buf[BUFFER_SIZE] = {0};
 
-	while (ret > 0)
+	do
 	{
-		memset(buf, 0, BUFFER_SIZE);
-		ret = read(m_fdA[READ], buf, BUFFER_SIZE - 1);
-		body += buf;
+		do
+		{
+			memset(buf, 0, BUFFER_SIZE);
+			ret = read(m_fromCgiToServer[READ], buf, BUFFER_SIZE - 1);
+			body += buf;
+		}
+		while (ret > 0);
 	}
+	while (body.size() == 0);
 	return (body);
 
+}
+
+ssize_t	cgi::writeCgi(const void* buf, size_t size)
+{
+	return write(m_fromServerToCgi[WRITE], buf, size);
+	/*
+	size_t		totalWriteBytes = 0;
+	uintptr_t	ptr = reinterpret_cast<uintptr_t>(buf);
+
+	while (size > 0)
+	{
+		void*	movedBuf = reinterpret_cast<void*>(ptr + totalWriteBytes);
+		ssize_t	writeBytes = write(m_fromServerToCgi[WRITE], movedBuf, size);
+
+		if (writeBytes == -1)
+			continue;
+		totalWriteBytes += writeBytes;
+		size -= writeBytes;
+	}
+	return totalWriteBytes;
+	*/
 }

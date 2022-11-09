@@ -12,7 +12,7 @@ class clientSocket : public ASocket
 		AMethod*	m_method;
 		request		m_request;
 		size_t		m_sentSize;
-
+		response*	m_responsePtr;
 
 		std::string	m_readBuffer;
 		bool		m_readFinish;

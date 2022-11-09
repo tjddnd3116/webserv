@@ -33,5 +33,6 @@ class postMethod : public AMethod
 
 		void							loadBody(const std::string& readLine);
 		void							getBodyType(void);
+		bool							extractChuncked(std::string const& message);
 };
 #endif //postMethod_hpp
