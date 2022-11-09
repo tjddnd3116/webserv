@@ -10,7 +10,7 @@
 #include "./parser/configInfo.hpp"
 #include "./parser/parser.hpp"
 
-#define ERR_LOG_FILE_PATH "/Users/soum/webserv/errlog.txt"
+#define ERR_LOG_FILE_PATH "/dev/null"
 
 class webServ
 {

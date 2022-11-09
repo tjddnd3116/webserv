@@ -12,6 +12,8 @@
 
 #include "../WsException.hpp"
 
+class AMethod;
+
 class configInfo
 {
 	private:
@@ -26,6 +28,7 @@ class configInfo
 			std::string					locRoot;
 			std::string					locCgiPass;
 			std::string					locAlias;
+			int32_t						clientMaxBodySize;
 		};
 		std::vector<std::string>		m_index;
 		std::vector<std::string>		m_serverName;
@@ -76,6 +79,7 @@ class configInfo
 		void		setLocationLimitExcept(std::vector<std::string>& set);
 		void		setLocationIndex(std::vector<std::string>& set);
 		void		setLocationAlias(std::vector<std::string>& set);
+		void		setLocationClientMaxBodySize(std::vector<std::string>& set);
 
 
 		// getter
@@ -99,9 +103,12 @@ class configInfo
 		void	findLocation(const std::string& locationPath,
 							 std::string& rootPath,
 							 std::vector<std::string>& indexFile,
-							 std::vector<std::string>& limitExcept);
+							 std::vector<std::string>& limitExcept,
+							 int&						maxBodySize);
 		int		isLocationBlock(const std::vector<std::string>& directoryVec);
 		void	locationVecToMap(void);
+
+		void	__findLocation(std::string const& uri, AMethod* method);
 
 		friend std::ostream&			operator<<(std::ostream &os, const configInfo& conf);
 };

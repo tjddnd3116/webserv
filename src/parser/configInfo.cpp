@@ -1,4 +1,5 @@
 #include "configInfo.hpp"
+#include "../method/AMethod.hpp"
 
 std::unordered_map<std::string, configInfo::t_setterType>	configInfo::s_table;
 
@@ -6,13 +7,14 @@ configInfo::Location::Location(const std::string &path)
 {
 	locPath = path;
 	locRoot = "html";
+	clientMaxBodySize = -1;
 	locIndex.push_back("index.html");
 }
 
 configInfo::configInfo()
 {
 	m_serverName.push_back("");
-	m_clientMaxBodySize = 1000000;
+	m_clientMaxBodySize = -1;
 	m_uriBufferSize = 3 * 1024;
 	m_root = "html";
 	m_listen = 80;
@@ -57,6 +59,7 @@ configInfo::setTable()
 	s_table["loc_limit_except"] = &configInfo::setLocationLimitExcept;
 	s_table["loc_cgi_pass"] = &configInfo::setLocationCgiPass;
 	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
+	s_table["loc_client_max_body_size"] = &configInfo::setLocationClientMaxBodySize;
 	s_table["error_page"] = &configInfo::setErrorPage;
 	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
 	s_table["loc_alias"] = &configInfo::setLocationAlias;
@@ -135,7 +138,7 @@ configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 		m_clientMaxBodySize = -1;
 		return ;
 	}
-	m_clientMaxBodySize = std::atoi(set[0].c_str()) * 1000000;
+	m_clientMaxBodySize = std::atoi(set[0].c_str());
 }
 
 void
@@ -172,6 +175,14 @@ configInfo::setLocationAlias(std::vector<std::string>& set)
 	if (set.size() != 1)
 		throw (WsException("invalid alias size"));
 	m_location.back().locAlias = set[0];
+}
+
+void
+configInfo::setLocationClientMaxBodySize(std::vector<std::string>& set)
+{
+	if (set.size() != 1)
+		throw (WsException("invalid client Max body size"));
+	m_location.back().clientMaxBodySize = std::stoi(set[0]);
 }
 
 int
@@ -379,6 +390,8 @@ configInfo::printLocationBlock(std::ostream& os, size_t i) const
 		os << "pass :" << m_location[i].locCgiPass << std::endl;
 	}
 
+	os << "clientMaxBodySize :" << m_location[i].clientMaxBodySize << std::endl;
+
 	if (!m_location[i].locLimitExpect.empty())
 	{
 		os << "limit_except :";
@@ -392,7 +405,8 @@ void
 configInfo::findLocation(const std::string& locationPath,
 						 std::string& rootPath,
 						 std::vector<std::string>& indexFile,
-						 std::vector<std::string>& limitExcept)
+						 std::vector<std::string>& limitExcept,
+						 int&						maxBodySize)
 {
 	std::map<std::string, Location>::iterator mapIt;
 
@@ -403,6 +417,7 @@ configInfo::findLocation(const std::string& locationPath,
 		rootPath = mapIt->second.locRoot + locationPath;
 	indexFile = mapIt->second.locIndex;
 	limitExcept = mapIt->second.locLimitExpect;
+	maxBodySize = mapIt->second.clientMaxBodySize;
 }
 
 void
@@ -434,3 +449,20 @@ configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
 	return (-1);
 }
 
+void	configInfo::__findLocation(std::string const& uri, AMethod* method)
+{
+	std::map<std::string, Location>::reverse_iterator
+		itr = m_mapLocation.rbegin();
+	std::string	rootPath;
+
+	while (itr != m_mapLocation.rend())
+	{
+		std::string::size_type pos = uri.find(itr->first);
+		if (pos == std::string::npos)
+			continue;
+	}
+
+	Location const&	location = itr->second;
+
+	method->m_limitExcept = location.locLimitExpect;
+};

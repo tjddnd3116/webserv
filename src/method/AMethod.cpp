@@ -183,6 +183,8 @@ AMethod::directoryParse(std::string& uri,
 		dirVec.push_back(uri.substr(0, ++slashPos));
 		slashPos = uri.find("/", slashPos);
 	}
+	if (uri != "/")
+		dirVec.push_back(uri);
 }
 
 void
@@ -216,7 +218,7 @@ AMethod::filePathParse(std::string uri)
 	isTrailingSlash = getTrailingSlash(uri);
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	if (!isTrailingSlash)
 	{
@@ -235,7 +237,7 @@ AMethod::filePathParse(std::string uri)
 			directoryIdx = m_conf.isLocationBlock(directoryVec);
 			if (directoryIdx != 0)
 			{
-				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
 				fileName = uri.substr(directoryVec[directoryIdx].size());
 			}
 		}
@@ -302,7 +304,7 @@ AMethod::putFilePathParse(std::string uri)
 
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
@@ -319,8 +321,10 @@ AMethod::postFilePathParse(std::string uri)
 
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept);
+//	m_conf.__findLocation(uri, this);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
+	std::cout << m_filePath << std::endl;
 }

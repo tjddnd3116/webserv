@@ -3,6 +3,7 @@
 
 webServ::webServ()
 {
+	umask(0000);
 	m_logFile.open(ERR_LOG_FILE_PATH, std::ios_base::in | std::ios_base::out | std::ios_base::trunc);
 	if (m_logFile.fail())
 		throw (WsException("log file open error"));

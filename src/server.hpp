@@ -52,5 +52,7 @@ class server
 
 		void		createServerSock(void);
 		void 		run(void);
+
 };
+
 #endif //server_hpp

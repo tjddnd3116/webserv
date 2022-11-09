@@ -78,8 +78,23 @@ postMethod::loadBody(const std::string& readLine)
 	}
 	else
 	{
+		if (m_bodySize == m_readLineSize)
+		{
+			int decimal = hexToDecimal(readLine);
+
+			m_bodySize += decimal;
+			if (decimal == 0)
+			{
+				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
+				m_cgi->closeCgi(WRITE);
+				m_bodyBuffer += m_cgi->readCgi();
+			}
+			return;
+		}
 		if (m_bodySize == -1)
+		{
 			m_bodySize = hexToDecimal(readLine);
+		}
 		else
 		{
 			if (m_bodySize != 0)
@@ -89,12 +104,11 @@ postMethod::loadBody(const std::string& readLine)
 			}
 			if (m_bodySize == m_readLineSize)
 			{
-				std::string tmp;
+				if (m_bodySize < 4097)
+					return;
 				m_testcnt++;
-				tmp = m_cgi->execCgi(m_tempBuffer);
-				while (tmp.size() == 0)
-					tmp = m_cgi->readCgi();
-				m_bodyBuffer += tmp;
+				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
+				m_bodyBuffer += m_cgi->readCgi();
 				m_tempBuffer.clear();
 				m_bodySize = -1;
 				m_readLineSize = 0;
@@ -122,7 +136,7 @@ postMethod::isMethodCreateFin(void)
 		std::cout << "cgi fin" << std::endl;
 		if (m_cgi != NULL)
 		{
-			m_cgi->closeCgi();
+			m_cgi->closeCgi(READ);
 			delete m_cgi;
 			m_cgi = NULL;
 		}
@@ -192,7 +206,6 @@ postMethod::uriParse(void)
 		m_cgi->initCgi(this);
 		m_cgi->runCgi();
 	}
-
 }
 
 void postMethod::doMethodWork(void)
@@ -201,6 +214,14 @@ void postMethod::doMethodWork(void)
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
+		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
+		readFile(m_readBody);
+		return ;
+	}
+	if (m_maxBodySize != -1 && m_bodyBuffer.size() > (size_t)m_maxBodySize)
+	{
+		m_filePath = m_conf.getErrorPath();
+		m_statusCode = 413;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 		readFile(m_readBody);
 		return ;
