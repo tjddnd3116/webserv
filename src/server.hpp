@@ -29,19 +29,26 @@ class server
 		struct kevent				m_eventList[EVENT_SIZE];
 		int							m_kq;
 		size_t						m_serverSize;
-		AMethod*					m_method;
 
+		// private memeber functions
+
+		// event 등록 wrapper 함수
 		void	addEvents(uintptr_t ident, int16_t filter, uint16_t flags,
 				uint32_t fflags, intptr_t data, void* udata);
-		bool	isServerSocket(int fd);
-		bool	isClientSocket(int fd);
+		// event 대기 함수
 		int		waitEvent(void);
+		// event 발생시 event의 종류확인, 해당 event 처리와 예외상황 발생시 throw
 		void	communicateSock(int newEvents);
 		int		readEvent(struct kevent* curEvent);
 		void	writeEvent(struct kevent* curEvent);
+		// 해당 fd의 socket disconnect
 		void	disconnectClient(int fd);
+		// 해당 fd가 server socket인지 판별
+		bool	isServerSocket(int fd);
+		// 해당 fd가 client socket인지 판별
+		bool	isClientSocket(int fd);
 
-		// hide copy
+		// hide copy constructor & operator
 		server(const server& copy);
 		server& operator=(const server& copy);
 
@@ -50,9 +57,15 @@ class server
 		server(const std::vector<configInfo>& conf, std::fstream& logFile);
 		~server();
 
-		void		createServerSock(void);
-		void 		run(void);
+		// public memeber functions
 
+		/* config파일의 server block개수만큼
+		 *
+		 * server socket을 생성하고 m_serverSock에 저장한다.*/
+		void		createServerSock(void);
+
+		/* server를 작동시킨다.*/
+		void 		run(void);
 };
 
 #endif //server_hpp

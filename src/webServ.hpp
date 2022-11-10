@@ -5,10 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "server.hpp"
-#include "WsException.hpp"
 #include "./parser/configInfo.hpp"
 #include "./parser/parser.hpp"
+#include "server.hpp"
+#include "WsException.hpp"
 
 #define ERR_LOG_FILE_PATH "/dev/null"
 

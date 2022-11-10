@@ -38,21 +38,7 @@ response::makeBody(void)
 	readBody = m_method->getReadBody();
 	if (m_method->getMethod() == "POST")
 		readBody = m_method->getBody();
-	// if (m_isCgi == 0)
-	// {
-	//     while (!m_file.eof())
-	//     {
-	//         std::getline(m_file, readLine);
-	//         if (readLine == "")
-	//             continue;
-	//         allReadLine += readLine + "\n";
-	//     }
-	//     allReadLine.pop_back();
-	// }
-	// else
-	// {
-	//     allReadLine = m_newBody;
-	// }
+
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
 	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")

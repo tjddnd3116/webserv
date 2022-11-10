@@ -1,5 +1,4 @@
 #include "server.hpp"
-#include <sys/event.h>
 
 server::server(const std::vector<configInfo> &conf, std::fstream& logFile)
 	:m_conf(conf), m_logFile(logFile)
@@ -27,7 +26,7 @@ server::createServerSock(void)
 		m_serverSock.insert(std::make_pair(serverSock.getSocketFd(), serverSock));
 		addEvents(serverSock.getSocketFd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 	}
-	m_logFile << "all server socket created" << std::endl;
+	m_logFile << "all server socket created, server socket count : " << m_serverSock.size() << std::endl;
 }
 
 void
@@ -134,9 +133,9 @@ server::readEvent(struct kevent* curEvent)
 		int msgSize;
 
 		msgSize = curEvent->data + 1;
-		std::map<int, clientSocket>::iterator clientIt =
-			m_clientSock.find(curEvent->ident);
-		readRet = (*clientIt).second.readSock(m_logFile, msgSize);
+		clientSocket& clientSocket
+			= (*m_clientSock.find(curEvent->ident)).second;
+		readRet = clientSocket.readSock(m_logFile, msgSize);
 		if (readRet <= 0)
 		{
 			if (readRet == 0)
@@ -144,8 +143,8 @@ server::readEvent(struct kevent* curEvent)
 			m_logFile << "client read error" << std::endl;
 			return (1);
 		}
-		if ((*clientIt).second.getReadStatus())
-			addEvents((*clientIt).first, EVFILT_WRITE,
+		if (clientSocket.getReadStatus())
+			addEvents(clientSocket.getSocketFd(), EVFILT_WRITE,
 				EV_ADD | EV_ENABLE, 0, 0, NULL);
 		m_logFile << "client read finish" << std::endl;
 	}
@@ -159,7 +158,7 @@ server::writeEvent(struct kevent* curEvent)
 
 	if (!isClientSocket(curEvent->ident))
 		return;
-	//std::map<int, clientSocket>::iterator clientIt =
+
 	clientSocket& clientsocket
 		= (*m_clientSock.find(curEvent->ident)).second;
 	sendRet = clientsocket.sendSock(m_logFile);
@@ -170,11 +169,7 @@ server::writeEvent(struct kevent* curEvent)
 		addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
 	}
 	else if (sendRet < 0)
-	{
-		m_logFile << "non blocking" << std::endl;
-		// addEvents(curEvent->ident, EVFILT_WRITE, EV_DISABLE, 0, 0, NULL);
-		// disconnectClient(curEvent->ident);
-	}
+		m_logFile << "send(write) non blocking" << std::endl;
 	else
 		m_logFile << "INFO: send = " << sendRet
 			<< ", on socket = " << clientsocket.getSocketFd() << std::endl;
