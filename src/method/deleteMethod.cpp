@@ -77,12 +77,14 @@ deleteMethod::uriParse(void)
 
 	uri = m_uri;
 	filePathParse(uri);
-	m_statusCode = 200;
+	m_statusCode = 204;
 }
 
 void
 deleteMethod::doMethodWork(void)
 {
+	int deleteStatus;
+
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
@@ -99,6 +101,11 @@ deleteMethod::doMethodWork(void)
 	// TODO
 	// need error control
 	readFile(m_readBody);
+	deleteStatus = unlink(m_filePath.c_str());
+	if (deleteStatus == -1)
+	{
+		m_statusCode = 202;
+	}
 }
 
 const std::string&
