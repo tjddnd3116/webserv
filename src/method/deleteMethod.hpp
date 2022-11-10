@@ -2,6 +2,7 @@
 #define deleteMethod_hpp
 
 #include "AMethod.hpp"
+#include <unistd.h>
 
 class deleteMethod : public AMethod
 {
