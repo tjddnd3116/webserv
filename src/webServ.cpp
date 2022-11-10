@@ -1,5 +1,4 @@
 #include "webServ.hpp"
-#include "WsException.hpp"
 
 webServ::webServ()
 {

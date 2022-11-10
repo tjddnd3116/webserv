@@ -8,6 +8,8 @@ configInfo::Location::Location(const std::string &path)
 	locPath = path;
 	locRoot = "html";
 	clientMaxBodySize = -1;
+	locCgiExt = "";
+	locCgiPass = "";
 	locIndex.push_back("index.html");
 }
 
@@ -52,17 +54,18 @@ configInfo::setTable()
 	s_table["index"] = &configInfo::setIndexFile;
 	s_table["server_name"] = &configInfo::setServerName;
 	s_table["listen"] = &configInfo::setListenPort;
+	s_table["error_page"] = &configInfo::setErrorPage;
+	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
+	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
 	s_table["loc_expires"] = &configInfo::setLocationExpires;
 	s_table["loc_root"] = &configInfo::setLocationRoot;
 	s_table["loc_index"] = &configInfo::setLocationIndex;
 	s_table["loc_proxy_pass"] = &configInfo::setLocationProxy;
 	s_table["loc_limit_except"] = &configInfo::setLocationLimitExcept;
 	s_table["loc_cgi_pass"] = &configInfo::setLocationCgiPass;
-	s_table["client_max_body_size"] = &configInfo::setClientMaxBodySize;
 	s_table["loc_client_max_body_size"] = &configInfo::setLocationClientMaxBodySize;
-	s_table["error_page"] = &configInfo::setErrorPage;
-	s_table["client_header_buffer_size"] = &configInfo::setUriBufferSize;
 	s_table["loc_alias"] = &configInfo::setLocationAlias;
+	s_table["loc_cgi_ext"] = &configInfo::setLocationCgiExt;
 }
 
 void
@@ -183,6 +186,14 @@ configInfo::setLocationClientMaxBodySize(std::vector<std::string>& set)
 	if (set.size() != 1)
 		throw (WsException("invalid client Max body size"));
 	m_location.back().clientMaxBodySize = std::stoi(set[0]);
+}
+
+void
+configInfo::setLocationCgiExt(std::vector<std::string>& set)
+{
+	if (set.size() != 1)
+		throw (WsException("invalid cgi extension size"));
+	m_location.back().locCgiExt = set[0];
 }
 
 int
@@ -449,20 +460,4 @@ configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
 	return (-1);
 }
 
-void	configInfo::__findLocation(std::string const& uri, AMethod* method)
-{
-	std::map<std::string, Location>::reverse_iterator
-		itr = m_mapLocation.rbegin();
-	std::string	rootPath;
 
-	while (itr != m_mapLocation.rend())
-	{
-		std::string::size_type pos = uri.find(itr->first);
-		if (pos == std::string::npos)
-			continue;
-	}
-
-	Location const&	location = itr->second;
-
-	method->m_limitExcept = location.locLimitExpect;
-};

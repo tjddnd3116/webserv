@@ -29,12 +29,15 @@ class ASocket
 			int					m_SocketFd;
 
 		public:
-			// Orthodox Canonical Form
+			// constructor & destructor
 			ASocket(const configInfo& conf);
 			virtual ~ASocket();
+
+			// copy constructor & operator
 			ASocket(const ASocket& copy);
 			ASocket& operator=(const ASocket &copy);
 
+			// public member functions
 			virtual void		createSock(void) = 0;
 			void				closeSock();
 			int					getSocketFd(void) const;

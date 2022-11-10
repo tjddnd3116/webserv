@@ -1,8 +1,8 @@
 #include <exception>
 #include <iostream>
 
-#include "WsException.hpp"
 #include "./parser/parser.hpp"
+#include "WsException.hpp"
 #include "server.hpp"
 #include "webServ.hpp"
 

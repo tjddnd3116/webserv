@@ -19,23 +19,24 @@ class Location;
 
 class AMethod
 {
+	typedef std::map<std::string, std::vector<std::string> > requestMap;
+
 	protected:
 		std::string						m_methodType;
 		std::string						m_uri;
 		std::string						m_httpVersion;
-		std::map<std::string, std::vector<std::string> >
-										m_requestSet;
-		int								m_statusCode;
-		configInfo						m_conf;
-		Location*						m_locationPtr;
 		std::string						s;
 		std::string						m_body;
+		requestMap						m_requestSet;
+		configInfo						m_conf;
+		Location*						m_locationPtr;
+		int								m_statusCode;
 
-		int								m_maxBodySize;
 		std::vector<std::string>		m_limitExcept;
 		std::string						m_filePath;
 		std::string						m_queryString;
 		std::string						m_fileExt;
+		int								m_maxBodySize;
 		int								m_crlfCnt;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
@@ -58,7 +59,7 @@ class AMethod
 		AMethod(const std::string& readLine, const configInfo& conf);
 		virtual ~AMethod();
 
-		// pure virtual functions
+		// public pure virtual functions
 		virtual void					loadRequest(const std::string& readLine) = 0;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const = 0;
 		virtual bool					isMethodCreateFin(void) = 0;
@@ -67,26 +68,22 @@ class AMethod
 		virtual void					doMethodWork(void) = 0;
 		virtual const std::string&		getReadBody(void) const = 0;
 
-		// virtual functions
+		// public virtual functions
 		virtual const std::string&		getBody(void) const;
 
-		// member functions
+		// puclic member functions
 		void							queryStringParse(std::string& uri);
 		void							directoryParse(std::string& uri,
 													   std::vector<std::string>& dirVec);
-
-		// getter
+		// getter functions
 		int								getStatusCode(void) const;
 		const std::string&				getMethod(void) const;
 		const std::string&				getUri(void) const;
 		const configInfo&				getConfig(void) const;
 		const std::string&				getHttpVersion(void) const;
-		const std::map<std::string, std::vector<std::string> >&
-										getRequestSet(void) const;
+		const requestMap&				getRequestSet(void) const;
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
 		const std::string&				getFileExt(void) const;
-
-		friend void	configInfo::__findLocation(std::string const& uri, AMethod* method);
 };
 #endif //AMethod_hpp

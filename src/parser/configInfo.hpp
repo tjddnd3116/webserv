@@ -28,6 +28,7 @@ class configInfo
 			std::string					locRoot;
 			std::string					locCgiPass;
 			std::string					locAlias;
+			std::string					locCgiExt;
 			int32_t						clientMaxBodySize;
 		};
 		std::vector<std::string>		m_index;
@@ -80,6 +81,7 @@ class configInfo
 		void		setLocationIndex(std::vector<std::string>& set);
 		void		setLocationAlias(std::vector<std::string>& set);
 		void		setLocationClientMaxBodySize(std::vector<std::string>& set);
+		void		setLocationCgiExt(std::vector<std::string>& set);
 
 
 		// getter
@@ -107,8 +109,6 @@ class configInfo
 							 int&						maxBodySize);
 		int		isLocationBlock(const std::vector<std::string>& directoryVec);
 		void	locationVecToMap(void);
-
-		void	__findLocation(std::string const& uri, AMethod* method);
 
 		friend std::ostream&			operator<<(std::ostream &os, const configInfo& conf);
 };
