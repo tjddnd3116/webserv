@@ -1,16 +1,5 @@
 #include "clientSocket.hpp"
 
-clientSocket::clientSocket(const configInfo& conf)
-	:ASocket(conf), m_request(conf)
-{
-	m_readBuffer.clear();
-	m_method = NULL;
-	m_sentSize = 0;
-	m_writeFinish = false;
-	m_responsePtr = 0;
-	is_bodySection = false;
-}
-
 clientSocket::clientSocket(const ASocket& serverSock)
 	:ASocket(serverSock.getConf()), m_request(serverSock.getConf())
 {
@@ -19,8 +8,8 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	m_method = NULL;
 	m_sentSize = 0;
 	m_writeFinish = false;
-	m_responsePtr = 0;
-	is_bodySection = false;
+	m_readFinish = false;
+	m_responsePtr = NULL;
 }
 
 clientSocket::~clientSocket()
@@ -37,12 +26,11 @@ clientSocket::operator=(const clientSocket& copy)
 {
 	m_method = copy.m_method;
 	m_conf = copy.m_conf;
-	is_bodySection = copy.is_bodySection;
 	m_SocketAddr = copy.m_SocketAddr;
 	m_SocketAddrSize = copy.m_SocketAddrSize;
 	m_SocketFd = copy.m_SocketFd;
 	m_sentSize = 0;
-	m_responsePtr = 0;
+	m_responsePtr = NULL;
 	m_writeFinish = false;
 	return (*this);
 }
@@ -69,14 +57,9 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	int		requestStatus;
 
 	logFile << "message size : " << msgSize << std::endl;
-//	std::cout << "message size : " << msgSize << std::endl;
 	buffer = new char[msgSize];
-	m_readFinish = false;
 	std::memset(buffer, 0, msgSize);
 	readRet = read(m_SocketFd, buffer, msgSize - 1);
-	// logFile << "-----origin request message-----" << std::endl;
-	// logFile << buffer << std::endl;
-	// logFile << "--------------------------------" << std::endl;
 	if (readRet < 0)
 		logFile << "non-blocking" << std::endl;
 	else if (readRet == 0)
@@ -103,25 +86,19 @@ int
 clientSocket::sendSock(std::fstream& logFile)
 {
 	int sendRet;
-//	response response(m_conf);
 
 	if (m_sentSize == 0)
 	{
 		m_writeFinish = false;
 		m_responsePtr = new response(m_conf);
-	//	response.makeResponse(m_method);
 		m_responsePtr->makeResponse(m_method);
 		if (1)
 		{
 			logFile << BLUE << "-----------response----------------" << std::endl;
-	//		logFile << response().c_str() << std::endl;
 			logFile << (*m_responsePtr)().c_str() << std::endl;
 			logFile << "-------------------------------" << RESET << std::endl;
 		}
 	}
-//	sendRet = write(m_SocketFd, response().c_str() + m_sentSize, response.getBufSize() - m_sentSize);
-	// if ((*m_responsePtr).getBufSize() >= 10000000)
-	//     write(2, (*m_responsePtr)().c_str() + m_sentSize, (*m_responsePtr).getBufSize() - m_sentSize);
 	sendRet = write(m_SocketFd, (*m_responsePtr)().c_str() + m_sentSize, (*m_responsePtr).getBufSize() - m_sentSize);
 	m_sentSize += sendRet;
 	if (m_sentSize == (*m_responsePtr).getBufSize())
@@ -144,11 +121,6 @@ bool
 clientSocket::getReadStatus(void) const
 {
 	return (m_readFinish);
-}
-
-void clientSocket::sendFinished(void)
-{
-	m_sentSize = 0;
 }
 
 bool  clientSocket::getWriteStatus(void) const

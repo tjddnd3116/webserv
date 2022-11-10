@@ -9,29 +9,31 @@
 class clientSocket : public ASocket
 {
 	private:
+		response*	m_responsePtr;
 		AMethod*	m_method;
 		request		m_request;
 		size_t		m_sentSize;
-		response*	m_responsePtr;
 
 		std::string	m_readBuffer;
 		bool		m_readFinish;
-		bool		is_bodySection;
-
 		bool		m_writeFinish;
 
 	public:
-		clientSocket(const configInfo& conf);
+		// constructor & destructor
 		clientSocket(const ASocket& serverSock);
 		~clientSocket();
+
+		// copy constructor & operator
 		clientSocket(const clientSocket& copy);
 		clientSocket& operator=(const clientSocket& copy);
 
+		// public member functions
 		void	createSock(void);
 		int		readSock(std::fstream& logFile, int msgSize);
 		int		sendSock(std::fstream& logFile);
+
+		// public getter functions
 		bool	getReadStatus(void) const;
 		bool 	getWriteStatus(void) const;
-		void	sendFinished(void);
 };
 #endif //clientSocket_hpp

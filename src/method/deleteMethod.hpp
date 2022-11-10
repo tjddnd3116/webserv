@@ -19,6 +19,6 @@ class deleteMethod : public AMethod
 		virtual void					logMethodInfo(std::fstream& logFile) const;
 		virtual void					uriParse(void);
 		virtual void					doMethodWork(void);
-
+		virtual void					filePathParse(std::string uri);
 };
 #endif //deleteMethod_hpp

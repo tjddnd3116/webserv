@@ -142,13 +142,16 @@ putMethod::uriParse(void)
 	std::string					uri;
 
 	uri = m_uri;
-	putFilePathParse(uri);
+	this->filePathParse(uri);
 	m_statusCode = 200;
 }
 
 void putMethod::doMethodWork(void)
 {
-	if (!this->checkMethodLimit(m_limitExcept))
+	std::vector<std::string> limitExcept;
+
+	limitExcept = m_location->locLimitExpect;
+	if (!this->checkMethodLimit(limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
@@ -156,8 +159,6 @@ void putMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return;
 	}
-	// TODO
-	// need error control
 	writeFile(m_bodyBuffer);
 }
 
@@ -165,4 +166,24 @@ const std::string&
 putMethod::getReadBody(void) const
 {
 	return (m_readBody);
+}
+
+void
+putMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::string					root;
+	std::string					fileName;
+	int							directoryIdx;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+	if (m_location->locAlias != "")
+		root = m_location->locAlias + "/";
+	else
+		root= m_location->locRoot + directoryVec[directoryIdx];
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	extractExt(fileName);
+	m_filePath = root + fileName;
 }

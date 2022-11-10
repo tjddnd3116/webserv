@@ -412,6 +412,15 @@ configInfo::printLocationBlock(std::ostream& os, size_t i) const
 	}
 }
 
+configInfo::Location*
+configInfo::findLocation(const std::string& locationPath)
+{
+	std::map<std::string, Location>::iterator mapIt;
+
+	mapIt = m_mapLocation.find(locationPath);
+	return (&mapIt->second);
+}
+
 void
 configInfo::findLocation(const std::string& locationPath,
 						 std::string& rootPath,
@@ -459,5 +468,6 @@ configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
 	}
 	return (-1);
 }
+
 
 

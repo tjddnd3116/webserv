@@ -198,7 +198,7 @@ postMethod::uriParse(void)
 	std::string	uri;
 
 	uri = m_uri;
-	postFilePathParse(uri);
+	this->filePathParse(uri);
 	m_statusCode = 200;
 	if (m_fileExt == ".bla")
 	{
@@ -210,7 +210,12 @@ postMethod::uriParse(void)
 
 void postMethod::doMethodWork(void)
 {
-	if (!this->checkMethodLimit(m_limitExcept))
+	std::vector<std::string>	limitExcept;
+	int32_t						maxBodySize;
+
+	limitExcept = m_location->locLimitExpect;
+	maxBodySize = m_location->clientMaxBodySize;
+	if (!this->checkMethodLimit(limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
@@ -218,7 +223,7 @@ void postMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return ;
 	}
-	if (m_maxBodySize != -1 && m_bodyBuffer.size() > (size_t)m_maxBodySize)
+	if (maxBodySize != -1 && m_bodyBuffer.size() > (size_t)maxBodySize)
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 413;
@@ -226,13 +231,30 @@ void postMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return ;
 	}
-	// TODO
-	// need error control
-	// writeFile(m_bodyBuffer);
 }
 
 const std::string&
 postMethod::getReadBody(void) const
 {
 	return (m_readBody);
+}
+
+void
+postMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::string					root;
+	std::string					fileName;
+	int							directoryIdx;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+	if (m_location->locAlias != "")
+		root = m_location->locAlias + "/";
+	else
+		root= m_location->locRoot + directoryVec[directoryIdx];
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	extractExt(fileName);
+	m_filePath = root + fileName;
 }

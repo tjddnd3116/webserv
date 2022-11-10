@@ -73,4 +73,3 @@ request::setMethodToNull(void)
 	m_method = NULL;
 	m_buffer.clear();
 }
-

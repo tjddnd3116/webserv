@@ -15,8 +15,6 @@
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
-class Location;
-
 class AMethod
 {
 	typedef std::map<std::string, std::vector<std::string> > requestMap;
@@ -29,15 +27,13 @@ class AMethod
 		std::string						m_body;
 		requestMap						m_requestSet;
 		configInfo						m_conf;
-		Location*						m_locationPtr;
 		int								m_statusCode;
 
-		std::vector<std::string>		m_limitExcept;
 		std::string						m_filePath;
 		std::string						m_queryString;
 		std::string						m_fileExt;
-		int								m_maxBodySize;
 		int								m_crlfCnt;
+		configInfo::Location*			m_location;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 												  const std::string& str = " ");
@@ -47,9 +43,6 @@ class AMethod
 		bool						checkDirExists(const std::string& filePath);
 		int							hexToDecimal(const std::string& readLine);
 		void						extractExt(std::string& fileName);
-		void						filePathParse(std::string uri);
-		void						putFilePathParse(std::string uri);
-		void						postFilePathParse(std::string uri);
 		bool						getTrailingSlash(const std::string& uri);
 		void						readFile(std::string& readBody);
 		void						writeFile(std::string& bodyBuffer);
@@ -67,6 +60,7 @@ class AMethod
 		virtual void					uriParse(void) = 0;
 		virtual void					doMethodWork(void) = 0;
 		virtual const std::string&		getReadBody(void) const = 0;
+		virtual void					filePathParse(std::string uri) = 0;
 
 		// public virtual functions
 		virtual const std::string&		getBody(void) const;

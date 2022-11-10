@@ -12,11 +12,9 @@
 
 #include "../WsException.hpp"
 
-class AMethod;
-
 class configInfo
 {
-	private:
+	public:
 		struct Location
 		{
 			Location(const std::string &path);
@@ -31,6 +29,8 @@ class configInfo
 			std::string					locCgiExt;
 			int32_t						clientMaxBodySize;
 		};
+
+	private:
 		std::vector<std::string>		m_index;
 		std::vector<std::string>		m_serverName;
 		std::vector<std::string>		m_errorCode;
@@ -97,18 +97,19 @@ class configInfo
 		std::map<std::string, Location>	getMapLocation(void) const;
 
 
-		int		createLocation(std::string& path);
-		void	createDefaultLocation(void);
-		void	checkConfig(void);
-		void	printServerBlock(std::ostream& os) const;
-		void	printLocationBlock(std::ostream& os, size_t i) const;
-		void	findLocation(const std::string& locationPath,
+		int			createLocation(std::string& path);
+		void		createDefaultLocation(void);
+		void		checkConfig(void);
+		void		printServerBlock(std::ostream& os) const;
+		void		printLocationBlock(std::ostream& os, size_t i) const;
+		Location*	findLocation(const std::string& locationPath);
+		void		findLocation(const std::string& locationPath,
 							 std::string& rootPath,
 							 std::vector<std::string>& indexFile,
 							 std::vector<std::string>& limitExcept,
 							 int&						maxBodySize);
-		int		isLocationBlock(const std::vector<std::string>& directoryVec);
-		void	locationVecToMap(void);
+		int			isLocationBlock(const std::vector<std::string>& directoryVec);
+		void		locationVecToMap(void);
 
 		friend std::ostream&			operator<<(std::ostream &os, const configInfo& conf);
 };

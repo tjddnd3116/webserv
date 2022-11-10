@@ -3,7 +3,6 @@
 server::server(const std::vector<configInfo> &conf, std::fstream& logFile)
 	:m_conf(conf), m_logFile(logFile)
 {
-	m_serverSize = m_conf.size();
 	m_kq = kqueue();
 	if (m_kq < 0)
 		throw (WsException("kqueue fail"));
@@ -15,7 +14,10 @@ server::~server()
 void
 server::createServerSock(void)
 {
-	for (size_t serverSockIdx = 0; serverSockIdx < m_serverSize; serverSockIdx++)
+	size_t serverSockSize;
+
+	serverSockSize = m_conf.size();
+	for (size_t serverSockIdx = 0; serverSockIdx < serverSockSize; serverSockIdx++)
 	{
 		serverSocket serverSock(m_conf[serverSockIdx]);
 
@@ -96,22 +98,6 @@ server::communicateSock(int newEvents)
 	}
 }
 
-bool
-server::isServerSocket(int fd)
-{
-	if (m_serverSock.find(fd) != m_serverSock.end())
-		return (true);
-	return (false);
-}
-
-bool
-server::isClientSocket(int fd)
-{
-	if (m_clientSock.find(fd) != m_clientSock.end())
-		return (true);
-	return (false);
-}
-
 int
 server::readEvent(struct kevent* curEvent)
 {
@@ -139,7 +125,7 @@ server::readEvent(struct kevent* curEvent)
 		if (readRet <= 0)
 		{
 			if (readRet == 0)
-				disconnectClient(curEvent->ident);
+				disconnectClientSocket(curEvent->ident);
 			m_logFile << "client read error" << std::endl;
 			return (1);
 		}
@@ -176,9 +162,25 @@ server::writeEvent(struct kevent* curEvent)
 }
 
 void
-server::disconnectClient(int fd)
+server::disconnectClientSocket(int fd)
 {
 	m_logFile << "client disconnected : " << fd << std::endl;
 	m_clientSock.at(fd).closeSock();
 	m_clientSock.erase(fd);
+}
+
+bool
+server::isServerSocket(int fd)
+{
+	if (m_serverSock.find(fd) != m_serverSock.end())
+		return (true);
+	return (false);
+}
+
+bool
+server::isClientSocket(int fd)
+{
+	if (m_clientSock.find(fd) != m_clientSock.end())
+		return (true);
+	return (false);
 }

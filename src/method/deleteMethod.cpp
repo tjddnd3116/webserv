@@ -76,7 +76,7 @@ deleteMethod::uriParse(void)
 	std::string					uri;
 
 	uri = m_uri;
-	filePathParse(uri);
+	this->filePathParse(uri);
 	m_statusCode = 204;
 }
 
@@ -84,7 +84,10 @@ void
 deleteMethod::doMethodWork(void)
 {
 	int deleteStatus;
+	std::vector<std::string> limitExcept;
 
+
+	limitExcept = m_location->locLimitExpect;
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
@@ -92,14 +95,12 @@ deleteMethod::doMethodWork(void)
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 		return ;
 	}
-	if (!this->checkMethodLimit(m_limitExcept))
+	if (!this->checkMethodLimit(limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 	}
-	// TODO
-	// need error control
 	readFile(m_readBody);
 	deleteStatus = unlink(m_filePath.c_str());
 	if (deleteStatus == -1)
@@ -112,4 +113,61 @@ const std::string&
 deleteMethod::getReadBody(void) const
 {
 	return (m_readBody);
+}
+
+void
+deleteMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::vector<std::string>	indexFile;
+	std::string					fileName;
+	std::string					root;
+	bool						isTrailingSlash;
+	int							directoryIdx;
+
+	isTrailingSlash = getTrailingSlash(uri);
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+	if (m_location->locAlias != "")
+		root = m_location->locAlias + "/";
+	else
+		root= m_location->locRoot + directoryVec[directoryIdx];
+	indexFile = m_location->locIndex;
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	if (!isTrailingSlash)
+	{
+		if (checkFileExists(root + fileName))
+		{}
+		else if (checkDirExists(root + fileName))
+		{
+			root = root + fileName + "/";
+			fileName = "";
+		}
+		else
+		{
+			directoryVec.clear();
+			uri.push_back('/');
+			directoryParse(uri, directoryVec);
+			directoryIdx = m_conf.isLocationBlock(directoryVec);
+			if (directoryIdx != 0)
+			{
+				m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+				if (m_location->locAlias != "")
+					root = m_location->locAlias + "/";
+				else
+					root= m_location->locRoot + directoryVec[directoryIdx];
+				fileName = uri.substr(directoryVec[directoryIdx].size());
+			}
+		}
+	}
+	else
+	{
+		root = root + fileName;
+		fileName = "";
+	}
+	if (fileName == "")
+		fileName = indexFile[0];
+	extractExt(fileName);
+	m_filePath = root + fileName;
 }
