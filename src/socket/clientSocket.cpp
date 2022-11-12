@@ -56,6 +56,7 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	char*	buffer;
 	int		requestStatus;
 
+	m_readFinish = false;
 	logFile << "message size : " << msgSize << std::endl;
 	buffer = new char[msgSize];
 	std::memset(buffer, 0, msgSize);
