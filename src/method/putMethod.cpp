@@ -21,8 +21,8 @@ putMethod::loadRequest(const std::string &readLine)
 		m_crlfCnt++;
 		if (m_crlfCnt == 1)
 		{
-			this->uriParse();
 			getBodyType();
+			this->uriParse();
 		}
 		return ;
 	}

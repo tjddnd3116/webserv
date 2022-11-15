@@ -106,7 +106,9 @@ class configInfo
 							 std::string& rootPath,
 							 std::vector<std::string>& indexFile,
 							 std::vector<std::string>& limitExcept,
-							 int&						maxBodySize);
+							 int&						maxBodySize,
+							 std::string& cgiPath,
+							 std::string& cgiExt);
 		int		isLocationBlock(const std::vector<std::string>& directoryVec);
 		void	locationVecToMap(void);
 

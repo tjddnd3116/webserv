@@ -38,11 +38,10 @@ response::makeBody(void)
 	readBody = m_method->getReadBody();
 	if (m_method->getMethod() == "POST")
 		readBody = m_method->getBody();
-
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")
-		m_responseBuf += std::to_string(readBodySize - 58) + "\n";
+	if (m_method->getMethod() == "POST" && (m_method->getFileExt() != "" && m_method->getFileExt() == m_method->getCgiExt()))
+		m_responseBuf += std::to_string(readBodySize) + "\n";
 	else
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
@@ -92,7 +91,7 @@ response::checkIsCgi()
 
 	fileExt = m_method->getFileExt();
 	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
-	if (fileExt == ".bla")
+	if (fileExt == m_method->getCgiExt())
 		return (1);
 	else
 	 	return (0);
@@ -120,6 +119,7 @@ response::makeResponse(const AMethod* method)
 	// else
 	//     parseBody();
 	// makeEntityHeader();
+	parseBody();
 	makeBody();
 }
 
