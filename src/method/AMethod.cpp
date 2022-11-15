@@ -237,3 +237,9 @@ AMethod::writeFile(std::string& bodyBuffer)
 	file << bodyBuffer;
 	file.close();
 }
+
+int
+AMethod::getCrlfCnt(void) const
+{
+	return (m_crlfCnt);
+}

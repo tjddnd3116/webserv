@@ -104,9 +104,7 @@ deleteMethod::doMethodWork(void)
 	readFile(m_readBody);
 	deleteStatus = unlink(m_filePath.c_str());
 	if (deleteStatus == -1)
-	{
 		m_statusCode = 202;
-	}
 }
 
 const std::string&

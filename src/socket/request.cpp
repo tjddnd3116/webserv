@@ -34,9 +34,11 @@ request::readRequest(const std::string& request)
 		curPos = m_buffer.find("\n", prePos);
 	}
 	readLine = m_buffer.substr(prePos, m_buffer.size() - prePos);
-	// m_method->loadRequest(readLine);
 	m_buffer.clear();
-	m_buffer += readLine;
+	if (m_method && m_method->getCrlfCnt() == 1)
+		m_method->loadRequest(readLine);
+	else
+		m_buffer += readLine;
 	if (m_method && m_method->isMethodCreateFin())
 		return (READ_FIN);
 	return (READING);

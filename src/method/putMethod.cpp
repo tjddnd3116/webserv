@@ -15,7 +15,8 @@ putMethod::~putMethod()
 void
 putMethod::loadRequest(const std::string &readLine)
 {
-
+	if (readLine.empty() || readLine[0] == ' ')
+		return ;
 	if (readLine[0] == '\r')
 	{
 		m_crlfCnt++;
@@ -28,8 +29,6 @@ putMethod::loadRequest(const std::string &readLine)
 	}
 	if (m_crlfCnt == 1)
 		return (loadBody(readLine));
-	if (readLine.empty() || readLine[0] == ' ')
-		return ;
 	std::vector<std::string> splittedLine(splitReadLine(readLine, ","));
 	splittedLine[0].pop_back();
 	for (size_t vecIdx = 1; vecIdx < splittedLine.size(); vecIdx++)
@@ -87,6 +86,8 @@ bool
 putMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 2)
+		return (true);
+	else if (m_bodyType == "size" && m_bodyBuffer.size() == (size_t)m_bodySize)
 		return (true);
 	return (false);
 }

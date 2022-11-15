@@ -18,6 +18,7 @@ class postMethod : public AMethod
 		std::string		m_tempBuffer;
 		int				m_testcnt;
 
+		bool			isCgiExt(void);
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
 		~postMethod();

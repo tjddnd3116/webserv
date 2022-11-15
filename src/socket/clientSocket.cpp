@@ -4,12 +4,12 @@ clientSocket::clientSocket(const ASocket& serverSock)
 	:ASocket(serverSock.getConf()), m_request(serverSock.getConf())
 {
 	m_SocketFd = serverSock.getSocketFd();
-	m_readBuffer.clear();
+	m_responsePtr = NULL;
 	m_method = NULL;
 	m_sentSize = 0;
-	m_writeFinish = false;
+	m_readBuffer.clear();
 	m_readFinish = false;
-	m_responsePtr = NULL;
+	m_writeFinish = false;
 }
 
 clientSocket::~clientSocket()
@@ -24,13 +24,14 @@ clientSocket::clientSocket(const clientSocket& copy)
 clientSocket&
 clientSocket::operator=(const clientSocket& copy)
 {
-	m_method = copy.m_method;
-	m_conf = copy.m_conf;
 	m_SocketAddr = copy.m_SocketAddr;
 	m_SocketAddrSize = copy.m_SocketAddrSize;
+	m_conf = copy.m_conf;
 	m_SocketFd = copy.m_SocketFd;
-	m_sentSize = 0;
 	m_responsePtr = NULL;
+	m_method = copy.m_method;
+	m_sentSize = 0;
+	m_readFinish = false;
 	m_writeFinish = false;
 	return (*this);
 }
@@ -56,6 +57,7 @@ clientSocket::readSock(std::fstream& logFile, int msgSize)
 	char*	buffer;
 	int		requestStatus;
 
+	m_readFinish = false;
 	logFile << "message size : " << msgSize << std::endl;
 	buffer = new char[msgSize];
 	std::memset(buffer, 0, msgSize);

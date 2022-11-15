@@ -1,6 +1,5 @@
 #include "postMethod.hpp"
 #include "../cgi/cgi.hpp"
-#include <unistd.h>
 
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -27,6 +26,7 @@ postMethod::loadRequest(const std::string &readLine)
 		if (m_crlfCnt == 1)
 		{
 			this->uriParse();
+			isCgiExt();
 			getBodyType();
 		}
 		return ;
@@ -133,7 +133,6 @@ postMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 2)
 	{
-		std::cout << "cgi fin" << std::endl;
 		if (m_cgi != NULL)
 		{
 			m_cgi->closeCgi(READ);
@@ -200,12 +199,6 @@ postMethod::uriParse(void)
 	uri = m_uri;
 	this->filePathParse(uri);
 	m_statusCode = 200;
-	if (m_fileExt == ".bla")
-	{
-		m_cgi = new cgi;
-		m_cgi->initCgi(this);
-		m_cgi->runCgi();
-	}
 }
 
 void postMethod::doMethodWork(void)
@@ -257,4 +250,17 @@ postMethod::filePathParse(std::string uri)
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
+}
+
+bool
+postMethod::isCgiExt(void)
+{
+	if (m_fileExt.size() && m_location->locCgiExt == m_fileExt)
+	{
+		m_cgi = new cgi;
+		m_cgi->initCgi(this);
+		m_cgi->runCgi();
+		return (true);
+	}
+	return (false);
 }

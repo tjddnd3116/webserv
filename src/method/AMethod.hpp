@@ -24,7 +24,7 @@ class AMethod
 		std::string						m_uri;
 		std::string						m_httpVersion;
 		std::string						s;
-		std::string						m_body;
+		// std::string						m_body;
 		requestMap						m_requestSet;
 		configInfo						m_conf;
 		int								m_statusCode;
@@ -79,5 +79,6 @@ class AMethod
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
 		const std::string&				getFileExt(void) const;
+		int								getCrlfCnt(void) const;
 };
 #endif //AMethod_hpp

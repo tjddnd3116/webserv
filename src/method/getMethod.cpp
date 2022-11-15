@@ -84,7 +84,6 @@ void getMethod::doMethodWork(void)
 	std::vector<std::string> limitExcept;
 
 	limitExcept = m_location->locLimitExpect;
-	std::cout << m_filePath << std::endl;
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
