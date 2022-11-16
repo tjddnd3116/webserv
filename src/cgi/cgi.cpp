@@ -44,7 +44,6 @@ cgi::initCgi(const AMethod *method)
         m_path = uri;
     }
 
-    std::string body_buffer = "";
     std::string CONTENT_LENGTH = "CONTENT_LENGTH=";
     std::string CONTENT_TYPE = "CONTENT_TYPE=";
     std::map<std::string, std::vector<std::string> >::const_iterator contentIt;
@@ -67,10 +66,10 @@ cgi::initCgi(const AMethod *method)
         //type.erase(type.end() - 1, type.end()); // 캐리지리턴 삭제
     	HTTP_X_SECRET_HEADER_FOR_TEST += "HTTP_X_SECRET_HEADER_FOR_TEST=" + type;
     }
-    //if (method->getMethod() == "POST" && method->getBodySize() != -1)
-    //{
-    //    CONTENT_LENGTH += std::to_string(method->getBodySize());
-    //}
+    if (method->getMethod() == "POST" && method->getBodySize() != -1)
+    {
+        CONTENT_LENGTH += std::to_string(method->getBodySize());
+    }
     std::string REDIRECT_STATUS = "REDIRECT_STATUS=200"; // php-cgi direct exec
     std::string SERVER_PROTOCOL = "SERVER_PROTOCOL=HTTP/1.1"; // different GET POST
     std::string GATEWAY_INTERFACE = "GATEWAY_INTERFACE=CGI/1.1";
@@ -209,8 +208,11 @@ cgi::runCgi(void)
         execve(m_cgiPath.c_str(), NULL, &m_envChar[0]);
 		throw std::runtime_error("ERROR: execve fail");
 	}
-	close(m_fromCgiToServer[WRITE]);
-	close(m_fromServerToCgi[READ]);
+	else
+    {
+		close(m_fromCgiToServer[WRITE]);
+		close(m_fromServerToCgi[READ]);
+	}
 }
 
 void	 cgi::closeCgi(int pipeEnd)
@@ -276,7 +278,6 @@ cgi::readCgi()
 	}
 	while (body.size() == 0);
 	return (body);
-
 }
 
 ssize_t	cgi::writeCgi(const void* buf, size_t size)

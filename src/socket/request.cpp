@@ -34,7 +34,6 @@ request::readRequest(const std::string& request)
 		curPos = m_buffer.find("\n", prePos);
 	}
 	readLine = m_buffer.substr(prePos, m_buffer.size() - prePos);
-	std::cout << readLine << std::endl;
 	m_method->loadRequest(readLine);
 	m_buffer.clear();
 	m_buffer += readLine;

@@ -109,12 +109,15 @@ postMethod::loadBody(const std::string& readLine)
 					return;
 				m_testcnt++;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
+				m_cgi->closeCgi(WRITE);
 				m_bodyBuffer += m_cgi->readCgi();
 				m_tempBuffer.clear();
 				if (m_bodyType == "chunked")
 					m_bodySize = -1;
 				else
-					m_crlfCnt += 1;
+				{
+					m_crlfCnt = 2;
+				}
 				m_readLineSize = 0;
 			}
 		}
@@ -170,6 +173,7 @@ void postMethod::logMethodInfo(std::fstream& logFile) const
 		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
 			logFile << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
+	logFile << "-------------------------" << RESET << std::endl;
 	// logFile << "-------body--------" << std::endl;
 	// logFile << m_bodyBuffer << std::endl;
 	// logFile << "-------------------------" << RESET << std::endl;
