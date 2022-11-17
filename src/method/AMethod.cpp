@@ -1,4 +1,5 @@
 #include "AMethod.hpp"
+#include <dirent.h>
 
 AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 {
@@ -242,4 +243,37 @@ int
 AMethod::getCrlfCnt(void) const
 {
 	return (m_crlfCnt);
+}
+
+void
+AMethod::makeIndexOf(std::string& readBody)
+{
+	DIR*			dirPtr = NULL;
+	struct dirent*	file = NULL;
+
+	if ((dirPtr = opendir(m_filePath.c_str()))==NULL)
+	{
+		std::cout << "opendir error" << std::endl;
+		exit(1);
+	}
+	readBody = "Index of " + m_filePath + "\n";
+	readBody += "--------------------------\n";
+	while ((file = readdir(dirPtr)) != NULL)
+	{
+		readBody += file->d_name;
+		readBody += "\n";
+	}
+	closedir(dirPtr);
+}
+
+configInfo::Location*
+AMethod::getLocation(void) const
+{
+	return (m_location);
+}
+
+const std::string&
+AMethod::getBodyType(void) const
+{
+	return (m_bodyType);
 }

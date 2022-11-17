@@ -35,7 +35,7 @@ request::readRequest(const std::string& request)
 	}
 	readLine = m_buffer.substr(prePos, m_buffer.size() - prePos);
 	m_buffer.clear();
-	if (m_method && m_method->getCrlfCnt() == 1)
+	if (m_method && m_method->getCrlfCnt() == 1 && m_method->getBodyType() != "chunked")
 		m_method->loadRequest(readLine);
 	else
 		m_buffer += readLine;

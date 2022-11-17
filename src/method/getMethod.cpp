@@ -2,7 +2,9 @@
 
 getMethod::getMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
-{}
+{
+	m_isAutoIdx = false;
+}
 
 getMethod::~getMethod()
 {}
@@ -84,6 +86,8 @@ void getMethod::doMethodWork(void)
 	std::vector<std::string> limitExcept;
 
 	limitExcept = m_location->locLimitExpect;
+	if (m_isAutoIdx)
+		return (makeIndexOf(m_readBody));
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
@@ -122,7 +126,7 @@ getMethod::filePathParse(std::string uri)
 	if (m_location->locAlias != "")
 		root = m_location->locAlias + "/";
 	else
-		root= m_location->locRoot + directoryVec[directoryIdx];
+		root = m_location->locRoot + directoryVec[directoryIdx];
 	indexFile = m_location->locIndex;
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	if (!isTrailingSlash)
@@ -158,7 +162,15 @@ getMethod::filePathParse(std::string uri)
 		fileName = "";
 	}
 	if (fileName == "")
-		fileName = indexFile[0];
+	{
+		if (m_location->locAutoIndex == "on")
+		{
+			root.pop_back();
+			m_isAutoIdx = true;
+		}
+		else
+			fileName = indexFile[0];
+	}
 	extractExt(fileName);
 	m_filePath = root + fileName;
 }

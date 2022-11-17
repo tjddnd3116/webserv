@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include <iostream>
 #include <string>
@@ -24,10 +25,10 @@ class AMethod
 		std::string						m_uri;
 		std::string						m_httpVersion;
 		std::string						s;
-		// std::string						m_body;
 		requestMap						m_requestSet;
 		configInfo						m_conf;
 		int								m_statusCode;
+		std::string						m_bodyType;
 
 		std::string						m_filePath;
 		std::string						m_queryString;
@@ -46,6 +47,7 @@ class AMethod
 		bool						getTrailingSlash(const std::string& uri);
 		void						readFile(std::string& readBody);
 		void						writeFile(std::string& bodyBuffer);
+		void						makeIndexOf(std::string& readBody);
 
 	public:
 		// constructor & destructor
@@ -80,5 +82,7 @@ class AMethod
 		const std::string&				getQueryString(void) const;
 		const std::string&				getFileExt(void) const;
 		int								getCrlfCnt(void) const;
+		configInfo::Location*			getLocation(void) const;
+		const std::string&				getBodyType(void) const;
 };
 #endif //AMethod_hpp

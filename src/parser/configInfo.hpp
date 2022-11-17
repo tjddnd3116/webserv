@@ -27,6 +27,7 @@ class configInfo
 			std::string					locCgiPass;
 			std::string					locAlias;
 			std::string					locCgiExt;
+			std::string					locAutoIndex;
 			int32_t						clientMaxBodySize;
 		};
 
@@ -82,6 +83,7 @@ class configInfo
 		void		setLocationAlias(std::vector<std::string>& set);
 		void		setLocationClientMaxBodySize(std::vector<std::string>& set);
 		void		setLocationCgiExt(std::vector<std::string>& set);
+		void		setLocationAutoIdx(std::vector<std::string>& set);
 
 
 		// getter

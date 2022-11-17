@@ -7,6 +7,7 @@ class getMethod : public AMethod
 {
 	private:
 		std::string		m_readBody;
+		bool			m_isAutoIdx;
 
 	public:
 		getMethod(const std::string& readLine, const configInfo& conf);
