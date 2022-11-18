@@ -3,6 +3,7 @@
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "../cgi/cgi.hpp"
 
 AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 {
@@ -13,6 +14,8 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	m_uri = "";
 	m_httpVersion = "";
 	m_crlfCnt = 0;
+	m_cgi = NULL;
+	m_bodySize = -1;
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
@@ -58,6 +61,18 @@ AMethod::getUri(void) const
 	return (m_uri);
 }
 
+const std::string&
+AMethod::getCgiPath(void) const
+{
+	return (m_cgiPath);
+}
+
+const std::string&
+AMethod::getCgiExt(void) const
+{
+	return (m_cgiExt);
+}
+
 const configInfo&
 AMethod::getConfig(void) const
 {
@@ -74,6 +89,12 @@ const std::string&
 AMethod::getBody(void) const
 {
 	return s;
+}
+
+const int32_t&
+AMethod::getBodySize(void) const
+{
+	return m_bodySize;
 }
 
 const std::map<std::string, std::vector<std::string> >&
@@ -218,7 +239,7 @@ AMethod::filePathParse(std::string uri)
 	isTrailingSlash = getTrailingSlash(uri);
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	if (!isTrailingSlash)
 	{
@@ -237,7 +258,7 @@ AMethod::filePathParse(std::string uri)
 			directoryIdx = m_conf.isLocationBlock(directoryVec);
 			if (directoryIdx != 0)
 			{
-				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
+				m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
 				fileName = uri.substr(directoryVec[directoryIdx].size());
 			}
 		}
@@ -304,7 +325,7 @@ AMethod::putFilePathParse(std::string uri)
 
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
@@ -322,9 +343,20 @@ AMethod::postFilePathParse(std::string uri)
 	directoryParse(uri, directoryVec);
 	directoryIdx = m_conf.isLocationBlock(directoryVec);
 //	m_conf.__findLocation(uri, this);
-	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize);
+	m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
-	std::cout << m_filePath << std::endl;
+	//std::cout << m_filePath << std::endl;
+}
+
+void
+AMethod::launchCgi(void)
+{
+	if (m_fileExt != "" && m_fileExt == m_cgiExt)
+	{
+		m_cgi = new cgi;
+		m_cgi->initCgi(this);
+		m_cgi->runCgi();
+	}
 }

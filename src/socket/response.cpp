@@ -9,6 +9,7 @@ response::response(const configInfo& conf)
 	m_isCgi = 0;
 	m_method = NULL;
 	m_responseBuf.clear();
+	m_newBody.clear();
 }
 
 response::~response()
@@ -38,11 +39,16 @@ response::makeBody(void)
 	readBody = m_method->getReadBody();
 	if (m_method->getMethod() == "POST")
 		readBody = m_method->getBody();
-
+	if (readBody.find("Content-type:") != std::string::npos)
+	{
+		readBody = readBody.substr(readBody.find("Content-type:"));
+		readBody = readBody.substr(readBody.find("\n"));
+		readBody.erase(0, readBody.find_first_not_of("\n"));
+	}
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")
-		m_responseBuf += std::to_string(readBodySize - 58) + "\n";
+	if (m_method->getMethod() == "POST" && (m_method->getFileExt() != "" && m_method->getFileExt() == m_method->getCgiExt()))
+		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	else
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
@@ -62,6 +68,7 @@ response::parseBody()
 		m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
 		m_type = m_newBody.substr(0, m_newBody.find("\n"));
 		m_newBody = m_newBody.substr(m_newBody.find("\n"));
+		m_newBody.erase(0, m_newBody.find_first_not_of("\n"));
 		return ;
 	}
 	m_type = "Content-type: ";
@@ -92,7 +99,7 @@ response::checkIsCgi()
 
 	fileExt = m_method->getFileExt();
 	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
-	if (fileExt == ".bla")
+	if (fileExt == m_method->getCgiExt())
 		return (1);
 	else
 	 	return (0);
@@ -120,6 +127,7 @@ response::makeResponse(const AMethod* method)
 	// else
 	//     parseBody();
 	// makeEntityHeader();
+	parseBody();
 	makeBody();
 }
 

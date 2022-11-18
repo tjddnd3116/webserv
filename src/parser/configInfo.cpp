@@ -417,7 +417,9 @@ configInfo::findLocation(const std::string& locationPath,
 						 std::string& rootPath,
 						 std::vector<std::string>& indexFile,
 						 std::vector<std::string>& limitExcept,
-						 int&						maxBodySize)
+						 int&						maxBodySize,
+						 std::string& cgiPath,
+						 std::string& cgiExt)
 {
 	std::map<std::string, Location>::iterator mapIt;
 
@@ -429,6 +431,8 @@ configInfo::findLocation(const std::string& locationPath,
 	indexFile = mapIt->second.locIndex;
 	limitExcept = mapIt->second.locLimitExpect;
 	maxBodySize = mapIt->second.clientMaxBodySize;
+	cgiPath = mapIt->second.locCgiPass;
+	cgiExt = mapIt->second.locCgiExt;
 }
 
 void

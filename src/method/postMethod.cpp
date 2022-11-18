@@ -26,8 +26,9 @@ postMethod::loadRequest(const std::string &readLine)
 		m_crlfCnt++;
 		if (m_crlfCnt == 1)
 		{
-			this->uriParse();
 			getBodyType();
+			this->uriParse();
+			launchCgi();
 		}
 		return ;
 	}
@@ -48,7 +49,7 @@ postMethod::getBody(void) const
 void
 postMethod::loadBody(const std::string& readLine)
 {
-	if (m_fileExt != ".bla")
+	if (m_fileExt == "" || m_fileExt != m_cgiExt)
 	{
 		if (m_bodyType == "size")
 		{
@@ -104,13 +105,19 @@ postMethod::loadBody(const std::string& readLine)
 			}
 			if (m_bodySize == m_readLineSize)
 			{
-				if (m_bodySize < 4097)
+				if (m_bodySize < 4097 && m_fileExt == ".bla")
 					return;
 				m_testcnt++;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
+				m_cgi->closeCgi(WRITE);
 				m_bodyBuffer += m_cgi->readCgi();
 				m_tempBuffer.clear();
-				m_bodySize = -1;
+				if (m_bodyType == "chunked")
+					m_bodySize = -1;
+				else
+				{
+					m_crlfCnt = 2;
+				}
 				m_readLineSize = 0;
 			}
 		}
@@ -166,6 +173,7 @@ void postMethod::logMethodInfo(std::fstream& logFile) const
 		for (size_t setIdx = 0; setIdx < mapIt->second.size(); setIdx++)
 			logFile << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
+	logFile << "-------------------------" << RESET << std::endl;
 	// logFile << "-------body--------" << std::endl;
 	// logFile << m_bodyBuffer << std::endl;
 	// logFile << "-------------------------" << RESET << std::endl;
@@ -176,7 +184,7 @@ postMethod::getBodyType(void)
 {
 	std::map<std::string, std::vector<std::string> >::iterator mapIt;
 
-	mapIt = m_requestSet.find("content-length");
+	mapIt = m_requestSet.find("Content-Length");
 	if (mapIt != m_requestSet.end())
 	{
 		m_bodySize = std::stoi(mapIt->second[0]);
@@ -200,12 +208,6 @@ postMethod::uriParse(void)
 	uri = m_uri;
 	postFilePathParse(uri);
 	m_statusCode = 200;
-	if (m_fileExt == ".bla")
-	{
-		m_cgi = new cgi;
-		m_cgi->initCgi(this);
-		m_cgi->runCgi();
-	}
 }
 
 void postMethod::doMethodWork(void)

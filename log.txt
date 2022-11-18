@@ -1,0 +1,759 @@
+------configInfo-----
+server block
+root : /Users/gson/webserv/html
+index : index.html
+server_name : localhost
+listen : 1000
+uri buffer size : 3072
+client_max_body_size : 100
+error_code : 500 502 405 404
+error_Path : /Users/gson/webserv/html/error/*.html
+
+location block[1]
+path : /42/
+root : html
+clientMaxBodySize :-1
+limit_except : GET POST
+
+location block[2]
+path : /bluprint/
+root : html
+clientMaxBodySize :-1
+limit_except : GET DELETE
+
+location block[3]
+path : /php/
+root : html
+pass :/Users/gson/webserv/cgi-bin/php-cgi
+clientMaxBodySize :-1
+limit_except : GET POST DELETE
+
+location block[4]
+path : /test/
+root : html
+pass :/Users/gson/webserv/cgi-bin/php-cgi
+clientMaxBodySize :-1
+limit_except : GET POST DELETE
+
+location block[5]
+path : /
+root : /Users/gson/webserv/html
+clientMaxBodySize :-1
+limit_except : GET
+---------------------
+all server socket created, server socket count : 1
+
+---waiting event---
+new events count : 1
+new event fd : 5
+[read] event occured
+client socket[6] created, server read finish now client socket size : 1
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 767
+[31m---- request message -----
+method :
+	GET
+uri :
+	/test/form.html
+http version : 
+	HTTP/1.1
+Accept :
+	text/html
+	application/xhtml+xml
+	application/xml;q=0.9
+	image/avif
+	image/webp
+	image/apng
+	*/*;q=0.8
+	application/signed-exchange;v=b3;q=0.9
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Sec-Fetch-Dest :
+	document
+Sec-Fetch-Mode :
+	navigate
+Sec-Fetch-Site :
+	none
+Sec-Fetch-User :
+	?1
+Upgrade-Insecure-Requests :
+	1
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:27 KST
+Connection: Keep-Alive
+Content-Length: 1120
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Webserv Form</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <div>
+      <div style="background-color: #000; display: flex;">
+        <img style="margin: auto;"" src="/bluprint/testimonial_enhanced.png" />
+      </div>
+      <form action="./form.php" method="POST">
+        <div>
+          <label for="name">What's your name</label>
+          <input name="name" id="name">
+        </div>
+        <div>
+          <label for="email">What's your email address</label>
+          <input name="email" id="email">
+        </div>
+        <div>
+          <label for="one">number 1 : </label>
+          <input name="one" id="one">
+        </div>
+        <div>
+          <label for="two">number 2 : </label>
+          <input name="two" id="two">
+        </div>
+          <button>Submit</button>
+        </div>
+        </form>
+  </div>
+</main>
+</body>
+</html>
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 715
+[31m---- request message -----
+method :
+	GET
+uri :
+	/bluprint/testimonial_enhanced.png
+http version : 
+	HTTP/1.1
+Accept :
+	image/avif
+	image/webp
+	image/apng
+	image/svg+xml
+	image/*
+	*/*;q=0.8
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Referer :
+	http://localhost:1000/test/form.html
+Sec-Fetch-Dest :
+	image
+Sec-Fetch-Mode :
+	no-cors
+Sec-Fetch-Site :
+	same-origin
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:27 KST
+Connection: Keep-Alive
+Content-Length: 12500
+
+‰PNG
+
+
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 793
+[31m---- request message -----
+method :
+	GET
+uri :
+	/test/form.html
+http version : 
+	HTTP/1.1
+Accept :
+	text/html
+	application/xhtml+xml
+	application/xml;q=0.9
+	image/avif
+	image/webp
+	image/apng
+	*/*;q=0.8
+	application/signed-exchange;v=b3;q=0.9
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Cache-Control :
+	max-age=0
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Sec-Fetch-Dest :
+	document
+Sec-Fetch-Mode :
+	navigate
+Sec-Fetch-Site :
+	none
+Sec-Fetch-User :
+	?1
+Upgrade-Insecure-Requests :
+	1
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:29 KST
+Connection: Keep-Alive
+Content-Length: 1120
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Webserv Form</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <div>
+      <div style="background-color: #000; display: flex;">
+        <img style="margin: auto;"" src="/bluprint/testimonial_enhanced.png" />
+      </div>
+      <form action="./form.php" method="POST">
+        <div>
+          <label for="name">What's your name</label>
+          <input name="name" id="name">
+        </div>
+        <div>
+          <label for="email">What's your email address</label>
+          <input name="email" id="email">
+        </div>
+        <div>
+          <label for="one">number 1 : </label>
+          <input name="one" id="one">
+        </div>
+        <div>
+          <label for="two">number 2 : </label>
+          <input name="two" id="two">
+        </div>
+          <button>Submit</button>
+        </div>
+        </form>
+  </div>
+</main>
+</body>
+</html>
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 715
+[31m---- request message -----
+method :
+	GET
+uri :
+	/bluprint/testimonial_enhanced.png
+http version : 
+	HTTP/1.1
+Accept :
+	image/avif
+	image/webp
+	image/apng
+	image/svg+xml
+	image/*
+	*/*;q=0.8
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Referer :
+	http://localhost:1000/test/form.html
+Sec-Fetch-Dest :
+	image
+Sec-Fetch-Mode :
+	no-cors
+Sec-Fetch-Site :
+	same-origin
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:29 KST
+Connection: Keep-Alive
+Content-Length: 12500
+
+‰PNG
+
+
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 693
+[31m---- request message -----
+method :
+	GET
+uri :
+	/favicon.ico
+http version : 
+	HTTP/1.1
+Accept :
+	image/avif
+	image/webp
+	image/apng
+	image/svg+xml
+	image/*
+	*/*;q=0.8
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Referer :
+	http://localhost:1000/test/form.html
+Sec-Fetch-Dest :
+	image
+Sec-Fetch-Mode :
+	no-cors
+Sec-Fetch-Site :
+	same-origin
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:29 KST
+Connection: Keep-Alive
+Content-Length: 1150
+
+
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 983
+[31m---- request message -----
+method :
+	POST
+uri :
+	/test/form.php
+http version : 
+	HTTP/1.1
+Accept :
+	text/html
+	application/xhtml+xml
+	application/xml;q=0.9
+	image/avif
+	image/webp
+	image/apng
+	*/*;q=0.8
+	application/signed-exchange;v=b3;q=0.9
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Cache-Control :
+	max-age=0
+Connection :
+	keep-alive
+Content-Length :
+	36
+Content-Type :
+	application/x-www-form-urlencoded
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Origin :
+	http://localhost:1000
+Referer :
+	http://localhost:1000/test/form.html
+Sec-Fetch-Dest :
+	document
+Sec-Fetch-Mode :
+	navigate
+Sec-Fetch-Site :
+	same-origin
+Sec-Fetch-User :
+	?1
+Upgrade-Insecure-Requests :
+	1
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:41 KST
+Connection: Keep-Alive
+Content-Length: 443
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Webserv Form</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <div>
+    <h2>
+    Welcome test<br>
+    Your email address is: test<br>
+    The sum of your numbers is 
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 983
+[31m---- request message -----
+method :
+	POST
+uri :
+	/test/form.php
+http version : 
+	HTTP/1.1
+Accept :
+	text/html
+	application/xhtml+xml
+	application/xml;q=0.9
+	image/avif
+	image/webp
+	image/apng
+	*/*;q=0.8
+	application/signed-exchange;v=b3;q=0.9
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Cache-Control :
+	max-age=0
+Connection :
+	keep-alive
+Content-Length :
+	36
+Content-Type :
+	application/x-www-form-urlencoded
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Origin :
+	http://localhost:1000
+Referer :
+	http://localhost:1000/test/form.html
+Sec-Fetch-Dest :
+	document
+Sec-Fetch-Mode :
+	navigate
+Sec-Fetch-Site :
+	same-origin
+Sec-Fetch-User :
+	?1
+Upgrade-Insecure-Requests :
+	1
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:58 KST
+Connection: Keep-Alive
+Content-Length: 626
+
+
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Webserv Form</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+<body>
+<main class="container">
+  <div>
+    <h2>
+    Welcome test<br>
+    Your email address is: test<br>
+    The sum of your numbers is 900<br>
+    /Users/gson/webserv/html/test/form.php 
+    name=test&email=test&one=1&two=2
+  </h2>
+    <a class="button-line" href="/">Go back Home</a>
+  </div>
+</main>
+</body>
+</html>
+
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[read] event occured
+message size : 692
+[31m---- request message -----
+method :
+	GET
+uri :
+	/favicon.ico
+http version : 
+	HTTP/1.1
+Accept :
+	image/avif
+	image/webp
+	image/apng
+	image/svg+xml
+	image/*
+	*/*;q=0.8
+Accept-Encoding :
+	gzip
+	 deflate
+	 br
+Accept-Language :
+	en-US
+	en;q=0.9
+Connection :
+	keep-alive
+Cookie :
+	wp-settings-time-1=1664323155; wp-settings-1=libraryContent%3Dbrowse%26mfold%3Do
+Host :
+	localhost:1000
+Referer :
+	http://localhost:1000/test/form.php
+Sec-Fetch-Dest :
+	image
+Sec-Fetch-Mode :
+	no-cors
+Sec-Fetch-Site :
+	same-origin
+User-Agent :
+	Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML
+	 like Gecko) Chrome/106.0.0.0 Safari/537.36
+sec-ch-ua :
+	"Chromium";v="106"
+	 "Google Chrome";v="106"
+	 "Not;A=Brand";v="99"
+sec-ch-ua-mobile :
+	?0
+sec-ch-ua-platform :
+	"macOS"
+-------------------------[0m
+client read finish
+
+---waiting event---
+new events count : 1
+new event fd : 6
+[write] event occured
+[34m-----------response----------------
+HTTP/1.1 200 OK
+Server: localhost
+Date: Wed, 16 Nov 2022 19:26:58 KST
+Connection: Keep-Alive
+Content-Length: 1150
+
+
+-------------------------------[0m
+INFO: send finished on socket = 6
+
+---waiting event---

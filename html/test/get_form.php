@@ -17,7 +17,6 @@
       echo $sum;
     ?><br>
     <?php echo $_SERVER['SCRIPT_FILENAME'] ?>
-    name=test&email=test&one=1&two=2
   </h2>
     <a class="button-line" href="/">Go back Home</a>
   </div>

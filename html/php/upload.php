@@ -11,7 +11,7 @@
 <main class="container">
   <div class="cc">
     <?php
-      $target_dir = "/Users/gson/webserv_cgi/html/uploads/";
+      $target_dir = "/Users/gson/webserv/html/uploads/";
       $target_file = $target_dir.basename($_FILES['fileToUpload']['name']);
       if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $target_file))
       {
