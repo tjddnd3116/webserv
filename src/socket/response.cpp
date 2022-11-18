@@ -113,8 +113,8 @@ response::makeResponse(const AMethod* method)
 	// {}
 	// else
 	//     parseBody();
-	// makeEntityHeader();
 	parseBody();
+	//makeEntityHeader();
 	makeBody();
 }
 
