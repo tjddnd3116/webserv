@@ -9,7 +9,6 @@ class putMethod : public AMethod
 		std::string	m_bodyBuffer;
 		std::string	m_readBody;
 		int32_t		m_readLineSize;
-		int32_t		m_bodySize;
 
 	public:
 		putMethod(const std::string& readLine, const configInfo& conf);

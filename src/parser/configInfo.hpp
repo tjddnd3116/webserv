@@ -105,11 +105,6 @@ class configInfo
 		void		printServerBlock(std::ostream& os) const;
 		void		printLocationBlock(std::ostream& os, size_t i) const;
 		Location*	findLocation(const std::string& locationPath);
-		void		findLocation(const std::string& locationPath,
-							 std::string& rootPath,
-							 std::vector<std::string>& indexFile,
-							 std::vector<std::string>& limitExcept,
-							 int&						maxBodySize);
 		int			isLocationBlock(const std::vector<std::string>& directoryVec);
 		void		locationVecToMap(void);
 

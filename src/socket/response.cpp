@@ -8,6 +8,7 @@ response::response(const configInfo& conf)
 	m_conf = conf;
 	m_method = NULL;
 	m_responseBuf.clear();
+	m_newBody.clear();
 }
 
 response::~response()
@@ -37,11 +38,16 @@ response::makeBody(void)
 	readBody = m_method->getReadBody();
 	if (m_method->getMethod() == "POST")
 		readBody = m_method->getBody();
-
+	if (readBody.find("Content-type:") != std::string::npos)
+	{
+		readBody = readBody.substr(readBody.find("Content-type:"));
+		readBody = readBody.substr(readBody.find("\n"));
+		readBody.erase(0, readBody.find_first_not_of("\n"));
+	}
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	if (m_method->getMethod() == "POST" && m_method->getFileExt() == ".bla")
-		m_responseBuf += std::to_string(readBodySize - 58) + "\n";
+	if (m_method->getMethod() == "POST" && (m_method->getFileExt() != "" && m_method->getFileExt() == m_method->getCgiExt()))
+		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	else
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 
@@ -96,8 +102,19 @@ response::makeResponse(const AMethod* method)
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
+	// m_isCgi = checkIsCgi();
+	// if (m_isCgi == 1)
+	// {
+	//     defaultCgi.initCgi(m_method);
+	//     m_newBody = defaultCgi.execCgi(m_method);
+	//     std::cout << "new body : " << m_newBody << std::endl;
+	// }
+	// if (method->getMethod() == "POST" && method->getFileExt() == ".bla")
+	// {}
+	// else
+	//     parseBody();
+	// makeEntityHeader();
 	parseBody();
-	makeEntityHeader();
 	makeBody();
 }
 

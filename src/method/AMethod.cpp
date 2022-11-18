@@ -1,7 +1,10 @@
 #include "AMethod.hpp"
-#include "../cgi/cgi.hpp"
 
-#include <dirent.h>
+#include <cctype>
+#include <string>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "../cgi/cgi.hpp"
 
 AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 {
@@ -12,6 +15,7 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	m_queryString = "";
 	m_cgi = NULL;
 	m_isCgi = false;
+	m_bodySize = -1;
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
@@ -57,6 +61,18 @@ AMethod::getUri(void) const
 	return (m_uri);
 }
 
+const std::string&
+AMethod::getCgiPath(void) const
+{
+	return (m_cgiPath);
+}
+
+const std::string&
+AMethod::getCgiExt(void) const
+{
+	return (m_cgiExt);
+}
+
 const configInfo&
 AMethod::getConfig(void) const
 {
@@ -73,6 +89,12 @@ const std::string&
 AMethod::getBody(void) const
 {
 	return s;
+}
+
+const int32_t&
+AMethod::getBodySize(void) const
+{
+	return m_bodySize;
 }
 
 const std::map<std::string, std::vector<std::string> >&
@@ -203,6 +225,55 @@ AMethod::getFileExt(void) const
 	return (m_fileExt);
 }
 
+// void
+// AMethod::filePathParse(std::string uri)
+// {
+//     std::vector<std::string>	directoryVec;
+//     std::vector<std::string>	indexFile;
+//     std::string					fileName;
+//     std::string					root;
+//     bool						isTrailingSlash;
+//     int							directoryIdx;
+//
+//
+//     isTrailingSlash = getTrailingSlash(uri);
+//     directoryParse(uri, directoryVec);
+//     directoryIdx = m_conf.isLocationBlock(directoryVec);
+//     m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
+//     fileName = uri.substr(directoryVec[directoryIdx].size());
+//     if (!isTrailingSlash)
+//     {
+//         if (checkFileExists(root + fileName))
+//         {}
+//         else if (checkDirExists(root + fileName))
+//         {
+//             root = root + fileName + "/";
+//             fileName = "";
+//         }
+//         else
+//         {
+//             directoryVec.clear();
+//             uri.push_back('/');
+//             directoryParse(uri, directoryVec);
+//             directoryIdx = m_conf.isLocationBlock(directoryVec);
+//             if (directoryIdx != 0)
+//             {
+//                 m_conf.findLocation(directoryVec[directoryIdx], root, indexFile, m_limitExcept, m_maxBodySize, m_cgiPath ,m_cgiExt);
+//                 fileName = uri.substr(directoryVec[directoryIdx].size());
+//             }
+//         }
+//     }
+//     else
+//     {
+//         root = root + fileName;
+//         fileName = "";
+//     }
+//     if (fileName == "")
+//         fileName = indexFile[0];
+//     extractExt(fileName);
+//     m_filePath = root + fileName;
+// }
+
 bool
 AMethod::getTrailingSlash(const std::string& uri)
 {
@@ -299,4 +370,15 @@ bool
 AMethod::getIsCgi(void) const
 {
 	return (m_isCgi);
+}
+
+void
+AMethod::launchCgi(void)
+{
+	if (m_fileExt != "" && m_fileExt == m_cgiExt)
+	{
+		m_cgi = new cgi;
+		m_cgi->initCgi(this);
+		m_cgi->runCgi();
+	}
 }

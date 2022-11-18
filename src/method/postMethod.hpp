@@ -3,14 +3,11 @@
 
 #include "AMethod.hpp"
 
-class cgi;
-
 class postMethod : public AMethod
 {
 	private:
 		std::string		m_bodyBuffer;
 		std::string		m_readBody;
-		int32_t			m_bodySize;
 		int32_t			m_readLineSize;
 
 		std::string		m_tempBuffer;

@@ -16,6 +16,7 @@
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
+class Location;
 class cgi;
 
 class AMethod
@@ -31,14 +32,17 @@ class AMethod
 		configInfo						m_conf;
 		int								m_statusCode;
 		std::string						m_bodyType;
+		cgi*							m_cgi;
+		int32_t							m_bodySize;
 
 		configInfo::Location*			m_location;
 		std::string						m_filePath;
 		std::string						m_queryString;
 		std::string						m_fileExt;
 		int								m_crlfCnt;
-		cgi*							m_cgi;
 		bool							m_isCgi;
+		std::string						m_cgiPath;
+		std::string						m_cgiExt;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 												  const std::string& str = " ");
@@ -76,10 +80,14 @@ class AMethod
 		void							queryStringParse(std::string& uri);
 		void							directoryParse(std::string& uri,
 													   std::vector<std::string>& dirVec);
+		void							launchCgi(void);
 		// getter functions
 		int								getStatusCode(void) const;
 		const std::string&				getMethod(void) const;
 		const std::string&				getUri(void) const;
+		const int32_t&					getBodySize(void) const;
+		const std::string&				getCgiPath(void) const;
+		const std::string&				getCgiExt(void) const;
 		const configInfo&				getConfig(void) const;
 		const std::string&				getHttpVersion(void) const;
 		const requestMap&				getRequestSet(void) const;
