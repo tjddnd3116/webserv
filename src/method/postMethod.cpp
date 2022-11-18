@@ -8,7 +8,6 @@ postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	m_bodySize = -1;
 	m_readBody = "";
 	m_readLineSize = 0;
-	m_cgi = NULL;
 	m_testcnt = 0;
 }
 
@@ -106,7 +105,6 @@ postMethod::loadBody(const std::string& readLine)
 			{
 				if (m_bodySize < 4097)
 					return;
-				m_testcnt++;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
 				m_bodyBuffer += m_cgi->readCgi();
 				m_tempBuffer.clear();
@@ -250,17 +248,4 @@ postMethod::filePathParse(std::string uri)
 	fileName = uri.substr(directoryVec[directoryIdx].size());
 	extractExt(fileName);
 	m_filePath = root + fileName;
-}
-
-bool
-postMethod::isCgiExt(void)
-{
-	if (m_fileExt.size() && m_location->locCgiExt == m_fileExt)
-	{
-		m_cgi = new cgi;
-		m_cgi->initCgi(this);
-		m_cgi->runCgi();
-		return (true);
-	}
-	return (false);
 }

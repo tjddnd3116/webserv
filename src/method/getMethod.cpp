@@ -1,4 +1,6 @@
 #include "getMethod.hpp"
+#include "../cgi/cgi.hpp"
+#include <unistd.h>
 
 getMethod::getMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -42,6 +44,8 @@ getMethod::isMethodCreateFin(void)
 	if (m_crlfCnt == 1)
 	{
 		this->uriParse();
+		if (isCgiExt())
+			m_isCgi = true;
 		return (true);
 	}
 	return (false);
@@ -101,6 +105,15 @@ void getMethod::doMethodWork(void)
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 	}
 	readFile(m_readBody);
+	if (m_cgi)
+	{
+		m_cgi->writeCgi(m_readBody.data(), m_readBody.size());
+		m_cgi->closeCgi(WRITE);
+		m_readBody = m_cgi->readCloseCgi();
+		m_cgi->closeCgi(READ);
+		delete m_cgi;
+		m_cgi = NULL;
+	}
 }
 
 const std::string&

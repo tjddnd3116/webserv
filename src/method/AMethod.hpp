@@ -16,6 +16,8 @@
 #define RED		"\033[31m"
 #define BLUE    "\033[34m"
 
+class cgi;
+
 class AMethod
 {
 	typedef std::map<std::string, std::vector<std::string> > requestMap;
@@ -30,11 +32,13 @@ class AMethod
 		int								m_statusCode;
 		std::string						m_bodyType;
 
+		configInfo::Location*			m_location;
 		std::string						m_filePath;
 		std::string						m_queryString;
 		std::string						m_fileExt;
 		int								m_crlfCnt;
-		configInfo::Location*			m_location;
+		cgi*							m_cgi;
+		bool							m_isCgi;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 												  const std::string& str = " ");
@@ -48,6 +52,7 @@ class AMethod
 		void						readFile(std::string& readBody);
 		void						writeFile(std::string& bodyBuffer);
 		void						makeIndexOf(std::string& readBody);
+		bool						isCgiExt(void);
 
 	public:
 		// constructor & destructor
@@ -84,5 +89,6 @@ class AMethod
 		int								getCrlfCnt(void) const;
 		configInfo::Location*			getLocation(void) const;
 		const std::string&				getBodyType(void) const;
+		bool							getIsCgi(void) const;
 };
 #endif //AMethod_hpp

@@ -1,4 +1,6 @@
 #include "AMethod.hpp"
+#include "../cgi/cgi.hpp"
+
 #include <dirent.h>
 
 AMethod::AMethod(const std::string& readLine, const configInfo& conf)
@@ -8,6 +10,8 @@ AMethod::AMethod(const std::string& readLine, const configInfo& conf)
 	m_statusCode = 0;
 	m_crlfCnt = 0;
 	m_queryString = "";
+	m_cgi = NULL;
+	m_isCgi = false;
 
 	splittedLine = splitReadLine(readLine);
 	m_statusCode = checkStartLine(splittedLine);
@@ -276,4 +280,23 @@ const std::string&
 AMethod::getBodyType(void) const
 {
 	return (m_bodyType);
+}
+
+bool
+AMethod::isCgiExt(void)
+{
+	if (m_fileExt.size() && m_location->locCgiExt == m_fileExt)
+	{
+		m_cgi = new cgi;
+		m_cgi->initCgi(this);
+		m_cgi->runCgi();
+		return (true);
+	}
+	return (false);
+}
+
+bool
+AMethod::getIsCgi(void) const
+{
+	return (m_isCgi);
 }

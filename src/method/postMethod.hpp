@@ -9,16 +9,13 @@ class postMethod : public AMethod
 {
 	private:
 		std::string		m_bodyBuffer;
-		// std::string		m_bodyType;
 		std::string		m_readBody;
 		int32_t			m_bodySize;
 		int32_t			m_readLineSize;
-		cgi*			m_cgi;
 
 		std::string		m_tempBuffer;
 		int				m_testcnt;
 
-		bool			isCgiExt(void);
 	public:
 		postMethod(const std::string& method, const configInfo& conf);
 		~postMethod();

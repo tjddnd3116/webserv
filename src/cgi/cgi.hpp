@@ -36,5 +36,6 @@ class cgi
 		ssize_t		writeCgi(const void* buf, size_t size);
 		void		closeCgi(int pipeEnd);
 		std::string readCgi(void);
+		std::string	readCloseCgi(void);
 };
 #endif //cgi_hpp
