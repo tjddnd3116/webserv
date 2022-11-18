@@ -432,29 +432,6 @@ configInfo::findLocation(const std::string& locationPath)
 }
 
 void
-configInfo::findLocation(const std::string& locationPath,
-						 std::string& rootPath,
-						 std::vector<std::string>& indexFile,
-						 std::vector<std::string>& limitExcept,
-						 int&						maxBodySize,
-						 std::string& cgiPath,
-						 std::string& cgiExt)
-{
-	std::map<std::string, Location>::iterator mapIt;
-
-	mapIt = m_mapLocation.find(locationPath);
-	if (mapIt->second.locAlias != "")
-		rootPath = mapIt->second.locAlias + "/";
-	else
-		rootPath = mapIt->second.locRoot + locationPath;
-	indexFile = mapIt->second.locIndex;
-	limitExcept = mapIt->second.locLimitExpect;
-	maxBodySize = mapIt->second.clientMaxBodySize;
-	cgiPath = mapIt->second.locCgiPass;
-	cgiExt = mapIt->second.locCgiExt;
-}
-
-void
 configInfo::createDefaultLocation(void)
 {
 	Location defaultLocaiton("/");

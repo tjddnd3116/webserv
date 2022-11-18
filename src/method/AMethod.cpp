@@ -375,7 +375,7 @@ AMethod::getIsCgi(void) const
 void
 AMethod::launchCgi(void)
 {
-	if (m_fileExt != "" && m_fileExt == m_cgiExt)
+	if (m_fileExt.size() && m_location->locCgiExt == m_fileExt)
 	{
 		m_cgi = new cgi;
 		m_cgi->initCgi(this);

@@ -47,7 +47,7 @@ postMethod::getBody(void) const
 void
 postMethod::loadBody(const std::string& readLine)
 {
-	if (m_fileExt == "" || m_fileExt != m_cgiExt)
+	if (m_fileExt == "" || m_location->locCgiExt != m_fileExt)
 	{
 		if (m_bodyType == "size")
 		{
@@ -107,7 +107,7 @@ postMethod::loadBody(const std::string& readLine)
 					return;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
 				m_cgi->closeCgi(WRITE);
-				m_bodyBuffer += m_cgi->readCgi();
+				m_bodyBuffer += m_cgi->readCloseCgi();
 				m_tempBuffer.clear();
 				if (m_bodyType == "chunked")
 					m_bodySize = -1;
