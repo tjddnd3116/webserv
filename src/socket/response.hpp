@@ -18,9 +18,7 @@ class response
 		std::string			m_type;
 		const AMethod*		m_method;
 		configInfo			m_conf;
-		int					m_isCgi;
 
-		int 				checkIsCgi(void);
 		void				makeStatusLine(void);
 		void				makeResponseHeader(void);
 		void				makeEntityHeader(void);

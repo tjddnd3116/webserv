@@ -23,12 +23,12 @@ class server
 		std::vector<configInfo>		m_conf;
 		std::fstream&				m_logFile;
 
-		std::map<int, serverSocket>	m_serverSock;
-		std::map<int, clientSocket>	m_clientSock;
 		std::vector<struct kevent>	m_changeList;
 		struct kevent				m_eventList[EVENT_SIZE];
 		int							m_kq;
-		size_t						m_serverSize;
+
+		std::map<int, serverSocket>	m_serverSock;
+		std::map<int, clientSocket>	m_clientSock;
 
 		// private memeber functions
 
@@ -39,10 +39,12 @@ class server
 		int		waitEvent(void);
 		// event 발생시 event의 종류확인, 해당 event 처리와 예외상황 발생시 throw
 		void	communicateSock(int newEvents);
+		// read event 발생시 처리
 		int		readEvent(struct kevent* curEvent);
+		// write event 발생시 처리
 		void	writeEvent(struct kevent* curEvent);
 		// 해당 fd의 socket disconnect
-		void	disconnectClient(int fd);
+		void	disconnectClientSocket(int fd);
 		// 해당 fd가 server socket인지 판별
 		bool	isServerSocket(int fd);
 		// 해당 fd가 client socket인지 판별

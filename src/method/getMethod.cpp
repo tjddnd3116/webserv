@@ -1,8 +1,12 @@
 #include "getMethod.hpp"
+#include "../cgi/cgi.hpp"
+#include <unistd.h>
 
 getMethod::getMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
-{}
+{
+	m_isAutoIdx = false;
+}
 
 getMethod::~getMethod()
 {}
@@ -40,6 +44,8 @@ getMethod::isMethodCreateFin(void)
 	if (m_crlfCnt == 1)
 	{
 		this->uriParse();
+		if (isCgiExt())
+			m_isCgi = true;
 		return (true);
 	}
 	return (false);
@@ -81,25 +87,103 @@ getMethod::uriParse(void)
 
 void getMethod::doMethodWork(void)
 {
+	std::vector<std::string> limitExcept;
+
+	limitExcept = m_location->locLimitExpect;
+	if (m_isAutoIdx)
+		return (makeIndexOf(m_readBody));
 	if (!checkFileExists(m_filePath))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 404;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 	}
-	if (!this->checkMethodLimit(m_limitExcept))
+	if (!this->checkMethodLimit(limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
 		m_filePath.replace(m_filePath.find('*'), 1, std::to_string(m_statusCode));
 	}
-	// TODO
-	// need error control
 	readFile(m_readBody);
+	if (m_cgi)
+	{
+		m_cgi->writeCgi(m_readBody.data(), m_readBody.size());
+		m_cgi->closeCgi(WRITE);
+		m_readBody = m_cgi->readCloseCgi();
+		m_cgi->closeCgi(READ);
+		delete m_cgi;
+		m_cgi = NULL;
+	}
 }
 
 const std::string&
 getMethod::getReadBody(void) const
 {
 	return (m_readBody);
+}
+
+void
+getMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::vector<std::string>	indexFile;
+	std::string					fileName;
+	std::string					root;
+	bool						isTrailingSlash;
+	int							directoryIdx;
+
+	isTrailingSlash = getTrailingSlash(uri);
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+	if (m_location->locAlias != "")
+		root = m_location->locAlias + "/";
+	else
+		root = m_location->locRoot + directoryVec[directoryIdx];
+	indexFile = m_location->locIndex;
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	if (!isTrailingSlash)
+	{
+		if (checkFileExists(root + fileName))
+		{}
+		else if (checkDirExists(root + fileName))
+		{
+			root = root + fileName + "/";
+			fileName = "";
+		}
+		else
+		{
+			directoryVec.clear();
+			uri.push_back('/');
+			directoryParse(uri, directoryVec);
+			directoryIdx = m_conf.isLocationBlock(directoryVec);
+			if (directoryIdx != 0)
+			{
+				m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+				if (m_location->locAlias != "")
+					root = m_location->locAlias + "/";
+				else
+					root= m_location->locRoot + directoryVec[directoryIdx];
+				indexFile = m_location->locIndex;
+				fileName = uri.substr(directoryVec[directoryIdx].size());
+			}
+		}
+	}
+	else
+	{
+		root = root + fileName;
+		fileName = "";
+	}
+	if (fileName == "")
+	{
+		if (m_location->locAutoIndex == "on")
+		{
+			root.pop_back();
+			m_isAutoIdx = true;
+		}
+		else
+			fileName = indexFile[0];
+	}
+	extractExt(fileName);
+	m_filePath = root + fileName;
 }

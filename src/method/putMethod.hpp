@@ -7,7 +7,6 @@ class putMethod : public AMethod
 {
 	private:
 		std::string	m_bodyBuffer;
-		std::string m_bodyType;
 		std::string	m_readBody;
 		int32_t		m_readLineSize;
 
@@ -23,6 +22,7 @@ class putMethod : public AMethod
 		virtual void					logMethodInfo(std::fstream& logFile) const;
 		virtual void					uriParse(void);
 		virtual void					doMethodWork(void);
+		virtual void					filePathParse(std::string uri);
 
 		void							loadBody(const std::string& readLine);
 		void							getBodyType(void);

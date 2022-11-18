@@ -24,13 +24,7 @@ cgi::~cgi()
 void
 cgi::initCgi(const AMethod *method)
 {
-    // m_cgiPath = "/Users/gson/webserv/cgi-bin/cgi_tester";
-    // m_cgiPath = "/Users/gson/webserv/cgi-bin/php-cgi";
-	// m_cgiPath = "/Users/gson/webserv/html/php/php-cgi";
-	// m_cgiPath = "/Users/gson/webserv/cgi-bin/cgi_tester";
-    m_cgiPath = method->getCgiPath();
-    // cgi_path = "/Users/gson/Archive/webserv/cgi-bin/a.out";
-
+	m_cgiPath = method->getLocation()->locCgiPass;
     std::string rootPath;
     rootPath = method->getConfig().getRootPath();
     std::string uri = method->getUri();
@@ -280,6 +274,8 @@ cgi::readCgi()
 	return (body);
 }
 
+
+
 ssize_t	cgi::writeCgi(const void* buf, size_t size)
 {
 	return write(m_fromServerToCgi[WRITE], buf, size);
@@ -299,4 +295,20 @@ ssize_t	cgi::writeCgi(const void* buf, size_t size)
 	}
 	return totalWriteBytes;
 	*/
+}
+
+std::string
+cgi::readCloseCgi(void)
+{
+	int			ret = 1;
+	std::string	body;
+	char buf[BUFFER_SIZE] = {0};
+
+	while (ret != 0)
+	{
+		memset(buf, 0, BUFFER_SIZE);
+		ret = read(m_fromCgiToServer[READ], buf, BUFFER_SIZE - 1);
+		body += buf;
+	}
+	return (body);
 }

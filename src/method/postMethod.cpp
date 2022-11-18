@@ -1,6 +1,5 @@
 #include "postMethod.hpp"
 #include "../cgi/cgi.hpp"
-#include <unistd.h>
 
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
@@ -9,7 +8,6 @@ postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	m_bodySize = -1;
 	m_readBody = "";
 	m_readLineSize = 0;
-	m_cgi = NULL;
 	m_testcnt = 0;
 }
 
@@ -107,7 +105,6 @@ postMethod::loadBody(const std::string& readLine)
 			{
 				if (m_bodySize < 4097 && m_fileExt == ".bla")
 					return;
-				m_testcnt++;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
 				m_cgi->closeCgi(WRITE);
 				m_bodyBuffer += m_cgi->readCgi();
@@ -140,7 +137,6 @@ postMethod::isMethodCreateFin(void)
 {
 	if (m_crlfCnt == 2)
 	{
-		std::cout << "cgi fin" << std::endl;
 		if (m_cgi != NULL)
 		{
 			m_cgi->closeCgi(READ);
@@ -206,13 +202,18 @@ postMethod::uriParse(void)
 	std::string	uri;
 
 	uri = m_uri;
-	postFilePathParse(uri);
+	this->filePathParse(uri);
 	m_statusCode = 200;
 }
 
 void postMethod::doMethodWork(void)
 {
-	if (!this->checkMethodLimit(m_limitExcept))
+	std::vector<std::string>	limitExcept;
+	int32_t						maxBodySize;
+
+	limitExcept = m_location->locLimitExpect;
+	maxBodySize = m_location->clientMaxBodySize;
+	if (!this->checkMethodLimit(limitExcept))
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 405;
@@ -220,7 +221,7 @@ void postMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return ;
 	}
-	if (m_maxBodySize != -1 && m_bodyBuffer.size() > (size_t)m_maxBodySize)
+	if (maxBodySize != -1 && m_bodyBuffer.size() > (size_t)maxBodySize)
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 413;
@@ -228,13 +229,30 @@ void postMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return ;
 	}
-	// TODO
-	// need error control
-	// writeFile(m_bodyBuffer);
 }
 
 const std::string&
 postMethod::getReadBody(void) const
 {
 	return (m_readBody);
+}
+
+void
+postMethod::filePathParse(std::string uri)
+{
+	std::vector<std::string>	directoryVec;
+	std::string					root;
+	std::string					fileName;
+	int							directoryIdx;
+
+	directoryParse(uri, directoryVec);
+	directoryIdx = m_conf.isLocationBlock(directoryVec);
+	m_location = m_conf.findLocation(directoryVec[directoryIdx]);
+	if (m_location->locAlias != "")
+		root = m_location->locAlias + "/";
+	else
+		root= m_location->locRoot + directoryVec[directoryIdx];
+	fileName = uri.substr(directoryVec[directoryIdx].size());
+	extractExt(fileName);
+	m_filePath = root + fileName;
 }

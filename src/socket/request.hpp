@@ -22,7 +22,7 @@ class request
 			configInfo	m_conf;
 			std::string	m_buffer;
 
-			// hide copy
+			// hide copy constructor & operator
 			request(const request& copy);
 			request& operator=(const request& copy);
 
@@ -31,14 +31,14 @@ class request
 			request(const configInfo& conf);
 			~request();
 
-			// member function
+			// public member functions
 			AMethod*			methodGenerator(const std::string& readLine);
 			int					readRequest(const std::string& request);
 
-			// getter
+			// getter functions
 			AMethod*			getMethod(void) const;
 
-			// setter
+			// setter functions
 			void				setMethodToNull(void);
 };
 #endif //request_hpp

@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sys/stat.h>
+#include <dirent.h>
 
 #include <iostream>
 #include <string>
@@ -27,20 +28,19 @@ class AMethod
 		std::string						m_uri;
 		std::string						m_httpVersion;
 		std::string						s;
-		std::string						m_body;
 		requestMap						m_requestSet;
 		configInfo						m_conf;
-		Location*						m_locationPtr;
 		int								m_statusCode;
+		std::string						m_bodyType;
 		cgi*							m_cgi;
 		int32_t							m_bodySize;
 
-		std::vector<std::string>		m_limitExcept;
+		configInfo::Location*			m_location;
 		std::string						m_filePath;
 		std::string						m_queryString;
 		std::string						m_fileExt;
-		int								m_maxBodySize;
 		int								m_crlfCnt;
+		bool							m_isCgi;
 		std::string						m_cgiPath;
 		std::string						m_cgiExt;
 
@@ -52,12 +52,11 @@ class AMethod
 		bool						checkDirExists(const std::string& filePath);
 		int							hexToDecimal(const std::string& readLine);
 		void						extractExt(std::string& fileName);
-		void						filePathParse(std::string uri);
-		void						putFilePathParse(std::string uri);
-		void						postFilePathParse(std::string uri);
 		bool						getTrailingSlash(const std::string& uri);
 		void						readFile(std::string& readBody);
 		void						writeFile(std::string& bodyBuffer);
+		void						makeIndexOf(std::string& readBody);
+		bool						isCgiExt(void);
 
 	public:
 		// constructor & destructor
@@ -72,6 +71,7 @@ class AMethod
 		virtual void					uriParse(void) = 0;
 		virtual void					doMethodWork(void) = 0;
 		virtual const std::string&		getReadBody(void) const = 0;
+		virtual void					filePathParse(std::string uri) = 0;
 
 		// public virtual functions
 		virtual const std::string&		getBody(void) const;
@@ -94,5 +94,9 @@ class AMethod
 		const std::string&				getFilePath(void) const;
 		const std::string&				getQueryString(void) const;
 		const std::string&				getFileExt(void) const;
+		int								getCrlfCnt(void) const;
+		configInfo::Location*			getLocation(void) const;
+		const std::string&				getBodyType(void) const;
+		bool							getIsCgi(void) const;
 };
 #endif //AMethod_hpp

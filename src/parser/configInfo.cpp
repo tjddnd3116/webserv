@@ -7,6 +7,7 @@ configInfo::Location::Location(const std::string &path)
 {
 	locPath = path;
 	locRoot = "html";
+	locAutoIndex = "off";
 	clientMaxBodySize = -1;
 	locCgiExt = "";
 	locCgiPass = "";
@@ -17,7 +18,7 @@ configInfo::configInfo()
 {
 	m_serverName.push_back("");
 	m_clientMaxBodySize = -1;
-	m_uriBufferSize = 3 * 1024;
+	m_uriBufferSize = 3000;
 	m_root = "html";
 	m_listen = 80;
 	m_index.push_back("index.html");
@@ -66,6 +67,7 @@ configInfo::setTable()
 	s_table["loc_client_max_body_size"] = &configInfo::setLocationClientMaxBodySize;
 	s_table["loc_alias"] = &configInfo::setLocationAlias;
 	s_table["loc_cgi_ext"] = &configInfo::setLocationCgiExt;
+	s_table["loc_autoindex"] = &configInfo::setLocationAutoIdx;
 }
 
 void
@@ -126,21 +128,19 @@ void
 configInfo::setUriBufferSize(std::vector<std::string>& set)
 {
 	if (set.size() > 1)
-	{
-		m_uriBufferSize = -1;
-		return ;
-	}
-	m_uriBufferSize = std::atoi(set[0].c_str()) * 1024;
+		throw (WsException("invalid uri buffer size"));
+	if (!isNum(set[0]))
+		throw (WsException("invalid uri buffer size"));
+	m_uriBufferSize = std::atoi(set[0].c_str());
 }
 
 void
 configInfo::setClientMaxBodySize(std::vector<std::string>& set)
 {
 	if (set.size() > 1)
-	{
-		m_clientMaxBodySize = -1;
-		return ;
-	}
+		throw (WsException("invalid client max body size"));
+	if (!isNum(set[0]))
+		throw (WsException("invalid client max body size"));
 	m_clientMaxBodySize = std::atoi(set[0].c_str());
 }
 
@@ -194,6 +194,16 @@ configInfo::setLocationCgiExt(std::vector<std::string>& set)
 	if (set.size() != 1)
 		throw (WsException("invalid cgi extension size"));
 	m_location.back().locCgiExt = set[0];
+}
+
+void
+configInfo::setLocationAutoIdx(std::vector<std::string>& set)
+{
+	if (set.size() != 1)
+		throw (WsException("invalid autoindex"));
+	if (set[0] != "on" && set[0] != "off")
+		throw (WsException("invalid autoindex"));
+	m_location.back().locAutoIndex = set[0];
 }
 
 int
@@ -412,6 +422,15 @@ configInfo::printLocationBlock(std::ostream& os, size_t i) const
 	}
 }
 
+configInfo::Location*
+configInfo::findLocation(const std::string& locationPath)
+{
+	std::map<std::string, Location>::iterator mapIt;
+
+	mapIt = m_mapLocation.find(locationPath);
+	return (&mapIt->second);
+}
+
 void
 configInfo::findLocation(const std::string& locationPath,
 						 std::string& rootPath,
@@ -443,6 +462,7 @@ configInfo::createDefaultLocation(void)
 	defaultLocaiton.locRoot = m_root;
 	defaultLocaiton.locIndex = m_index;
 	defaultLocaiton.locLimitExpect.push_back("GET");
+	// defaultLocaiton.locAutoIndex = "on";
 	m_location.push_back(defaultLocaiton);
 }
 
@@ -463,5 +483,7 @@ configInfo::isLocationBlock(const std::vector<std::string>& directoryVec)
 	}
 	return (-1);
 }
+
+
 
 

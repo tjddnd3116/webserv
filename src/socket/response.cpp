@@ -6,7 +6,6 @@ std::map<int, std::string> response::s_statusCode;
 response::response(const configInfo& conf)
 {
 	m_conf = conf;
-	m_isCgi = 0;
 	m_method = NULL;
 	m_responseBuf.clear();
 	m_newBody.clear();
@@ -51,6 +50,7 @@ response::makeBody(void)
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
 	else
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
+
 	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
 	{
 		m_responseBuf += readBody;
@@ -62,15 +62,16 @@ response::parseBody()
 {
 	std::string fileExt;
 
+	if(m_method->getIsCgi())
+		return;
 	fileExt = m_method->getFileExt();
-	if (m_newBody.find("Content-type:") != std::string::npos)
-	{
-		m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
-		m_type = m_newBody.substr(0, m_newBody.find("\n"));
-		m_newBody = m_newBody.substr(m_newBody.find("\n"));
-		m_newBody.erase(0, m_newBody.find_first_not_of("\n"));
-		return ;
-	}
+	// if (m_newBody.find("Content-type:") != std::string::npos)
+	// {
+	//     m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
+	//     m_type = m_newBody.substr(0, m_newBody.find("\n"));
+	//     m_newBody = m_newBody.substr(m_newBody.find("\n"));
+	//     return ;
+	// }
 	m_type = "Content-type: ";
 	if (fileExt == ".png")
 		m_type += "image/png";
@@ -92,24 +93,10 @@ response::parseBody()
 		m_type += "text/html; charset=utf-8";
 }
 
-int
-response::checkIsCgi()
-{
-	std::string fileExt;
-
-	fileExt = m_method->getFileExt();
-	// if (m_fileExt == ".htm" || m_fileExt == ".html" || m_fileExt == ".php")
-	if (fileExt == m_method->getCgiExt())
-		return (1);
-	else
-	 	return (0);
-}
-
 void
 response::makeResponse(const AMethod* method)
 {
 	cgi defaultCgi;
-
 	m_method = method;
 
 	makeStatusLine();
