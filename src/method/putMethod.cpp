@@ -35,11 +35,11 @@ putMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
-const std::string&
-putMethod::getBody(void) const
-{
-	return (m_bodyBuffer);
-}
+// std::string&
+// putMethod::getBody(void)
+// {
+//     return (m_bodyBuffer);
+// }
 
 void
 putMethod::loadBody(const std::string& readLine)
@@ -163,8 +163,8 @@ void putMethod::doMethodWork(void)
 	writeFile(m_bodyBuffer);
 }
 
-const std::string&
-putMethod::getReadBody(void) const
+std::string&
+putMethod::getReadBody(void)
 {
 	return (m_readBody);
 }

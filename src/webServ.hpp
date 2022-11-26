@@ -11,7 +11,7 @@
 #include "WsException.hpp"
 
 #define ERR_LOG_FILE_PATH "/dev/null"
-// #define ERR_LOG_FILE_PATH "/Users/gson/webserv/log.txt"
+// #define ERR_LOG_FILE_PATH "/Users/soum/webserv/log.txt"
 
 class webServ
 {

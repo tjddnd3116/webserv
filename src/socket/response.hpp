@@ -16,7 +16,7 @@ class response
 		std::string			m_responseBuf;
 		std::string			m_newBody;
 		std::string			m_type;
-		const AMethod*		m_method;
+		AMethod*			m_method;
 		configInfo			m_conf;
 
 		void				makeStatusLine(void);
@@ -38,7 +38,7 @@ class response
 
 		static void			setStatusCode(void);
 		void				makeBody(void);
-		void				makeResponse(const AMethod* method);
+		void				makeResponse(AMethod* method);
 		void				makeDate(void);
 		size_t				getBufSize(void) const;
 		const std::string&	operator()(void);

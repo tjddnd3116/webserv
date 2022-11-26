@@ -19,11 +19,9 @@ response::~response()
 void
 response::makeStatusLine(void)
 {
-
 	int statusCode;
 
 	statusCode = m_method->getStatusCode();
-
 	m_responseBuf = "HTTP/1.1 ";
 	m_responseBuf += getStatusCodeStr(statusCode);
 }
@@ -32,29 +30,19 @@ void
 response::makeBody(void)
 {
 	std::string	readLine;
-	std::string	readBody;
 	size_t		readBodySize;
 
-	readBody = m_method->getReadBody();
-	if (m_method->getMethod() == "POST")
-		readBody = m_method->getBody();
-	if (readBody.find("Content-type:") != std::string::npos)
-	{
-		readBody = readBody.substr(readBody.find("Content-type:"));
-		readBody = readBody.substr(readBody.find("\n"));
-		readBody.erase(0, readBody.find_first_not_of("\n"));
-	}
+	std::string& readBody = m_method->getReadBody();
 	readBodySize = readBody.size();
 	m_responseBuf += "Content-Length: ";
-	if (m_method->getMethod() == "POST" && (m_method->getFileExt() != "" && m_method->getFileExt() == m_method->getCgiExt()))
-		m_responseBuf += std::to_string(readBodySize) + "\n\n";
+	if (m_method->getIsCgi())
+	{
+		int crlfPos = readBody.find("\r\n\r\n") + 4;
+		m_responseBuf += std::to_string(readBodySize - crlfPos) + "\n";
+	}
 	else
 		m_responseBuf += std::to_string(readBodySize) + "\n\n";
-
-	if (m_method->getMethod() != "HEAD" || m_method->getMethod() != "PUT")
-	{
-		m_responseBuf += readBody;
-	}
+	m_responseBuf += readBody;
 }
 
 void
@@ -65,40 +53,31 @@ response::parseBody()
 	if(m_method->getIsCgi())
 		return;
 	fileExt = m_method->getFileExt();
-	// if (m_newBody.find("Content-type:") != std::string::npos)
-	// {
-	//     m_newBody = m_newBody.substr(m_newBody.find("Content-type:"));
-	//     m_type = m_newBody.substr(0, m_newBody.find("\n"));
-	//     m_newBody = m_newBody.substr(m_newBody.find("\n"));
-	//     return ;
-	// }
 	m_type = "Content-type: ";
 	if (fileExt == ".png")
-		m_type += "image/png";
+		m_type += "image/png\n";
 	else if (fileExt == ".css")
-		m_type += "text/css";
+		m_type += "text/css\n";
 	else if (fileExt == ".txt")
-		m_type += "text/plain";
+		m_type += "text/plain\n";
 	else if (fileExt == ".jpg" || fileExt == ".jpeg")
-		m_type += "image/Jpeg";
+		m_type += "image/Jpeg\n";
 	else if (fileExt == ".gif")
-		m_type += "image/gif";
+		m_type += "image/gif\n";
 	else if (fileExt == ".webp")
-		m_type += "image/webp";
+		m_type += "image/webp\n";
 	else if (fileExt == ".js")
-		m_type += "text/javascript";
+		m_type += "text/javascript\n";
 	else if (fileExt == ".xml")
-		m_type += "text/xml";
+		m_type += "text/xml\n";
 	else
-		m_type += "text/html; charset=utf-8";
+		m_type += "text/html; charset=utf-8\n";
 }
 
 void
-response::makeResponse(const AMethod* method)
+response::makeResponse(AMethod* method)
 {
-	cgi defaultCgi;
 	m_method = method;
-
 	makeStatusLine();
 	makeResponseHeader();
 	makeGeneralHeader();
@@ -114,7 +93,7 @@ response::makeResponse(const AMethod* method)
 	// else
 	//     parseBody();
 	parseBody();
-	//makeEntityHeader();
+	makeEntityHeader();
 	makeBody();
 }
 
@@ -245,7 +224,7 @@ void response::makeEntityHeader(void)
 	// 동적으로 생성되어 Body의 길이를 모르는 경우에 조금씩 전송이 가능하다.
 	// 각 chunk 마다 그 시작에 16진수 길이를 삽입하여 chunk 길이를 알려준다.
 	// m_responseBuf += "Content-Type: ";
-	m_responseBuf += m_type + "\n";
+	m_responseBuf += m_type;
 	// m_responseBuf += "Content-Disposition: attachment; filename=soum.html";
 	// m_responseBuf += "Content-Disposition: inline\n";
 }

@@ -14,9 +14,8 @@ class putMethod : public AMethod
 		putMethod(const std::string& readLine, const configInfo& conf);
 		~putMethod();
 
-		virtual const std::string&		getReadBody(void) const;
+		virtual std::string&			getReadBody(void) ;
 		virtual void					loadRequest(const std::string& readLine);
-		virtual const std::string&		getBody(void) const;
 		virtual bool					checkMethodLimit(const std::vector<std::string>& limitExcept) const;
 		virtual bool					isMethodCreateFin(void);
 		virtual void					logMethodInfo(std::fstream& logFile) const;

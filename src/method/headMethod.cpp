@@ -98,8 +98,8 @@ void headMethod::doMethodWork(void)
 	readFile(m_readBody);
 }
 
-const std::string&
-headMethod::getReadBody(void) const
+std::string&
+headMethod::getReadBody(void)
 {
 	return (m_readBody);
 }

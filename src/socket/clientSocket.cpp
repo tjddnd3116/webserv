@@ -107,9 +107,12 @@ clientSocket::sendSock(std::fstream& logFile)
 	{
 		m_sentSize = 0;
 		m_writeFinish = true;
-		delete m_responsePtr;
 		if (m_method->getMethod() == "PUT" || m_method->getMethod() == "POST")
+		{
+			delete m_responsePtr;
 			return (-1);
+		}
+		delete m_responsePtr;
 		return 0;
 	}
 	return (sendRet);

@@ -27,7 +27,6 @@ class AMethod
 		std::string						m_methodType;
 		std::string						m_uri;
 		std::string						m_httpVersion;
-		std::string						s;
 		requestMap						m_requestSet;
 		configInfo						m_conf;
 		int								m_statusCode;
@@ -41,8 +40,8 @@ class AMethod
 		std::string						m_fileExt;
 		int								m_crlfCnt;
 		bool							m_isCgi;
-		std::string						m_cgiPath;
-		std::string						m_cgiExt;
+		// std::string						m_cgiPath;
+		// std::string						m_cgiExt;
 
 		std::vector<std::string>	splitReadLine(const std::string& readLine,
 												  const std::string& str = " ");
@@ -70,11 +69,8 @@ class AMethod
 		virtual void					logMethodInfo(std::fstream& logFile) const = 0;
 		virtual void					uriParse(void) = 0;
 		virtual void					doMethodWork(void) = 0;
-		virtual const std::string&		getReadBody(void) const = 0;
+		virtual std::string&			getReadBody(void) = 0;
 		virtual void					filePathParse(std::string uri) = 0;
-
-		// public virtual functions
-		virtual const std::string&		getBody(void) const;
 
 		// puclic member functions
 		void							queryStringParse(std::string& uri);
@@ -86,8 +82,8 @@ class AMethod
 		const std::string&				getMethod(void) const;
 		const std::string&				getUri(void) const;
 		const int32_t&					getBodySize(void) const;
-		const std::string&				getCgiPath(void) const;
-		const std::string&				getCgiExt(void) const;
+		// const std::string&				getCgiPath(void) const;
+		// const std::string&				getCgiExt(void) const;
 		const configInfo&				getConfig(void) const;
 		const std::string&				getHttpVersion(void) const;
 		const requestMap&				getRequestSet(void) const;

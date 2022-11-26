@@ -6,14 +6,13 @@
 #    By: gson <gson@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/14 14:41:39 by soum              #+#    #+#              #
-#    Updated: 2022/11/18 15:39:19 by gson             ###   ########.fr        #
+#    Updated: 2022/11/18 22:12:45 by soum             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = webserv
 CXX = c++
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -O3
-#-g -fsanitize=address
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -O3 -g -fsanitize=address
 
 SRCS = ./src/main.cpp \
 	   ./src/webServ.cpp \

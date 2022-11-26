@@ -107,8 +107,8 @@ deleteMethod::doMethodWork(void)
 		m_statusCode = 202;
 }
 
-const std::string&
-deleteMethod::getReadBody(void) const
+std::string&
+deleteMethod::getReadBody(void)
 {
 	return (m_readBody);
 }

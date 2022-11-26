@@ -4,11 +4,9 @@
 postMethod::postMethod(const std::string& readLine, const configInfo& conf)
 	:AMethod(readLine, conf)
 {
-	m_bodyBuffer.clear();
 	m_bodySize = -1;
 	m_readBody = "";
 	m_readLineSize = 0;
-	m_testcnt = 0;
 }
 
 postMethod::~postMethod()
@@ -38,12 +36,6 @@ postMethod::loadRequest(const std::string &readLine)
 		m_requestSet[splittedLine[0]].push_back(splittedLine[vecIdx]);
 }
 
-const std::string&
-postMethod::getBody(void) const
-{
-	return (m_bodyBuffer);
-}
-
 void
 postMethod::loadBody(const std::string& readLine)
 {
@@ -51,10 +43,10 @@ postMethod::loadBody(const std::string& readLine)
 	{
 		if (m_bodyType == "size")
 		{
-			if (m_bodyBuffer.empty())
-				m_bodyBuffer += readLine;
+			if (m_readBody.empty())
+				m_readBody += readLine;
 			else
-				m_bodyBuffer += "\n" + readLine;
+				m_readBody += "\n" + readLine;
 		}
 		else if (m_bodyType == "chunked")
 		{
@@ -64,7 +56,7 @@ postMethod::loadBody(const std::string& readLine)
 			{
 				if (m_bodySize != 0)
 				{
-					m_bodyBuffer += readLine;
+					m_readBody += readLine;
 					m_readLineSize += readLine.size();
 				}
 				if (m_bodySize == m_readLineSize)
@@ -86,14 +78,12 @@ postMethod::loadBody(const std::string& readLine)
 			{
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
 				m_cgi->closeCgi(WRITE);
-				m_bodyBuffer += m_cgi->readCgi();
+				m_readBody += m_cgi->readCgi();
 			}
 			return;
 		}
 		if (m_bodySize == -1)
-		{
 			m_bodySize = hexToDecimal(readLine);
-		}
 		else
 		{
 			if (m_bodySize != 0)
@@ -106,8 +96,7 @@ postMethod::loadBody(const std::string& readLine)
 				if (m_bodySize < 4097 && m_fileExt == ".bla")
 					return;
 				m_cgi->writeCgi(m_tempBuffer.data(), m_tempBuffer.size());
-				m_cgi->closeCgi(WRITE);
-				m_bodyBuffer += m_cgi->readCloseCgi();
+				m_readBody += m_cgi->readCgi();
 				m_tempBuffer.clear();
 				if (m_bodyType == "chunked")
 					m_bodySize = -1;
@@ -145,7 +134,7 @@ postMethod::isMethodCreateFin(void)
 		}
 		return (true);
 	}
-	else if (m_bodyType == "size" && m_bodyBuffer.size() == (size_t)m_bodySize)
+	else if (m_bodyType == "size" && m_readBody.size() == (size_t)m_bodySize)
 		return (true);
 	return (false);
 }
@@ -170,9 +159,6 @@ void postMethod::logMethodInfo(std::fstream& logFile) const
 			logFile << "\t" << mapIt->second.at(setIdx) << std::endl;
 	}
 	logFile << "-------------------------" << RESET << std::endl;
-	// logFile << "-------body--------" << std::endl;
-	// logFile << m_bodyBuffer << std::endl;
-	// logFile << "-------------------------" << RESET << std::endl;
 }
 
 void
@@ -221,7 +207,7 @@ void postMethod::doMethodWork(void)
 		readFile(m_readBody);
 		return ;
 	}
-	if (maxBodySize != -1 && m_bodyBuffer.size() > (size_t)maxBodySize)
+	if (maxBodySize != -1 && m_readBody.size() > (size_t)maxBodySize)
 	{
 		m_filePath = m_conf.getErrorPath();
 		m_statusCode = 413;
@@ -231,8 +217,8 @@ void postMethod::doMethodWork(void)
 	}
 }
 
-const std::string&
-postMethod::getReadBody(void) const
+std::string&
+postMethod::getReadBody(void)
 {
 	return (m_readBody);
 }

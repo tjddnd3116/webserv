@@ -116,8 +116,8 @@ void getMethod::doMethodWork(void)
 	}
 }
 
-const std::string&
-getMethod::getReadBody(void) const
+std::string&
+getMethod::getReadBody(void)
 {
 	return (m_readBody);
 }

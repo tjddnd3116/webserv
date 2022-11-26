@@ -61,17 +61,17 @@ AMethod::getUri(void) const
 	return (m_uri);
 }
 
-const std::string&
-AMethod::getCgiPath(void) const
-{
-	return (m_cgiPath);
-}
-
-const std::string&
-AMethod::getCgiExt(void) const
-{
-	return (m_cgiExt);
-}
+// const std::string&
+// AMethod::getCgiPath(void) const
+// {
+//     return (m_cgiPath);
+// }
+//
+// const std::string&
+// AMethod::getCgiExt(void) const
+// {
+//     return (m_cgiExt);
+// }
 
 const configInfo&
 AMethod::getConfig(void) const
@@ -83,12 +83,6 @@ const std::string&
 AMethod::getHttpVersion(void) const
 {
 	return (m_httpVersion);
-}
-
-const std::string&
-AMethod::getBody(void) const
-{
-	return s;
 }
 
 const int32_t&
@@ -377,6 +371,7 @@ AMethod::launchCgi(void)
 {
 	if (m_fileExt.size() && m_location->locCgiExt == m_fileExt)
 	{
+		m_isCgi = true;
 		m_cgi = new cgi;
 		m_cgi->initCgi(this);
 		m_cgi->runCgi();
