@@ -27,7 +27,7 @@ cgi::initCgi(const AMethod *method)
 	m_cgiPath = method->getLocation()->locCgiPass;
     std::string rootPath;
     rootPath = method->getConfig().getRootPath();
-    std::string uri = method->getUri();
+    std::string uri = method->getFilePath();
 
     if (uri.find("?") != std::string::npos)
     {
@@ -68,11 +68,11 @@ cgi::initCgi(const AMethod *method)
     std::string SERVER_PROTOCOL = "SERVER_PROTOCOL=HTTP/1.1"; // different GET POST
     std::string GATEWAY_INTERFACE = "GATEWAY_INTERFACE=CGI/1.1";
     std::string REQUEST_METHOD = "REQUEST_METHOD=" + method->getMethod();
-    std::string REQUEST_URI = "REQUEST_URI=" + m_path;
+    std::string REQUEST_URI = "REQUEST_URI=" + method->getUri();
     std::string PATH_INFO = "PATH_INFO=" + m_path;
-    std::string PATH_TRANSLATED = "PATH_TRANSLATED=" + rootPath + m_path;
+    std::string PATH_TRANSLATED = "PATH_TRANSLATED=" + m_path;
     std::string SCRIPT_NAME = "SCRIPT_NAME=" + m_path;
-    std::string SCRIPT_FILENAME = "SCRIPT_FILENAME=" + rootPath + m_path;
+    std::string SCRIPT_FILENAME = "SCRIPT_FILENAME=" + m_path;
     std::string QUERY_STRING = "QUERY_STRING=";
     if (method->getMethod() == "GET")
     {
@@ -260,6 +260,7 @@ cgi::readCgi()
 	std::string	body;
 	char buf[BUFFER_SIZE] = {0};
 
+    waitpid(-1, NULL, 0);
 	do
 	{
 		do
